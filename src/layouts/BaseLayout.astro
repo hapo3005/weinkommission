@@ -1,0 +1,44 @@
+---
+interface Props {
+  title: string;
+  description: string;
+  canonicalPath?: string;
+}
+
+const {
+  title,
+  description,
+  canonicalPath = '/weinkommission/'
+} = Astro.props;
+
+const canonical = new URL(canonicalPath, 'https://hapo3005.github.io').toString();
+const base = import.meta.env.BASE_URL;
+---
+
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light" />
+    <meta name="theme-color" content="#f4efe5" />
+    <meta name="description" content={description} />
+    <meta name="robots" content="noindex,nofollow,noarchive" />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="de_DE" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:site_name" content="Weinkommission Porn · Mosel" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" href={`${base}favicon.svg`} type="image/svg+xml" />
+    <link rel="preconnect" href="https://images.pexels.com" crossorigin />
+    <title>{title}</title>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Zum Inhalt springen</a>
+    <slot />
+  </body>
+</html>
