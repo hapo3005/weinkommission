@@ -4,8 +4,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "astro dev",
-    "build": "astro build",
+    "dev": "node scripts/reconstruct-hero.mjs && astro dev",
+    "build": "node scripts/reconstruct-hero.mjs && astro build",
     "preview": "astro preview"
   },
   "dependencies": {
