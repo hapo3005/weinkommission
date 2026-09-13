@@ -1,0 +1,240 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import '../styles/global.css';
+
+const heroLarge = 'https://images.pexels.com/photos/18610633/pexels-photo-18610633.jpeg?auto=compress&cs=tinysrgb&w=2200';
+const heroSmall = 'https://images.pexels.com/photos/18610633/pexels-photo-18610633.jpeg?auto=compress&cs=tinysrgb&w=1200';
+---
+
+<BaseLayout
+  title="Weinkommission Porn · Mosel | Preview"
+  description="Digitale Erstpositionierung für Weinkommission Porn · Mosel. Entwurfsstand: Unternehmensdaten und Leistungen werden vor dem Launch final verifiziert."
+>
+  <header class="site-header">
+    <div class="shell header-inner">
+      <a class="brand" href="#top" aria-label="Weinkommission Porn · Mosel – Startseite">
+        <span class="brand-main">WEINKOMMISSION PORN</span>
+        <span class="brand-sub">Mosel</span>
+      </a>
+
+      <nav class="desktop-nav" aria-label="Hauptnavigation">
+        <a href="#rolle">Weinkommission</a>
+        <a href="#taetigkeit">Tätigkeit</a>
+        <a href="#mosel">Mosel & Netzwerk</a>
+        <a href="#arbeitsweise">Arbeitsweise</a>
+        <a href="#kontakt">Kontakt</a>
+      </nav>
+
+      <details class="mobile-nav">
+        <summary aria-label="Navigation öffnen">Menü</summary>
+        <nav aria-label="Mobile Navigation">
+          <a href="#rolle">Weinkommission</a>
+          <a href="#taetigkeit">Tätigkeit</a>
+          <a href="#mosel">Mosel & Netzwerk</a>
+          <a href="#arbeitsweise">Arbeitsweise</a>
+          <a href="#kontakt">Kontakt</a>
+        </nav>
+      </details>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero" id="top" aria-labelledby="hero-title">
+      <picture class="hero-media">
+        <source media="(max-width: 720px)" srcset={heroSmall} />
+        <img
+          src={heroLarge}
+          width="2200"
+          height="1467"
+          alt="Moselschleife bei Bremm mit Weinbergen und Flusslandschaft"
+          fetchpriority="high"
+          decoding="async"
+        />
+      </picture>
+      <div class="hero-shade" aria-hidden="true"></div>
+
+      <div class="shell hero-inner">
+        <div class="hero-copy">
+          <p class="kicker light">Wein. Markt. Menschen.</p>
+          <h1 id="hero-title">Wein ist<br /><em>Vertrauenssache.</em></h1>
+          <p class="hero-lead">
+            Weinkommission Porn · Mosel. Eine persönliche Verbindung zwischen Weinwirtschaft,
+            Markt und Menschen – klar, diskret und nah an der Region.
+          </p>
+          <div class="hero-actions">
+            <a class="button button-light" href="#kontakt">Kontakt aufnehmen</a>
+            <a class="button button-ghost" href="#arbeitsweise">Unsere Arbeitsweise</a>
+          </div>
+        </div>
+
+        <aside class="hero-note" aria-label="Leitgedanke">
+          <span>Gute Weine.</span>
+          <span>Starke Partner.</span>
+          <span>Nachhaltige Märkte.</span>
+        </aside>
+
+        <div class="hero-rail" aria-hidden="true">
+          <span>WEIN</span><span>MARKT</span><span>MENSCHEN</span><span>KONTINUITÄT</span>
+        </div>
+      </div>
+
+      <div class="preview-note">
+        <div class="shell preview-note-inner">
+          <span>ENTWURFSSTAND</span>
+          <p>Unternehmensdaten, Leistungen und Kontaktangaben werden vor dem Launch ausschließlich nach Verifizierung veröffentlicht.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section role" id="rolle" aria-labelledby="role-title">
+      <div class="shell editorial-grid">
+        <div>
+          <p class="kicker">Die Rolle</p>
+          <h2 id="role-title">Mehr als Handel.<br />Eine verbindende Rolle.</h2>
+        </div>
+        <div class="body-copy">
+          <p>
+            Eine Weinkommission vermittelt zwischen Erzeugern und Abnehmern. Sie beobachtet Märkte,
+            ordnet Qualitäten und Mengen ein, führt passende Partner zusammen und begleitet die
+            organisatorische Abwicklung eines Geschäfts.
+          </p>
+          <p class="fact-note">Diese Beschreibung erläutert das Berufsbild. Die konkrete Ausgestaltung bei Weinkommission Porn wird separat verifiziert.</p>
+        </div>
+        <blockquote>
+          „Gute Verbindungen entstehen nicht von selbst. Sondern durch Menschen, die zuhören.“
+        </blockquote>
+      </div>
+    </section>
+
+    <section class="section trade" id="taetigkeit" aria-labelledby="trade-title">
+      <div class="shell">
+        <div class="section-heading split-heading">
+          <div>
+            <p class="kicker light">Tätigkeitsbild einer Weinkommission</p>
+            <h2 id="trade-title">Kenntnis des Weins.<br />Kenntnis des Marktes.<br />Kenntnis der Menschen.</h2>
+          </div>
+          <p>
+            Nicht als austauschbares Leistungs-Grid, sondern als zusammenhängender Prozess:
+            Markt verstehen, Qualität einordnen, Verbindungen herstellen und Geschäfte zuverlässig begleiten.
+          </p>
+        </div>
+
+        <ol class="service-ledger">
+          <li>
+            <span class="ledger-no">01</span>
+            <h3>Vermittlung</h3>
+            <p>Erzeuger und professionelle Abnehmer passend zusammenführen.</p>
+          </li>
+          <li>
+            <span class="ledger-no">02</span>
+            <h3>Marktbeobachtung</h3>
+            <p>Entwicklungen, Nachfrage, Qualitäten und Mengen im Zusammenhang betrachten.</p>
+          </li>
+          <li>
+            <span class="ledger-no">03</span>
+            <h3>Beratung & Einordnung</h3>
+            <p>Fachliche Informationen verständlich und marktbezogen einordnen.</p>
+          </li>
+          <li>
+            <span class="ledger-no">04</span>
+            <h3>Abwicklung</h3>
+            <p>Vereinbarungen, Unterlagen und Übergaben strukturiert begleiten.</p>
+          </li>
+        </ol>
+        <p class="fact-note inverse">Die vier Punkte beschreiben das allgemeine Berufsbild und sind noch keine bestätigte Leistungszusage von Weinkommission Porn.</p>
+      </div>
+    </section>
+
+    <section class="section mosel" id="mosel" aria-labelledby="mosel-title">
+      <div class="shell mosel-grid">
+        <div class="mosel-copy">
+          <p class="kicker">Mosel & Netzwerk</p>
+          <h2 id="mosel-title">Die Region ist kein Hintergrund.<br />Sie ist Arbeitsraum.</h2>
+          <p>
+            Die Mosel steht für eine hoch differenzierte Weinlandschaft mit vielen Orten, Lagen,
+            Betrieben und Marktbeziehungen. Für eine Weinkommission wird geografische Nähe dort wertvoll,
+            wo daraus tatsächliche Kenntnis von Menschen, Qualitäten und Möglichkeiten entsteht.
+          </p>
+          <p class="fact-note">Die im Projekt genannte Netzwerkgröße von rund 200 Winzern bleibt bis zur Bestätigung bewusst unveröffentlicht.</p>
+        </div>
+
+        <figure class="map-card">
+          <figcaption>Schematischer Verlauf der deutschen Mosel</figcaption>
+          <svg viewBox="0 0 900 520" role="img" aria-labelledby="map-title map-desc">
+            <title id="map-title">Schematische Moselkarte</title>
+            <desc id="map-desc">Abstrahierter Verlauf von der Obermosel über Trier, Bernkastel-Kues, Zell und Cochem bis Koblenz.</desc>
+            <g class="topo" aria-hidden="true">
+              <path d="M25 85C145 15 245 120 365 60S620 25 875 105" />
+              <path d="M-5 155C130 90 230 190 370 130S650 95 910 175" />
+              <path d="M20 235C160 160 260 275 405 210S655 190 890 255" />
+              <path d="M-10 330C140 260 285 360 430 310S690 285 920 355" />
+              <path d="M40 430C190 360 300 465 455 405S705 390 875 440" />
+            </g>
+            <path class="river" d="M84 448C150 424 174 378 232 362C300 343 308 300 372 279C420 263 451 226 501 220C551 215 568 172 625 160C684 147 704 108 757 92C793 81 812 54 846 48" />
+            <g class="places">
+              <circle cx="116" cy="430" r="6" /><text x="132" y="435">OBERMOSEL</text>
+              <circle cx="260" cy="348" r="6" /><text x="276" y="353">TRIER</text>
+              <circle cx="496" cy="220" r="6" /><text x="512" y="225">BERNKASTEL-KUES</text>
+              <circle cx="632" cy="158" r="6" /><text x="648" y="163">ZELL</text>
+              <circle cx="742" cy="97" r="6" /><text x="758" y="102">COCHEM</text>
+              <circle cx="846" cy="48" r="6" /><text x="760" y="36">KOBLENZ</text>
+            </g>
+          </svg>
+          <p class="map-disclaimer">Kartografische Designskizze, nicht maßstabsgetreu.</p>
+        </figure>
+      </div>
+    </section>
+
+    <section class="section process" id="arbeitsweise" aria-labelledby="process-title">
+      <div class="shell">
+        <div class="section-heading process-heading">
+          <div>
+            <p class="kicker">Arbeitsweise</p>
+            <h2 id="process-title">Klar. Persönlich. Langfristig.</h2>
+          </div>
+          <p>Die spätere Prozessdarstellung wird erst nach dem Unternehmensgespräch finalisiert. Der Entwurf zeigt bewusst nur eine belastbare Grundlogik.</p>
+        </div>
+
+        <ol class="process-line">
+          <li><span>01</span><strong>Zuhören</strong><p>Bedarf, Qualität und Rahmenbedingungen verstehen.</p></li>
+          <li><span>02</span><strong>Einordnen</strong><p>Markt, Passung und Möglichkeiten fachlich bewerten.</p></li>
+          <li><span>03</span><strong>Verbinden</strong><p>Geeignete Partner gezielt zusammenbringen.</p></li>
+          <li><span>04</span><strong>Begleiten</strong><p>Den Weg bis zur verlässlichen Vereinbarung unterstützen.</p></li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="section contact" id="kontakt" aria-labelledby="contact-title">
+      <div class="shell contact-grid">
+        <div>
+          <p class="kicker light">Kontakt</p>
+          <h2 id="contact-title">Lassen Sie uns ins Gespräch kommen.</h2>
+        </div>
+        <div class="contact-copy">
+          <p>
+            Die verifizierten Kontaktangaben von Weinkommission Porn liegen für die Website noch nicht vor.
+            Bis dahin veröffentlichen wir bewusst weder Platzhalter-Telefonnummern noch erfundene E-Mail-Adressen.
+          </p>
+          <div class="contact-status" role="status">
+            <span>Kontaktangaben</span>
+            <strong>FEHLT / ZU VERIFIZIEREN</strong>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="shell footer-grid">
+      <div class="footer-brand">
+        <strong>WEINKOMMISSION PORN · MOSEL</strong>
+        <span>Wein. Markt. Menschen.</span>
+      </div>
+      <nav aria-label="Rechtliches">
+        <a href={`${import.meta.env.BASE_URL}impressum/`}>Impressum</a>
+        <a href={`${import.meta.env.BASE_URL}datenschutz/`}>Datenschutz</a>
+      </nav>
+      <p class="photo-credit">Hero-Foto: tom analogicus / Pexels · Entwurfsphase</p>
+    </div>
+  </footer>
+</BaseLayout>
