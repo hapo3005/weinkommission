@@ -1,7 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import '../styles/global.css';
-import '../styles/hero-b.css';
 ---
 
 <BaseLayout
@@ -37,55 +36,22 @@ import '../styles/hero-b.css';
   </header>
 
   <main id="main">
-    <section class="b-hero" id="top" aria-labelledby="hero-title">
-      <div class="shell b-hero-grid">
-        <div class="b-hero-copy">
-          <p class="b-hero-kicker">Weinkommission Porn · Mosel</p>
+    <section class="hero approved-b-hero" id="top" aria-labelledby="hero-title">
+      <img class="approved-b-hero-image" src={`${import.meta.env.BASE_URL}assets/hero-b-approved.webp`} alt="Zwei Personen blicken bei Abendlicht aus einem Weinberg über das Moseltal" fetchpriority="high" decoding="async" />
+      <div class="approved-b-hero-mask" aria-hidden="true"></div>
+
+      <div class="shell hero-inner approved-b-inner">
+        <div class="hero-copy approved-b-copy">
+          <p class="kicker light">Weinkommission Porn · Mosel</p>
           <h1 id="hero-title">Wein ist<br /><em>Vertrauenssache.</em></h1>
-          <p class="b-hero-lead">
-            Eine persönliche Verbindung zwischen Weinwirtschaft, Markt und Menschen –
-            klar, diskret und nah an der Mosel.
+          <p class="hero-lead">
+            Wir bringen Menschen zusammen, die Werte teilen: Weinwirtschaft, Märkte
+            und eine gemeinsame Zukunft für die Mosel.
           </p>
-          <div class="b-hero-actions">
-            <a class="button button-primary" href="#kontakt">Kontakt aufnehmen</a>
-            <a class="button button-line" href="#arbeitsweise">Unsere Arbeitsweise</a>
+          <div class="hero-actions">
+            <a class="button button-light" href="#kontakt">Kontakt aufnehmen</a>
+            <a class="button button-ghost" href="#arbeitsweise">Unsere Arbeitsweise</a>
           </div>
-          <div class="b-hero-meta" aria-label="Leitbegriffe">
-            <span>Wein</span><span>Markt</span><span>Menschen</span><span>Mosel</span>
-          </div>
-        </div>
-
-        <div class="b-hero-map" aria-label="Kartografisches Motiv der deutschen Mosel">
-          <div class="b-map-label">
-            <strong>MOSEL</strong>
-            <span>Herkunft · Markt · Verbindung</span>
-          </div>
-
-          <svg class="b-map-svg" viewBox="0 0 900 720" role="img" aria-labelledby="b-map-title b-map-desc">
-            <title id="b-map-title">Kartografisches Moselmotiv</title>
-            <desc id="b-map-desc">Abstrahierter Verlauf der deutschen Mosel als Arbeits- und Herkunftsraum.</desc>
-            <g class="b-map-contours" aria-hidden="true">
-              <path d="M-20 110C120 20 250 150 385 80S655 25 920 135" />
-              <path d="M-35 185C120 105 240 220 395 150S690 110 940 220" />
-              <path d="M-15 285C145 210 285 330 435 255S705 240 935 315" />
-              <path d="M0 405C150 330 305 450 465 390S725 350 930 435" />
-              <path d="M-30 520C125 445 290 565 455 505S730 470 940 560" />
-              <path d="M20 635C180 570 310 675 480 620S715 600 900 660" />
-            </g>
-            <path class="b-map-river-secondary" d="M106 640C165 602 180 542 247 514C306 489 321 445 382 420C448 393 449 348 508 328C567 308 576 260 639 240C697 222 713 174 764 153C809 134 831 96 858 72" />
-            <path class="b-map-river" d="M106 640C165 602 180 542 247 514C306 489 321 445 382 420C448 393 449 348 508 328C567 308 576 260 639 240C697 222 713 174 764 153C809 134 831 96 858 72" />
-            <g class="b-map-points">
-              <circle cx="184" cy="564" r="8" /><text x="205" y="569">OBERMOSEL</text>
-              <circle cx="322" cy="445" r="8" /><text x="343" y="450">TRIER</text>
-              <circle cx="509" cy="328" r="8" /><text x="530" y="333">BERNKASTEL-KUES</text>
-              <circle cx="642" cy="239" r="8" /><text x="663" y="244">ZELL</text>
-              <circle cx="758" cy="155" r="8" /><text x="779" y="160">COCHEM</text>
-              <circle cx="858" cy="72" r="8" /><text x="742" y="58">KOBLENZ</text>
-            </g>
-          </svg>
-
-          <p class="b-map-note">Kartografische Designinterpretation der deutschen Mosel. Keine Netzwerkpunkte oder Unternehmensdaten werden vor ihrer Verifizierung dargestellt.</p>
-          <div class="b-map-rail" aria-hidden="true"><span>WEIN</span><span>MARKT</span><span>MENSCHEN</span></div>
         </div>
       </div>
     </section>
@@ -124,26 +90,10 @@ import '../styles/hero-b.css';
         </div>
 
         <ol class="service-ledger">
-          <li>
-            <span class="ledger-no">01</span>
-            <h3>Vermittlung</h3>
-            <p>Erzeuger und professionelle Abnehmer passend zusammenführen.</p>
-          </li>
-          <li>
-            <span class="ledger-no">02</span>
-            <h3>Marktbeobachtung</h3>
-            <p>Entwicklungen, Nachfrage, Qualitäten und Mengen im Zusammenhang betrachten.</p>
-          </li>
-          <li>
-            <span class="ledger-no">03</span>
-            <h3>Beratung & Einordnung</h3>
-            <p>Fachliche Informationen verständlich und marktbezogen einordnen.</p>
-          </li>
-          <li>
-            <span class="ledger-no">04</span>
-            <h3>Abwicklung</h3>
-            <p>Vereinbarungen, Unterlagen und Übergaben strukturiert begleiten.</p>
-          </li>
+          <li><span class="ledger-no">01</span><h3>Vermittlung</h3><p>Erzeuger und professionelle Abnehmer passend zusammenführen.</p></li>
+          <li><span class="ledger-no">02</span><h3>Marktbeobachtung</h3><p>Entwicklungen, Nachfrage, Qualitäten und Mengen im Zusammenhang betrachten.</p></li>
+          <li><span class="ledger-no">03</span><h3>Beratung & Einordnung</h3><p>Fachliche Informationen verständlich und marktbezogen einordnen.</p></li>
+          <li><span class="ledger-no">04</span><h3>Abwicklung</h3><p>Vereinbarungen, Unterlagen und Übergaben strukturiert begleiten.</p></li>
         </ol>
         <p class="fact-note inverse">Die vier Punkte beschreiben das allgemeine Berufsbild und sind noch keine bestätigte Leistungszusage von Weinkommission Porn.</p>
       </div>
@@ -192,13 +142,9 @@ import '../styles/hero-b.css';
     <section class="section process" id="arbeitsweise" aria-labelledby="process-title">
       <div class="shell">
         <div class="section-heading process-heading">
-          <div>
-            <p class="kicker">Arbeitsweise</p>
-            <h2 id="process-title">Klar. Persönlich. Langfristig.</h2>
-          </div>
+          <div><p class="kicker">Arbeitsweise</p><h2 id="process-title">Klar. Persönlich. Langfristig.</h2></div>
           <p>Die spätere Prozessdarstellung wird erst nach dem Unternehmensgespräch finalisiert. Der Entwurf zeigt bewusst nur eine belastbare Grundlogik.</p>
         </div>
-
         <ol class="process-line">
           <li><span>01</span><strong>Zuhören</strong><p>Bedarf, Qualität und Rahmenbedingungen verstehen.</p></li>
           <li><span>02</span><strong>Einordnen</strong><p>Markt, Passung und Möglichkeiten fachlich bewerten.</p></li>
@@ -210,19 +156,10 @@ import '../styles/hero-b.css';
 
     <section class="section contact" id="kontakt" aria-labelledby="contact-title">
       <div class="shell contact-grid">
-        <div>
-          <p class="kicker light">Kontakt</p>
-          <h2 id="contact-title">Lassen Sie uns ins Gespräch kommen.</h2>
-        </div>
+        <div><p class="kicker light">Kontakt</p><h2 id="contact-title">Lassen Sie uns ins Gespräch kommen.</h2></div>
         <div class="contact-copy">
-          <p>
-            Die verifizierten Kontaktangaben von Weinkommission Porn liegen für die Website noch nicht vor.
-            Bis dahin veröffentlichen wir bewusst weder Platzhalter-Telefonnummern noch erfundene E-Mail-Adressen.
-          </p>
-          <div class="contact-status" role="status">
-            <span>Kontaktangaben</span>
-            <strong>FEHLT / ZU VERIFIZIEREN</strong>
-          </div>
+          <p>Die verifizierten Kontaktangaben von Weinkommission Porn liegen für die Website noch nicht vor. Bis dahin veröffentlichen wir bewusst weder Platzhalter-Telefonnummern noch erfundene E-Mail-Adressen.</p>
+          <div class="contact-status" role="status"><span>Kontaktangaben</span><strong>FEHLT / ZU VERIFIZIEREN</strong></div>
         </div>
       </div>
     </section>
@@ -230,14 +167,8 @@ import '../styles/hero-b.css';
 
   <footer class="site-footer">
     <div class="shell footer-grid">
-      <div class="footer-brand">
-        <strong>WEINKOMMISSION PORN · MOSEL</strong>
-        <span>Wein. Markt. Menschen.</span>
-      </div>
-      <nav aria-label="Rechtliches">
-        <a href={`${import.meta.env.BASE_URL}impressum/`}>Impressum</a>
-        <a href={`${import.meta.env.BASE_URL}datenschutz/`}>Datenschutz</a>
-      </nav>
+      <div class="footer-brand"><strong>WEINKOMMISSION PORN · MOSEL</strong><span>Wein. Markt. Menschen.</span></div>
+      <nav aria-label="Rechtliches"><a href={`${import.meta.env.BASE_URL}impressum/`}>Impressum</a><a href={`${import.meta.env.BASE_URL}datenschutz/`}>Datenschutz</a></nav>
       <p class="photo-credit">Entwurfsstand · Unternehmensdaten werden verifiziert.</p>
     </div>
   </footer>
