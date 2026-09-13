@@ -6,21 +6,13 @@ Digitale Erstpositionierung und neue Premium-Website für **Weinkommission Porn 
 
 Die Website soll Weinkommission Porn als seriöse, eigenständige und moderne B2B-Marke im Mosel-Weinmarkt positionieren. Im Mittelpunkt stehen Vertrauen, Marktkenntnis, Produktkenntnis, persönliche Beziehungen und eine klare Vermittlungsfunktion zwischen Erzeugern und Abnehmern.
 
-## Strategische Arbeitsrichtung
+## Gewählte Designrichtung
 
 **Wine Trade Modernism × Mosel Geography**
 
-Die Gestaltung soll aus der realen Tätigkeit einer Weinkommission entstehen: präzise Geschäftskommunikation, Marktstruktur, Herkunft, Mosel-Geografie, Weinlagen, Handelsdokumente und persönliche Beziehungen. Keine generische Weingut-, Luxus- oder KI-Template-Ästhetik.
+Ausgewähltes Hero-Prinzip: **„Wein ist Vertrauenssache.“** mit ruhiger Mosel-Landschaft, präziser B2B-Typografie und klarer Verbindung von Wein, Markt und Menschen.
 
-Aktuelle Positionierungshypothese:
-
-> Zwischen Erzeuger und Markt zählt, wer beide Seiten kennt.
-
-Unterstützende Leitidee:
-
-> Wein kennen. Markt verstehen. Menschen verbinden.
-
-Beide Formulierungen sind noch nicht als finale Claims freigegeben.
+Die finale Website soll aus der realen Tätigkeit einer Weinkommission entstehen: präzise Geschäftskommunikation, Marktstruktur, Herkunft, Mosel-Geografie und persönliche Beziehungen. Keine generische Weingut-, Luxus- oder KI-Template-Ästhetik.
 
 ## Aktueller Status
 
@@ -31,49 +23,51 @@ Beide Formulierungen sind noch nicht als finale Claims freigegeben.
 | Zielgruppen / Jobs-to-be-Done | FULL |
 | Informationsarchitektur | FULL |
 | Conversionstrategie | FULL |
-| Drei Creative Directions, strategisch | FULL |
-| Designrichtung | FULL |
-| Technische Architektur | FULL |
+| Drei Creative Directions | FULL |
+| High-Fidelity Visual Target | FULL – Richtung B ausgewählt |
+| Astro-Grundarchitektur | FULL |
+| Homepage-Implementierung | PARTIAL – umgesetzt, Live-Build noch nicht verifiziert |
+| Responsive CSS | PARTIAL – umgesetzt, Render-QA steht aus |
+| 404 | PARTIAL – umgesetzt, Live-Test steht aus |
+| Impressum | BLOCKED – reale Unternehmensdaten fehlen |
+| Datenschutz | PARTIAL – technische Minimierung umgesetzt, finale Angaben fehlen |
+| robots.txt | FULL – Preview blockiert Indexierung |
+| Sitemap | PARTIAL – Preview-Sitemap vorhanden |
+| GitHub Actions | PARTIAL – Workflow vorhanden, erster Lauf muss noch ausgelöst/verifiziert werden |
 | SEO qualitativ | PARTIAL |
-| Quantitative Keyworddaten | BLOCKED |
+| Quantitative Keyworddaten / Semrush | BLOCKED – Plugin nicht verbunden |
 | Domainverfügbarkeit | BLOCKED |
-| Reale Unternehmensdaten | PARTIAL |
 | ca. 200 Winzer | ZU VERIFIZIEREN |
-| High-Fidelity Visual Target | OFFEN |
-| Implementierung | NOCH NICHT BEGONNEN |
+
+## Technische Architektur
+
+- Astro 7.3.2
+- statische Auslieferung
+- Vanilla CSS
+- keine Client-JavaScript-Abhängigkeit für die Homepage
+- GitHub Actions für Build und Deployment auf GitHub Pages
+- kein Backend / CMS ohne nachgewiesenen Bedarf
+- WCAG 2.2 AA als Ziel
+- Mobile First
+- `noindex` + robots blockiert solange Unternehmensdaten nicht freigegeben sind
 
 ## Informationsarchitektur – Arbeitsstand
 
 - Start
 - Weinkommission
-- Leistungen
+- Tätigkeit
 - Mosel & Netzwerk
-- Unternehmen
+- Arbeitsweise
 - Kontakt
+- Impressum
+- Datenschutz
+- 404
 
 ## Conversion – Arbeitsstand
 
 Primärziel: qualifiziertes persönliches Gespräch / Geschäftsanbahnung.
 
-Mögliche Einstiege, nur nach Verifizierung des tatsächlichen Geschäftsmodells:
-
-- Kontakt aufnehmen
-- Wein anbieten
-- Wein suchen
-
-## Technische Zielarchitektur
-
-Geplant nach Freigabe des visuellen Ziels:
-
-- Astro
-- TypeScript
-- Vanilla CSS
-- statische Auslieferung
-- GitHub Actions für Build und Deployment auf GitHub Pages
-- kein Backend / CMS ohne nachgewiesenen Bedarf
-- WCAG 2.2 AA
-- SEO, strukturierte Daten, Sitemap, robots.txt, 404, Social Preview
-- Performance-Budget und Core Web Vitals als Qualitätsziel
+Konkrete CTA-Varianten wie „Wein anbieten“ oder „Wein suchen“ werden erst aktiviert, wenn bestätigt ist, dass diese Einstiege dem realen Geschäftsmodell entsprechen.
 
 ## Faktenregel
 
@@ -90,8 +84,16 @@ Nicht verifizierte Unternehmensinformationen werden niemals als Tatsache veröff
 - Struktur und Bedeutung des Netzwerks von ca. 200 Winzern
 - Spezialisierungen, Regionen, Lagen
 - Partner und Referenzen
-- vorhandene Markenassets und Fotografie
+- vorhandene Markenassets und reale Unternehmensfotografie
 
-## Nächster Gate
+## Bildstatus
 
-Vor dem Build müssen drei klar unterschiedliche visuelle Richtungen als echte Visual Targets ausgearbeitet und eine davon ausgewählt werden. Erst danach beginnt die Astro-Implementierung.
+Der aktuelle Hero nutzt in der Preview ein frei nutzbares Pexels-Foto der Moselschleife bei Bremm von **tom analogicus**. Es ist ein klar gekennzeichnetes Entwurfsbild und keine Darstellung der Unternehmensrealität von Weinkommission Porn.
+
+## Nächste Verifikation
+
+1. Ersten GitHub-Actions-Lauf auslösen und Build prüfen.
+2. Live-Render auf GitHub Pages prüfen.
+3. Responsive QA für 320, 360, 375, 390, 412, 430 px sowie Tablet, Notebook und 1440+ durchführen.
+4. Danach strukturell nachschärfen, nicht mit CSS-Patches.
+5. Reale Unternehmensdaten und Fotografie integrieren.
