@@ -1,0 +1,26 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import '../styles/global.css';
+---
+
+<BaseLayout
+  title="Seite nicht gefunden | Weinkommission Porn · Mosel"
+  description="Die angeforderte Seite wurde nicht gefunden."
+  canonicalPath="/weinkommission/404/"
+>
+  <main class="not-found" id="main">
+    <div class="shell nf-inner">
+      <p class="kicker light">404 · Weinkommission Porn · Mosel</p>
+      <h1>Diese Verbindung führt<br />gerade nicht weiter.</h1>
+      <p>Die angeforderte Seite existiert nicht oder wurde verschoben.</p>
+      <a class="button button-light" href={import.meta.env.BASE_URL}>Zur Startseite</a>
+    </div>
+  </main>
+</BaseLayout>
+
+<style>
+  .not-found{min-height:100svh;display:grid;place-items:center;background:var(--green);color:#fff;padding:3rem 0}
+  .nf-inner{max-width:900px}
+  .not-found h1{font-size:clamp(3.2rem,8vw,7rem);line-height:.98}
+  .not-found p:not(.kicker){font-family:var(--serif);font-size:1.2rem;color:rgba(255,255,255,.72);margin:1.5rem 0 2rem}
+</style>
