@@ -1,0 +1,43 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import '../styles/global.css';
+---
+
+<BaseLayout
+  title="Datenschutz | Weinkommission Porn · Mosel"
+  description="Datenschutzhinweise der Website Weinkommission Porn · Mosel. Entwicklungsstand – finale Angaben folgen nach Verifizierung."
+  canonicalPath="/weinkommission/datenschutz/"
+>
+  <main class="legal" id="main">
+    <div class="shell legal-inner">
+      <a class="back" href={import.meta.env.BASE_URL}>← Zurück zur Startseite</a>
+      <p class="kicker">Rechtliches</p>
+      <h1>Datenschutz</h1>
+      <p class="lead-legal">Der aktuelle Preview-Build enthält bewusst kein Kontaktformular, keine Analyse- oder Tracking-Skripte und keine Marketing-Cookies. Das Hero-Foto wird in der Entwurfsphase extern von Pexels geladen.</p>
+      <section>
+        <h2>Vor Launch zu finalisieren</h2>
+        <ul>
+          <li>Verantwortlicher mit vollständigen Kontaktdaten</li>
+          <li>Hosting und Server-Logfiles der finalen Produktionsumgebung</li>
+          <li>Rechtsgrundlagen für alle tatsächlich eingesetzten Dienste</li>
+          <li>Kontaktformular, sofern später gewünscht</li>
+          <li>externe Medien, Schriften oder Analysewerkzeuge, sofern überhaupt erforderlich</li>
+          <li>Aufbewahrungsfristen und Betroffenenrechte</li>
+        </ul>
+      </section>
+      <p class="status">STATUS: PARTIAL – technische Datenminimierung umgesetzt, rechtliche Unternehmensangaben noch offen.</p>
+    </div>
+  </main>
+</BaseLayout>
+
+<style>
+  .legal{min-height:100svh;padding:5rem 0;background:var(--paper-2)}
+  .legal-inner{max-width:820px}
+  .back{display:inline-block;margin-bottom:5rem;text-decoration:none;font-size:.8rem}
+  .legal h1{color:var(--ink);font-size:clamp(3rem,8vw,6rem)}
+  .lead-legal{font-family:var(--serif);font-size:1.25rem;line-height:1.6;color:#46514c;max-width:42rem}
+  .legal section{margin-top:4rem;border-top:1px solid var(--line);padding-top:2rem}
+  .legal h2{font-size:2rem}
+  .legal li{margin:.6rem 0;color:#525c58}
+  .status{margin-top:3rem;font-size:.72rem;letter-spacing:.12em;color:#80693f}
+</style>
