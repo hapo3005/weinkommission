@@ -1,37 +1,35 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import '../styles/home-redesign.css';
+import '../styles/home.css';
 ---
 
 <BaseLayout
-  title="Weinkommission Porn · Mosel | Weinvermittlung mit Marktkenntnis"
-  description="Weinkommission Porn an der Mosel: persönliche Weinvermittlung, Marktkenntnis und gewachsene Beziehungen zwischen Erzeugern und professionellen Abnehmern."
+  title="Weinkommission Porn · Mosel | Persönliche Weinvermittlung"
+  description="Weinkommission Porn an der Mosel: persönliche Weinvermittlung, Marktkenntnis und direkte Betreuung für Anbieter und professionelle Abnehmer."
 >
   <header class="site-header">
-    <div class="shell header-inner">
-      <a class="brand" href="#top" aria-label="Weinkommission Porn · Mosel – Startseite">
+    <div class="wrap header-row">
+      <a class="brand" href="#top" aria-label="Weinkommission Porn – Startseite">
         <span class="brand-monogram" aria-hidden="true">WP</span>
         <span class="brand-copy">
-          <span class="brand-main">WEINKOMMISSION PORN</span>
-          <span class="brand-sub">Mosel</span>
+          <span class="brand-name">WEINKOMMISSION PORN</span>
+          <span class="brand-region">Mosel</span>
         </span>
       </a>
-
-      <nav class="desktop-nav" aria-label="Hauptnavigation">
+      <nav class="nav" aria-label="Hauptnavigation">
         <a href="#profil">Profil</a>
         <a href="#leistungen">Leistungen</a>
-        <a href="#mosel">Mosel & Markt</a>
-        <a href="#roland">Roland Porn</a>
-        <a class="nav-cta" href="#kontakt">Kontakt</a>
+        <a href="#mosel">Mosel</a>
+        <a href="#menschen">Menschen</a>
+        <a href="#kontakt">Kontakt</a>
       </nav>
-
-      <details class="mobile-nav">
-        <summary aria-label="Navigation öffnen">Menü</summary>
+      <details class="menu">
+        <summary>Menü</summary>
         <nav aria-label="Mobile Navigation">
-          <a href="#profil">Profil</a>
-          <a href="#leistungen">Leistungen</a>
-          <a href="#mosel">Mosel & Markt</a>
-          <a href="#roland">Roland Porn</a>
+          <a href="#profil">Profil</a><br />
+          <a href="#leistungen">Leistungen</a><br />
+          <a href="#mosel">Mosel</a><br />
+          <a href="#menschen">Menschen</a><br />
           <a href="#kontakt">Kontakt</a>
         </nav>
       </details>
@@ -39,223 +37,198 @@ import '../styles/home-redesign.css';
   </header>
 
   <main id="main">
-    <section class="hero" id="top" aria-labelledby="hero-title">
-      <div class="shell hero-grid">
+    <section class="hero" id="top">
+      <div class="wrap hero-grid">
         <div class="hero-copy">
-          <p class="eyebrow">Weinkommission Porn · Mosel</p>
-          <h1 id="hero-title">Wein ist <em>Vertrauenssache.</em></h1>
-          <p class="hero-lead">
-            Persönliche Weinvermittlung, Marktkenntnis und gewachsene Beziehungen an der Mosel.
-            Klar in der Kommunikation. Verlässlich im Geschäft.
+          <p class="eyebrow">Weinkommission · Mosel</p>
+          <h1>Wein.<br />Markt.<br />Vertrauen.</h1>
+          <p class="lead">
+            Persönliche Weinvermittlung an der Mosel – mit Marktkenntnis, direkten Wegen und einem Namen, der für Qualität steht.
           </p>
           <div class="hero-actions">
-            <a class="btn btn-dark" href="#kontakt">Kontakt aufnehmen</a>
-            <a class="btn btn-light" href="#leistungen">Leistungen ansehen</a>
+            <a class="button primary" href="#kontakt">Kontakt aufnehmen</a>
+            <a class="button secondary" href="#leistungen">Leistungen ansehen</a>
           </div>
         </div>
 
-        <div class="hero-visual" aria-hidden="true">
-          <div class="hero-word">PORN</div>
-          <div class="river-card">
-            <svg class="river-svg" viewBox="0 0 640 520" role="img" aria-label="Abstrakter Verlauf der Mosel">
-              <path class="river-thin" d="M40 90C170 30 270 135 395 72S565 55 620 112" />
-              <path class="river-thin" d="M12 175C135 110 250 210 380 152S570 145 650 208" />
-              <path class="river-thin" d="M28 278C160 205 270 318 410 255S575 248 635 306" />
-              <path class="river-thin" d="M8 390C150 310 300 422 438 360S585 355 654 410" />
-              <path class="river-path" d="M75 470C142 438 168 392 223 374C278 357 306 306 361 285C415 264 430 221 481 208C535 194 548 145 596 126" />
+        <div class="hero-art" aria-label="Abstrahierter Verlauf der Mosel">
+          <div class="river-frame">
+            <svg viewBox="0 0 500 620" role="img" aria-labelledby="river-title river-desc">
+              <title id="river-title">Mosel – abstrakter Verlauf</title>
+              <desc id="river-desc">Ein reduzierter, grafischer Verlauf der Mosel mit ausgewählten Orten.</desc>
+              <path class="river-shadow" d="M92 557 C165 521 119 463 190 430 C266 395 180 341 270 305 C347 274 276 216 359 177 C401 157 394 103 438 63" />
+              <path class="river-line" d="M92 557 C165 521 119 463 190 430 C266 395 180 341 270 305 C347 274 276 216 359 177 C401 157 394 103 438 63" />
+              <circle class="place" cx="147" cy="488" r="6"/><text class="place-label" x="163" y="492">TRIER</text>
+              <circle class="place" cx="270" cy="305" r="6"/><text class="place-label" x="286" y="309">BERNKASTEL-KUES</text>
+              <circle class="place" cx="359" cy="177" r="6"/><text class="place-label" x="375" y="181">COCHEM</text>
+              <circle class="place" cx="438" cy="63" r="6"/><text class="place-label" x="352" y="49">KOBLENZ</text>
             </svg>
-            <div class="visual-caption">
-              <span>Mosel</span>
-              <span>Wein · Markt · Menschen</span>
-            </div>
+          </div>
+          <p class="hero-note">Regionale Nähe · Marktverständnis · Persönliche Verantwortung</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="statement" id="profil">
+      <div class="wrap statement-grid">
+        <div>
+          <p class="eyebrow">Profil</p>
+          <h2>Ein Name mit Gewicht.</h2>
+        </div>
+        <div class="statement-copy">
+          <p>
+            Weinvermittlung funktioniert dort am besten, wo Erfahrung, Beziehungen und Verlässlichkeit zusammenkommen. Weinkommission Porn steht für genau diese Verbindung – persönlich, direkt und nah am Markt.
+          </p>
+          <p>
+            Der Familienname wird bewusst nicht erklärt oder relativiert. Er steht im Mittelpunkt der Marke und soll auf der Website dieselbe Souveränität ausstrahlen wie im persönlichen Geschäft.
+          </p>
+          <div class="principles" aria-label="Grundsätze">
+            <span>Persönlich</span><span>Diskret</span><span>Verlässlich</span><span>Marktnah</span>
           </div>
         </div>
       </div>
     </section>
 
-    <div class="value-strip" aria-label="Markenwerte">
-      <div class="shell">
-        <span>Persönlich</span>
-        <span>Diskret</span>
-        <span>Verlässlich</span>
-        <span>Marktnah</span>
-      </div>
-    </div>
-
-    <section class="section intro" id="profil" aria-labelledby="profil-title">
-      <div class="shell intro-grid">
-        <div>
-          <p class="section-kicker">Profil</p>
-          <h2 id="profil-title">Ein Name, der an der Mosel für Qualität steht.</h2>
-        </div>
-        <div class="intro-copy">
-          <p>
-            Weinvermittlung funktioniert nicht über Lautstärke, sondern über Vertrauen, Erfahrung und die richtigen Kontakte.
-            Die Weinkommission Porn steht für persönliche Betreuung und eine Arbeitsweise, bei der Angebot, Bedarf und Geschäftspartner wirklich zusammenpassen.
-          </p>
-          <p>
-            Der Familienname Porn ist an der Mosel bekannt. Diese gewachsene Reputation ist kein Marketingelement, sondern ein Anspruch an jede neue Geschäftsbeziehung.
-          </p>
-          <div class="intro-note">Keine künstlichen Erfolgszahlen. Keine erfundenen Referenzen. Nur verifizierbare Fakten und persönliche Verantwortung.</div>
-        </div>
-      </div>
-    </section>
-
-    <section class="section services" id="leistungen" aria-labelledby="leistungen-title">
-      <div class="shell">
+    <section class="services" id="leistungen">
+      <div class="wrap">
         <div class="services-head">
           <div>
-            <p class="section-kicker">Leistungen</p>
-            <h2 id="leistungen-title">Wein anbieten. Wein suchen. Passend verbinden.</h2>
+            <p class="eyebrow">Leistungen</p>
+            <h2>Zwei Seiten. Ein Markt.</h2>
           </div>
           <p>
-            Die Seite orientiert sich am tatsächlichen Bedarf des Marktes: klare Informationen, kurze Wege und direkte persönliche Abstimmung.
+            Die Weinkommission bringt Angebot und Bedarf zusammen. Deshalb ist die Website konsequent aus den beiden wichtigsten Perspektiven aufgebaut: Wein vermarkten und Wein beschaffen.
           </p>
         </div>
 
-        <div class="service-row">
-          <span class="service-no">01</span>
-          <h3>Wein anbieten</h3>
-          <p>Weinpartien strukturiert aufnehmen, einordnen und mit geeigneten Marktpartnern zusammenbringen.</p>
-          <a href="#kontakt">Anfrage starten →</a>
+        <div class="service-split">
+          <article class="service-card">
+            <div>
+              <span class="service-no">01</span>
+              <h3>Wein anbieten</h3>
+              <p>
+                Für Erzeuger und Anbieter, die Weinpartien gezielt am Markt platzieren möchten. Rebsorte, Jahrgang, Qualität, Menge und Herkunft bilden die Grundlage für eine passende Vermittlung.
+              </p>
+            </div>
+            <a class="service-link" href="#kontakt">Angebot besprechen →</a>
+          </article>
+
+          <article class="service-card">
+            <div>
+              <span class="service-no">02</span>
+              <h3>Wein suchen</h3>
+              <p>
+                Für professionelle Abnehmer mit einem konkreten Bedarf. Gesucht werden passende Qualitäten, Mengen, Jahrgänge oder Herkünfte – mit direkter Abstimmung und klarer Einordnung.
+              </p>
+            </div>
+            <a class="service-link" href="#kontakt">Bedarf besprechen →</a>
+          </article>
         </div>
-        <div class="service-row">
-          <span class="service-no">02</span>
-          <h3>Wein suchen</h3>
-          <p>Bedarf nach Rebsorte, Jahrgang, Qualität, Herkunft und Menge gezielt aufnehmen und passende Angebote identifizieren.</p>
-          <a href="#kontakt">Bedarf mitteilen →</a>
-        </div>
-        <div class="service-row">
-          <span class="service-no">03</span>
-          <h3>Vermittlung</h3>
-          <p>Anbieter und professionelle Abnehmer mit Blick auf Passung, Verlässlichkeit und langfristige Zusammenarbeit zusammenführen.</p>
-          <span></span>
-        </div>
-        <div class="service-row">
-          <span class="service-no">04</span>
-          <h3>Marktkenntnis</h3>
-          <p>Qualitäten, Mengen, Nachfrage und Verfügbarkeit nicht isoliert, sondern im Zusammenhang des regionalen Marktes betrachten.</p>
-          <span></span>
+
+        <div class="service-list">
+          <article><h3>Vermittlung</h3><p>Geeignete Anbieter und Abnehmer gezielt zusammenbringen.</p></article>
+          <article><h3>Marktkenntnis</h3><p>Verfügbarkeit, Nachfrage, Qualitäten und Mengen realistisch einordnen.</p></article>
+          <article><h3>Direkte Wege</h3><p>Persönliche Kommunikation statt anonymer Plattformlogik.</p></article>
+          <article><h3>Diskretion</h3><p>Geschäftliche Informationen und Kontakte vertraulich behandeln.</p></article>
         </div>
       </div>
     </section>
 
-    <section class="section mosel" id="mosel" aria-labelledby="mosel-title">
-      <div class="shell mosel-grid">
-        <div class="mosel-copy">
-          <p class="section-kicker">Mosel & Markt</p>
-          <h2 id="mosel-title">Die Region ist kein Hintergrund. Sie ist Arbeitsraum.</h2>
-          <p>
-            Die Mosel verbindet Weinberge, Betriebe, Kellerwirtschaft und Handel auf engem Raum. Regionale Nähe wird dort zum echten Vorteil, wo daraus Kenntnis von Menschen, Qualitäten, Bedarfen und Möglichkeiten entsteht.
-          </p>
-          <p>
-            Deshalb behandeln wir die Mosel nicht als romantische Kulisse, sondern als sichtbaren Teil der fachlichen Positionierung von Weinkommission Porn.
-          </p>
-        </div>
-
-        <figure class="map-panel">
-          <svg viewBox="0 0 900 520" role="img" aria-labelledby="map-title map-desc">
-            <title id="map-title">Schematischer Verlauf der deutschen Mosel</title>
-            <desc id="map-desc">Abstrahierter Verlauf von der Obermosel über Trier, Bernkastel-Kues, Zell und Cochem bis Koblenz.</desc>
-            <path class="map-topo" d="M25 85C145 15 245 120 365 60S620 25 875 105" />
-            <path class="map-topo" d="M-5 155C130 90 230 190 370 130S650 95 910 175" />
-            <path class="map-topo" d="M20 235C160 160 260 275 405 210S655 190 890 255" />
-            <path class="map-topo" d="M-10 330C140 260 285 360 430 310S690 285 920 355" />
-            <path class="map-topo" d="M40 430C190 360 300 465 455 405S705 390 875 440" />
-            <path class="map-water" d="M84 448C150 424 174 378 232 362C300 343 308 300 372 279C420 263 451 226 501 220C551 215 568 172 625 160C684 147 704 108 757 92C793 81 812 54 846 48" />
-            <circle class="map-point" cx="116" cy="430" r="6" /><text class="map-label" x="132" y="435">OBERMOSEL</text>
-            <circle class="map-point" cx="260" cy="348" r="6" /><text class="map-label" x="276" y="353">TRIER</text>
-            <circle class="map-point" cx="496" cy="220" r="6" /><text class="map-label" x="512" y="225">BERNKASTEL-KUES</text>
-            <circle class="map-point" cx="632" cy="158" r="6" /><text class="map-label" x="648" y="163">ZELL</text>
-            <circle class="map-point" cx="742" cy="97" r="6" /><text class="map-label" x="758" y="102">COCHEM</text>
-            <circle class="map-point" cx="846" cy="48" r="6" /><text class="map-label" x="760" y="36">KOBLENZ</text>
-          </svg>
-          <p class="map-note">Kartografische Designskizze, nicht maßstabsgetreu.</p>
-        </figure>
-      </div>
-    </section>
-
-    <section class="section name-section" aria-labelledby="name-title">
-      <div class="shell name-grid">
-        <div>
-          <p class="name-display" aria-hidden="true">PORN</p>
-        </div>
-        <div class="name-copy">
-          <p class="section-kicker">Familienname & Marke</p>
-          <h2 id="name-title">Ein bekannter Name. Ein klarer Anspruch.</h2>
-          <p>
-            Porn ist der Familienname hinter der Weinkommission und wird entsprechend selbstbewusst geführt. Die Marke muss nichts erklären — sie muss zeigen, wofür sie steht: Qualität, Verlässlichkeit, Marktkenntnis und persönliche Verantwortung.
-          </p>
-        </div>
-      </div>
-    </section>
-
-    <section class="section person" id="roland" aria-labelledby="roland-title">
-      <div class="shell person-grid">
-        <div class="person-card" aria-label="Portraitbereich Roland Porn">
-          <span class="person-initials" aria-hidden="true">RP</span>
-          <small>Authentisches Portrait wird ergänzt, sobald das finale Foto freigegeben ist.</small>
-        </div>
-        <div class="person-copy">
-          <p class="section-kicker">Persönlicher Ansprechpartner</p>
-          <h2 id="roland-title">Roland Porn</h2>
+    <section class="region" id="mosel">
+      <div class="wrap region-grid">
+        <div class="region-copy">
+          <p class="eyebrow">Mosel & Markt</p>
+          <h2>Die Region ist Arbeitsraum.</h2>
           <p class="lead">
-            Gute Vermittlung ist persönlich. Deshalb steht auf dieser Website nicht ein anonymer Unternehmensapparat im Mittelpunkt, sondern der Ansprechpartner hinter der Weinkommission.
+            Die Mosel ist hier keine dekorative Kulisse. Sie ist Herkunft, Netzwerk und tägliches Marktumfeld.
           </p>
-          <dl class="person-meta">
-            <div><dt>Funktion</dt><dd>Weinkommission Porn</dd></div>
-            <div><dt>Region</dt><dd>Mosel</dd></div>
-            <div><dt>Biografie</dt><dd>Wird ausschließlich mit verifizierten Angaben ergänzt.</dd></div>
-          </dl>
-        </div>
-      </div>
-    </section>
-
-    <section class="section process" aria-labelledby="process-title">
-      <div class="shell">
-        <div class="process-head">
-          <div>
-            <p class="section-kicker">Arbeitsweise</p>
-            <h2 id="process-title">Klar. Persönlich. Zielgerichtet.</h2>
+          <div class="region-stats">
+            <div><b>Mosel</b><span>Regionale Verankerung</span></div>
+            <div><b>B2B</b><span>Professionelle Vermittlung</span></div>
+            <div><b>Direkt</b><span>Persönliche Ansprechpartner</span></div>
           </div>
-          <p>Eine gute Vermittlung braucht keinen komplizierten Prozess. Entscheidend sind die richtigen Angaben, eine realistische Einordnung und der passende Kontakt.</p>
         </div>
-        <div class="process-list">
-          <article><span>01</span><h3>Anfrage</h3><p>Angebot oder konkreten Bedarf aufnehmen.</p></article>
-          <article><span>02</span><h3>Einordnen</h3><p>Qualität, Menge, Herkunft und Rahmenbedingungen klären.</p></article>
-          <article><span>03</span><h3>Verbinden</h3><p>Geeignete Marktpartner gezielt zusammenbringen.</p></article>
-          <article><span>04</span><h3>Begleiten</h3><p>Den geschäftlichen Kontakt verlässlich unterstützen.</p></article>
+        <div class="region-panel">
+          <strong>PORN</strong>
+          <p>
+            Ein Familienname, der als Marke selbstbewusst geführt wird. Kein Weinshop. Kein Weingut. Sondern eine professionelle Adresse für Weinvermittlung an der Mosel.
+          </p>
         </div>
       </div>
     </section>
 
-    <section class="section contact" id="kontakt" aria-labelledby="kontakt-title">
-      <div class="shell contact-grid">
+    <section class="people" id="menschen">
+      <div class="wrap">
+        <div class="people-head">
+          <div>
+            <p class="eyebrow">Menschen</p>
+            <h2>Persönlich geführt.</h2>
+          </div>
+          <p>
+            Vertrauen entsteht nicht durch anonyme Firmenstrukturen, sondern durch Menschen, die erreichbar sind, Verantwortung übernehmen und ihr Geschäft kennen.
+          </p>
+        </div>
+
+        <div class="people-grid">
+          <article class="person">
+            <div class="person-mark" aria-hidden="true">N</div>
+            <div>
+              <small>Weinkommission Porn</small>
+              <h3>Nadine</h3>
+              <p>Teil der persönlichen und familiengeführten Ausrichtung der Weinkommission. Die konkrete Rollenbeschreibung ergänzen wir erst mit verifizierten Angaben.</p>
+            </div>
+          </article>
+          <article class="person">
+            <div class="person-mark" aria-hidden="true">RP</div>
+            <div>
+              <small>Persönlicher Ansprechpartner</small>
+              <h3>Roland Porn</h3>
+              <p>Persönliche Erfahrung, gewachsene Beziehungen und direkte Kommunikation prägen die Arbeit der Weinkommission. Biografische Details ergänzen wir ausschließlich mit bestätigten Fakten.</p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="process" id="arbeitsweise">
+      <div class="wrap process-grid">
         <div>
-          <p class="section-kicker">Kontakt</p>
-          <h2 id="kontakt-title">Sprechen wir über Wein.</h2>
+          <p class="eyebrow">Arbeitsweise</p>
+          <h2>Einfach. Klar. Persönlich.</h2>
+        </div>
+        <div class="steps">
+          <div class="step"><span>01</span><strong>Anfrage</strong><p>Angebot oder konkreten Bedarf aufnehmen.</p></div>
+          <div class="step"><span>02</span><strong>Einordnen</strong><p>Qualität, Menge, Herkunft und Rahmenbedingungen klären.</p></div>
+          <div class="step"><span>03</span><strong>Verbinden</strong><p>Passende Marktpartner gezielt zusammenführen.</p></div>
+          <div class="step"><span>04</span><strong>Begleiten</strong><p>Den Kontakt verlässlich und diskret unterstützen.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="contact" id="kontakt">
+      <div class="wrap contact-grid">
+        <div>
+          <p class="eyebrow">Kontakt</p>
+          <h2>Sprechen wir über Wein.</h2>
         </div>
         <div class="contact-copy">
           <p>
-            Ob Sie Wein anbieten, einen konkreten Bedarf haben oder zunächst ein persönliches Gespräch suchen — die Weinkommission Porn setzt auf direkten Kontakt statt anonymer Formulare.
+            Ob Angebot, konkreter Bedarf oder erste Anfrage: Der nächste Schritt soll bewusst persönlich bleiben. Sobald die verifizierten Kontaktdaten vorliegen, werden Telefon und E-Mail hier direkt eingebunden.
           </p>
           <div class="contact-actions">
-            <a class="btn btn-dark" href="#top">Zur Startseite</a>
-            <a class="btn" href="#leistungen">Leistungen ansehen</a>
+            <a class="button primary" href="#top">Zum Seitenanfang</a>
+            <a class="button secondary" href="#leistungen">Leistungen ansehen</a>
           </div>
-          <div class="contact-status">Telefon, E-Mail und Anschrift werden erst nach finaler Verifizierung veröffentlicht.</div>
+          <p class="contact-note">Kontaktdaten werden erst veröffentlicht, wenn sie verifiziert sind.</p>
         </div>
       </div>
     </section>
   </main>
 
-  <footer class="site-footer">
-    <div class="shell footer-inner">
-      <div class="footer-brand">
-        <strong>WEINKOMMISSION PORN · MOSEL</strong>
-        <span>Weinvermittlung mit Marktkenntnis</span>
-      </div>
-      <nav class="footer-nav" aria-label="Rechtliches">
+  <footer class="footer">
+    <div class="wrap footer-row">
+      <span>© Weinkommission Porn · Mosel</span>
+      <nav aria-label="Rechtliches">
         <a href={`${import.meta.env.BASE_URL}impressum/`}>Impressum</a>
         <a href={`${import.meta.env.BASE_URL}datenschutz/`}>Datenschutz</a>
       </nav>
