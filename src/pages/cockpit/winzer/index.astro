@@ -115,6 +115,23 @@ const openCount = partners.filter(p => p.status === 'waiting' || p.status === 'e
         <p>Die Übersicht ist die künftige zentrale Winzerkartei. Die aktuell angezeigten Betriebe und Blaues-Band-Zuordnungen sind ausschließlich Testdaten. Beim Import werden sie durch Rolands/Nadines reale Partnerliste ersetzt.</p>
       </section>
 
+      <section class="access-center" aria-labelledby="access-title">
+        <div class="access-head">
+          <div>
+            <p class="overline">Portalzugänge</p>
+            <h2 id="access-title">Einladungen & Registrierungen</h2>
+          </div>
+          <a class="quiet-button access-demo-link" href={`${base}winzer/registrieren/`}>Registrierungsdemo öffnen →</a>
+        </div>
+
+        <div class="access-empty" data-access-empty>
+          <strong>Noch keine Demo-Aktivität.</strong>
+          <p>Starte im Winzerportal eine Einladung oder neue Kooperationsanfrage. Die Aktivität erscheint anschließend hier im selben Browser.</p>
+        </div>
+
+        <div class="access-feed" data-access-feed hidden></div>
+      </section>
+
       <section class="partner-directory">
         <div class="directory-tools">
           <label class="partner-search">
@@ -215,7 +232,49 @@ const openCount = partners.filter(p => p.status === 'waiting' || p.status === 'e
     const count = document.querySelector('[data-visible-partners]');
     const more = document.querySelector('[data-partner-more]');
     const importDialog = document.querySelector('[data-import-dialog]');
+    const accessEmpty = document.querySelector('[data-access-empty]');
+    const accessFeed = document.querySelector('[data-access-feed]');
     let expanded = false;
+
+    function escapeHtml(value = '') {
+      return String(value).replace(/[&<>"']/g, char => ({
+        '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'
+      })[char]);
+    }
+
+    function renderAccessActivity() {
+      const account = JSON.parse(localStorage.getItem('wp-demo-grower-account') || 'null');
+      const requests = JSON.parse(localStorage.getItem('wp-demo-registration-requests') || '[]');
+      const items = [];
+
+      if (account) {
+        items.push(`
+          <article class="access-item active">
+            <span class="access-state">Aktiv</span>
+            <div>
+              <strong>${escapeHtml(account.businessName || account.growerId)}</strong>
+              <small>${escapeHtml(account.growerId)} · bestehende Betriebsakte verknüpft</small>
+            </div>
+            <em>Portalzugang aktiviert</em>
+          </article>`);
+      }
+
+      requests.forEach(request => {
+        items.push(`
+          <article class="access-item review">
+            <span class="access-state">Prüfung</span>
+            <div>
+              <strong>${escapeHtml(request.businessName)}</strong>
+              <small>${escapeHtml(request.place)} · ${escapeHtml(request.contact)}</small>
+            </div>
+            <em>${request.blueBandClaimed ? 'Blaues Band angegeben · unbestätigt' : 'keine Verbundangabe'}</em>
+          </article>`);
+      });
+
+      accessEmpty.hidden = items.length > 0;
+      accessFeed.hidden = items.length === 0;
+      accessFeed.innerHTML = items.join('');
+    }
 
     function applyFilters() {
       const term = search.value.trim().toLowerCase();
@@ -272,5 +331,6 @@ const openCount = partners.filter(p => p.status === 'waiting' || p.status === 'e
     document.querySelectorAll('[data-close-import]').forEach(button => button.addEventListener('click', () => importDialog.close()));
 
     applyFilters();
+    renderAccessActivity();
   </script>
 </BaseLayout>
