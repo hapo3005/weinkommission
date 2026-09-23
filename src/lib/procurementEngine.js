@@ -20,7 +20,11 @@ export function evaluateLot(requirement, lot) {
 }
 
 export function runProcurement(requirement, growers) {
-  const evaluated = growers.map(lot => ({ ...lot, evaluation: evaluateLot(requirement, lot) }));
+  const inScopeGrowers = requirement.supplierGroup
+    ? growers.filter(grower => Array.isArray(grower.supplierGroups) && grower.supplierGroups.includes(requirement.supplierGroup))
+    : growers;
+
+  const evaluated = inScopeGrowers.map(lot => ({ ...lot, evaluation: evaluateLot(requirement, lot) }));
 
   const eligible = evaluated.filter(x => x.evaluation.eligible);
   const matchingReady = eligible.filter(x => x.evaluation.readyForAllocation);
@@ -136,7 +140,8 @@ export function runProcurement(requirement, growers) {
     exceptions,
     transports,
     stats: {
-      growersTotal: growers.length,
+      growersTotal: inScopeGrowers.length,
+      partnerGrowersTotal: growers.length,
       eligibleLots: eligible.length,
       readyLots: matchingReady.length,
       growersAllocated: new Set(allocations.map(x => x.growerId)).size,
