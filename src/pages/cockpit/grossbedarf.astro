@@ -45,12 +45,12 @@ const coveragePercent = (model.coverage * 100).toFixed(1).replace('.', ',');
     <main class="cockpit-main procurement-main" id="main">
       <header class="procurement-header" id="auftrag">
         <div>
-          <p class="overline">Beschaffungsvorgang · Beispieldaten</p>
+          <p class="overline">Beschaffungsvorgang · Prozessmodell mit synthetischen Testdaten</p>
           <h1>Peter Mertes × Blaues Band</h1>
-          <p class="procurement-lead">Ein Bedarf, viele Winzer. Das System verteilt, sammelt, prüft und eskaliert nur die Fälle, bei denen ein Mensch wirklich gebraucht wird.</p>
+          <p class="procurement-lead">Ein Bedarf, viele Winzer. Die reale Blaues-Band-Mitgliederliste ist noch nicht importiert; Matching und Zuteilung laufen hier bewusst auf synthetischen Testbetrieben.</p>
         </div>
         <div class="header-controls">
-          <span class="scenario-badge">Demo-Szenario</span>
+          <span class="scenario-badge">Testdaten · keine Mitgliederliste</span>
           <button class="quiet-button" type="button" data-open-spec>Bedarf ansehen</button>
           <button class="primary-button" type="button" data-run-auto>3 Winzer-Rückmeldungen simulieren</button>
         </div>
@@ -84,7 +84,7 @@ const coveragePercent = (model.coverage * 100).toFixed(1).replace('.', ',');
           <div><span>Zielmenge</span><strong>{formatLiters(demoRequirement.targetVolume)}</strong></div>
           <div><span>Abnehmer</span><strong>{demoRequirement.buyer}</strong></div>
           <div><span>Lieferfenster</span><strong>{demoRequirement.deliveryWindow}</strong></div>
-          <div><span>Winzerverbund</span><strong>{demoRequirement.supplierGroup} · {model.stats.growersTotal} Betriebe</strong></div>
+          <div><span>Winzerverbund</span><strong>{demoRequirement.supplierGroup} · Mitglieder noch nicht importiert</strong></div>
         </div>
 
         <div class="coverage">
@@ -158,6 +158,14 @@ const coveragePercent = (model.coverage * 100).toFixed(1).replace('.', ',');
         </div>
       </section>
 
+      <section class="data-provenance" aria-label="Datenstatus">
+        <div>
+          <p class="overline">Datenstatus</p>
+          <strong>Die Prozesslogik ist real – die Winzerliste noch nicht.</strong>
+        </div>
+        <p>Peter Mertes und das Blaue Band bilden hier den realen Geschäftskontext. Die darunter angezeigten 200 Betriebe sind ausschließlich synthetische Belastungs- und Funktionstestdaten. Beim späteren Import werden sie vollständig durch reale Betriebe ersetzt.</p>
+      </section>
+
       <section class="grower-allocation" id="winzer">
         <div class="allocation-head">
           <div>
@@ -183,8 +191,8 @@ const coveragePercent = (model.coverage * 100).toFixed(1).replace('.', ',');
 
         <div class="allocation-summary">
           <span><strong data-visible-count>{displayRows.length}</strong> Datensätze sichtbar</span>
-          <span><strong>{model.stats.growersTotal}</strong> Betriebe im Demo-Verbund</span>
-          <span><strong data-allocated-count>{model.stats.growersAllocated}</strong> aktuell zugeteilt</span>
+          <span><strong>{model.stats.growersTotal}</strong> synthetische Testbetriebe</span>
+          <span><strong data-allocated-count>{model.stats.growersAllocated}</strong> Testbetriebe aktuell zugeteilt</span>
           <span><strong data-task-count>{model.tasks.length}</strong> offene Auto-Aufgaben</span>
         </div>
 
@@ -258,7 +266,7 @@ const coveragePercent = (model.coverage * 100).toFixed(1).replace('.', ',');
           <div><dt>Lieferfenster</dt><dd>{demoRequirement.deliveryWindow}</dd></div>
           <div><dt>Abnehmer</dt><dd>{demoRequirement.buyer}</dd></div>
         </dl>
-        <p class="dialog-note">Analytische Grenzwerte sind hier bewusst als Demo nicht erfunden. In der produktiven Version werden sie exakt aus dem realen Mertes-Bedarf übernommen.</p>
+        <p class="dialog-note">Analytische Grenzwerte und Blaues-Band-Mitglieder sind hier bewusst nicht erfunden. In der produktiven Version werden sie aus dem realen Bedarf und dem importierten Betriebsbestand übernommen.</p>
       </dialog>
 
       <div class="toast" role="status" aria-live="polite" data-toast></div>
