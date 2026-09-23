@@ -29,8 +29,8 @@ const base = import.meta.env.BASE_URL;
     <main class="document-main" id="main">
       <div class="document-context">
         <div><span class="overline">Vorgang</span><strong>T-2027-0042</strong></div>
-        <div><span class="overline">Absender</span><strong>Weingut Musterberg</strong></div>
-        <div><span class="overline">Empfänger</span><strong>Mosel Kellerei GmbH</strong></div>
+        <div><span class="overline">Absender</span><strong>Weingut Ahrensberg & Sohn</strong></div>
+        <div><span class="overline">Empfänger</span><strong>Peter Mertes KG</strong></div>
         <div><span class="overline">Partie</span><strong>2025 Riesling · 18.500 l</strong></div>
       </div>
 
@@ -69,7 +69,7 @@ const base = import.meta.env.BASE_URL;
                 <div class="party-grid">
                   <fieldset class="party-card">
                     <legend>Absender / Versender</legend>
-                    <label><span>Betrieb</span><input name="senderName" value="Weingut Musterberg" required /></label>
+                    <label><span>Betrieb</span><input name="senderName" value="Weingut Ahrensberg & Sohn" required /></label>
                     <label><span>Betriebsnummer</span><input name="senderBusinessId" value="RP-1234567" required /></label>
                     <label><span>Straße / Hausnummer</span><input name="senderStreet" value="Weinbergstraße 12" required /></label>
                     <div class="field-grid zip-city"><label><span>PLZ</span><input name="senderZip" value="54470" required /></label><label><span>Ort</span><input name="senderCity" value="Bernkastel-Kues" required /></label></div>
@@ -78,7 +78,7 @@ const base = import.meta.env.BASE_URL;
 
                   <fieldset class="party-card">
                     <legend>Empfänger</legend>
-                    <label><span>Betrieb</span><input name="receiverName" value="Mosel Kellerei GmbH" required /></label>
+                    <label><span>Betrieb</span><input name="receiverName" value="Peter Mertes KG" required /></label>
                     <label><span>Betriebsnummer</span><input name="receiverBusinessId" value="RP-7654321" required /></label>
                     <label><span>Straße / Hausnummer</span><input name="receiverStreet" value="Kellereistraße 8" required /></label>
                     <div class="field-grid zip-city"><label><span>PLZ</span><input name="receiverZip" value="54516" required /></label><label><span>Ort</span><input name="receiverCity" value="Wittlich" required /></label></div>
@@ -211,7 +211,7 @@ const base = import.meta.env.BASE_URL;
                 <p class="block-help">Die endgültige Menge steht erst nach der Verladung fest. Transportdaten werden unmittelbar vor Beginn der Beförderung final geprüft.</p>
 
                 <div class="field-grid three">
-                  <label><span>Verladeort</span><input name="loadingPlace" value="Weingut Musterberg, Bernkastel-Kues" required /></label>
+                  <label><span>Verladeort</span><input name="loadingPlace" value="Weingut Ahrensberg & Sohn, Bernkastel-Kues" required /></label>
                   <label><span>Art des Transportmittels</span><select name="transportType" required><option value="truck" selected>LKW / Tankwagen</option><option value="car">PKW</option><option value="rail">Eisenbahn / Kesselwagen</option><option value="ship">Schiff</option><option value="other">Sonstiges</option></select></label>
                   <label><span>Kennzeichen / Identifikation</span><input name="plate" placeholder="z. B. WIL AB 123" required data-critical /></label>
                 </div>
