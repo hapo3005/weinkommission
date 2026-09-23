@@ -129,7 +129,7 @@ const base = import.meta.env.BASE_URL;
         <div class="portal2-profile-meter">
           <strong data-profile-percent>0 %</strong>
           <div><i data-profile-bar></i></div>
-          <a href={\`\${base}winzer/profil/\`} data-profile-link>Betriebsprofil öffnen →</a>
+          <a href={`${base}winzer/profil/`} data-profile-link>Betriebsprofil öffnen →</a>
         </div>
       </section>
     </main>
@@ -137,7 +137,7 @@ const base = import.meta.env.BASE_URL;
     <nav class="grower-bottom-nav" aria-label="Winzerportal Navigation">
       <a href="#overview" class="active"><span>⌂</span><small>Übersicht</small></a>
       <a href="#lots"><span>◫</span><small>Partien</small></a>
-      <a href={\`\${base}winzer/profil/\`}><span>○</span><small>Profil</small></a>
+      <a href={`${base}winzer/profil/`}><span>○</span><small>Profil</small></a>
     </nav>
   <script>
     import { demoGrowers, demoLots, demoRequirement, demoProcurementRows } from '../data/procurement-demo.js';
