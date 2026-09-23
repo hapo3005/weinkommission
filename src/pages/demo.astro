@@ -1,0 +1,65 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import '../styles/demo-hub.css';
+
+const base = import.meta.env.BASE_URL;
+---
+
+<BaseLayout
+  title="Demo-Zentrale · Weinkommission Porn"
+  description="Klare Auswahl der Demo-Perspektiven."
+  canonicalPath="/weinkommission/demo/"
+>
+  <main class="demo-hub">
+    <header class="demo-hub-head">
+      <p>WEINKOMMISSION PORN · DEMO-ZENTRALE</p>
+      <h1>Welche Perspektive möchtest du sehen?</h1>
+      <span>Die Rollen sind bewusst getrennt. Keine Oberfläche zeigt Funktionen einer anderen Rolle.</span>
+    </header>
+
+    <section class="demo-role-grid">
+      <a class="demo-role internal" href={`${base}cockpit/`}>
+        <span class="role-kicker">Interne Verwaltung</span>
+        <h2>Nadine / Roland</h2>
+        <p>Gesamter Überblick über Winzer, Großbedarfe, Zuteilungen, Transporte, Begleitdokumente und offene Aufgaben.</p>
+        <div>
+          <span>Sie sehen alle kooperierenden Betriebe</span>
+          <span>Sie sehen Ausnahmen und offene Rückmeldungen</span>
+          <span>Sie steuern und kontrollieren die Prozesse</span>
+        </div>
+        <strong>Interne Oberfläche öffnen →</strong>
+      </a>
+
+      <a class="demo-role grower" href={`${base}winzer/`}>
+        <span class="role-kicker">Externe Ansicht</span>
+        <h2>Winzer</h2>
+        <p>Der einzelne Winzer sieht ausschließlich seinen eigenen Betrieb, seine Partien, Aufgaben und das eigene Betriebsprofil.</p>
+        <div>
+          <span>Keine anderen Winzer sichtbar</span>
+          <span>Keine internen Kommissionsdaten sichtbar</span>
+          <span>Nur eigene Angaben und Rückmeldungen</span>
+        </div>
+        <strong>Winzerportal öffnen →</strong>
+      </a>
+    </section>
+
+    <section class="demo-public">
+      <div>
+        <span>Öffentliche Website</span>
+        <strong>Für Interessenten, Partner und Besucher</strong>
+        <small>Keine internen Daten, keine Winzerakten, keine Arbeitsprozesse.</small>
+      </div>
+      <a href={base}>Öffentliche Website öffnen →</a>
+    </section>
+
+    <section class="demo-map">
+      <p>So ist das System jetzt gedacht</p>
+      <div class="map-flow">
+        <span>Öffentliche Website</span><i>→</i>
+        <span>Nadine / Roland intern</span><i>↔</i>
+        <span>Datenbank / Prozesse</span><i>↔</i>
+        <span>Winzer extern</span>
+      </div>
+    </section>
+  </main>
+</BaseLayout>
