@@ -1,0 +1,298 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import '../styles/winzer.css';
+
+const base = import.meta.env.BASE_URL;
+---
+
+<BaseLayout
+  title="Winzerportal · Weinkommission Porn"
+  description="Einfacher digitaler Arbeitsbereich für Winzer der Weinkommission Porn."
+  canonicalPath="/weinkommission/winzer/"
+>
+  <div class="grower-app">
+    <header class="grower-header">
+      <a class="grower-brand" href={base} aria-label="Weinkommission Porn">
+        <span class="brand-mark">WP</span>
+        <span><strong>WEINKOMMISSION PORN</strong><small>Winzerportal</small></span>
+      </a>
+      <button class="help-button" type="button" data-help>Hilfe</button>
+    </header>
+
+    <main id="main" class="grower-main">
+      <section class="welcome" aria-labelledby="welcome-title">
+        <p class="eyebrow">Ihr Vorgang für heute</p>
+        <h1 id="welcome-title">Guten Morgen,<br />Herr Musterberg.</h1>
+        <p class="welcome-copy">Für die heutige Abholung ist fast alles vorbereitet. Es fehlen nur noch zwei Angaben, die erst bei der Verladung feststehen.</p>
+      </section>
+
+      <section class="task-card" data-task-card aria-labelledby="task-title">
+        <div class="task-status">
+          <span class="status-dot"></span>
+          <span>Heute · 09:30 Uhr</span>
+          <strong data-task-status>2 Angaben fehlen</strong>
+        </div>
+
+        <div class="route" aria-label="Transportstrecke">
+          <div>
+            <span class="route-label">Von</span>
+            <strong>Weingut Musterberg</strong>
+            <small>Bernkastel-Kues</small>
+          </div>
+          <span class="route-arrow" aria-hidden="true">→</span>
+          <div>
+            <span class="route-label">An</span>
+            <strong>Mosel Kellerei GmbH</strong>
+            <small>Wittlich</small>
+          </div>
+        </div>
+
+        <div class="wine-summary">
+          <div><span>Wein</span><strong>2025 Riesling</strong></div>
+          <div><span>Herkunft</span><strong>Mosel</strong></div>
+          <div><span>Vereinbart</span><strong>18.500 l</strong></div>
+          <div><span>Partie</span><strong>R25-017</strong></div>
+        </div>
+
+        <button class="primary-action" type="button" data-start>
+          <span>Transport abschließen</span><span aria-hidden="true">→</span>
+        </button>
+      </section>
+
+      <section class="edit-card" data-edit hidden aria-labelledby="edit-title">
+        <button class="back-button" type="button" data-back>← Zurück</button>
+        <div class="edit-head">
+          <p class="eyebrow">Nur noch kurz ergänzen</p>
+          <h2 id="edit-title">Was wurde tatsächlich verladen?</h2>
+          <p>Alle übrigen Angaben sind bereits aus dem Geschäft und Ihren hinterlegten Betriebsdaten übernommen.</p>
+        </div>
+
+        <div class="prepared-data">
+          <div class="prepared-head">
+            <div>
+              <span class="check">✓</span>
+              <div><strong>Bereits vorbereitet</strong><small>12 Angaben übernommen</small></div>
+            </div>
+            <button type="button" data-toggle-details>Alle Angaben anzeigen</button>
+          </div>
+
+          <div class="prepared-details" data-prepared-details hidden>
+            <dl>
+              <div><dt>Absender</dt><dd>Weingut Musterberg</dd></div>
+              <div><dt>Betriebsnummer</dt><dd>RP-1234567</dd></div>
+              <div><dt>Empfänger</dt><dd>Mosel Kellerei GmbH</dd></div>
+              <div><dt>Empfänger-Betriebsnummer</dt><dd>RP-7654321</dd></div>
+              <div><dt>Erzeugnis</dt><dd>Wein</dd></div>
+              <div><dt>Bezeichnung</dt><dd>2025 Riesling Mosel Qualitätswein</dd></div>
+              <div><dt>Herkunft</dt><dd>Mosel · g.U. · Weinbauzone B</dd></div>
+              <div><dt>Alkohol</dt><dd>11,5 % vol</dd></div>
+              <div><dt>Behandlungen</dt><dd>Keine</dd></div>
+              <div><dt>Partie</dt><dd>R25-017</dd></div>
+              <div><dt>Kommissionär</dt><dd>Weinkommission Porn</dd></div>
+              <div><dt>Versanddatum</dt><dd>23.09.2026</dd></div>
+            </dl>
+            <p class="detail-note">Stimmt eine dieser Angaben nicht, bitte nicht bestätigen, sondern direkt die Weinkommission kontaktieren.</p>
+          </div>
+        </div>
+
+        <form class="grower-form" data-grower-form novalidate>
+          <label class="big-field">
+            <span>Tatsächlich verladen</span>
+            <div class="input-unit">
+              <input name="liters" inputmode="decimal" autocomplete="off" placeholder="z. B. 18.437" aria-describedby="liters-help" />
+              <small>Liter</small>
+            </div>
+            <em id="liters-help" data-error="liters">Die endgültige Literzahl nach der Verladung.</em>
+          </label>
+
+          <label class="big-field">
+            <span>Kennzeichen</span>
+            <input name="plate" autocomplete="off" autocapitalize="characters" placeholder="z. B. WIL AB 123" />
+            <em data-error="plate">Kennzeichen des Fahrzeugs oder Tankwagens.</em>
+          </label>
+
+          <label class="confirm-row">
+            <input type="checkbox" name="confirm" />
+            <span>Ich habe die Angaben geprüft. Die Literzahl und das Kennzeichen entsprechen der heutigen Verladung.</span>
+          </label>
+
+          <button class="primary-action" type="submit" data-confirm disabled>
+            <span>Angaben bestätigen</span><span aria-hidden="true">✓</span>
+          </button>
+        </form>
+      </section>
+
+      <section class="done-card" data-done hidden aria-labelledby="done-title">
+        <div class="success-symbol">✓</div>
+        <p class="eyebrow">Alles erledigt</p>
+        <h2 id="done-title">Danke. Nadine hat Ihre Angaben.</h2>
+        <p>Sie müssen nichts weiter tun. Die Weinkommission kann den Vorgang jetzt abschließen und das Begleitdokument erstellen.</p>
+
+        <div class="done-summary">
+          <div><span>Verladene Menge</span><strong data-done-liters>–</strong></div>
+          <div><span>Kennzeichen</span><strong data-done-plate>–</strong></div>
+          <div><span>Status</span><strong class="ready">An Weinkommission übermittelt</strong></div>
+        </div>
+
+        <div class="document-wait">
+          <span class="wait-icon">↻</span>
+          <div><strong>Begleitdokument wird vorbereitet</strong><small>Sobald es erstellt wurde, erscheint es hier automatisch.</small></div>
+        </div>
+
+        <button class="secondary-action" type="button" data-reset>Demo neu starten</button>
+      </section>
+
+      <section class="history">
+        <div class="history-head">
+          <div><p class="eyebrow">Ihre Vorgänge</p><h2>Alles an einem Ort.</h2></div>
+          <span>Nur Ihre eigenen Daten</span>
+        </div>
+
+        <div class="history-list">
+          <article>
+            <span class="history-state open">Heute</span>
+            <div><strong>2025 Riesling · R25-017</strong><small>Mosel Kellerei GmbH · 18.500 l</small></div>
+            <span data-history-status>Angaben fehlen</span>
+          </article>
+          <article>
+            <span class="history-state done">18.09.</span>
+            <div><strong>2025 Weißburgunder · WB25-009</strong><small>Kellerei am Markt · 7.860 l</small></div>
+            <span>Abgeschlossen ✓</span>
+          </article>
+          <article>
+            <span class="history-state done">10.09.</span>
+            <div><strong>2025 Riesling · R25-011</strong><small>Weinhandel Rhein GmbH · 12.300 l</small></div>
+            <span>Abgeschlossen ✓</span>
+          </article>
+        </div>
+      </section>
+
+      <section class="support-card">
+        <div>
+          <span class="eyebrow">Etwas stimmt nicht?</span>
+          <h2>Dann bitte nicht raten.</h2>
+          <p>Nadine kann den Vorgang prüfen und korrigieren. Die Winzeransicht soll Arbeit sparen – nicht neue Unsicherheit schaffen.</p>
+        </div>
+        <button type="button" class="support-button" data-help>Weinkommission kontaktieren</button>
+      </section>
+    </main>
+
+    <dialog class="help-dialog" data-help-dialog>
+      <button type="button" class="dialog-close" data-help-close aria-label="Schließen">×</button>
+      <p class="eyebrow">Hilfe</p>
+      <h2>Weinkommission kontaktieren</h2>
+      <p>In der produktiven Version kann hier direkt angerufen, eine Nachricht gesendet oder Rückruf angefordert werden. Kontaktdaten veröffentlichen wir erst, wenn sie final bestätigt sind.</p>
+      <button type="button" class="primary-action" data-help-close>Verstanden</button>
+    </dialog>
+
+    <div class="grower-toast" role="status" aria-live="polite" data-toast></div>
+  </div>
+
+  <script>
+    const task = document.querySelector('[data-task-card]');
+    const edit = document.querySelector('[data-edit]');
+    const done = document.querySelector('[data-done]');
+    const form = document.querySelector('[data-grower-form]');
+    const liters = form.elements.namedItem('liters');
+    const plate = form.elements.namedItem('plate');
+    const confirm = form.elements.namedItem('confirm');
+    const confirmButton = document.querySelector('[data-confirm]');
+    const toast = document.querySelector('[data-toast]');
+    const historyStatus = document.querySelector('[data-history-status]');
+    const taskStatus = document.querySelector('[data-task-status]');
+    const details = document.querySelector('[data-prepared-details]');
+    const toggleDetails = document.querySelector('[data-toggle-details]');
+    const helpDialog = document.querySelector('[data-help-dialog]');
+
+    const normalizeLiters = value => Number(String(value || '').trim().replace(/\./g,'').replace(',','.'));
+    const normalizePlate = value => String(value || '').trim().toUpperCase().replace(/\s+/g,' ');
+    const isLitersValid = () => {
+      const value = normalizeLiters(liters.value);
+      return Number.isFinite(value) && value > 0 && value <= 30000;
+    };
+    const isPlateValid = () => normalizePlate(plate.value).length >= 5;
+
+    function validate() {
+      plate.value = normalizePlate(plate.value);
+      const ready = isLitersValid() && isPlateValid() && confirm.checked;
+      confirmButton.disabled = !ready;
+      return ready;
+    }
+
+    function save() {
+      localStorage.setItem('wp-grower-demo', JSON.stringify({
+        liters: liters.value,
+        plate: plate.value,
+        confirmed: confirm.checked,
+        completed: !done.hidden
+      }));
+    }
+
+    function restore() {
+      const raw = localStorage.getItem('wp-grower-demo');
+      if (!raw) return;
+      try {
+        const data = JSON.parse(raw);
+        liters.value = data.liters || '';
+        plate.value = data.plate || '';
+        confirm.checked = !!data.confirmed;
+        if (data.completed) showDone();
+        validate();
+      } catch {}
+    }
+
+    function showEdit() {
+      task.hidden = true;
+      done.hidden = true;
+      edit.hidden = false;
+      edit.scrollIntoView({behavior:'smooth',block:'start'});
+      setTimeout(() => liters.focus({preventScroll:true}), 250);
+    }
+
+    function showDone() {
+      task.hidden = true;
+      edit.hidden = true;
+      done.hidden = false;
+      document.querySelector('[data-done-liters]').textContent = normalizeLiters(liters.value).toLocaleString('de-DE') + ' Liter';
+      document.querySelector('[data-done-plate]').textContent = normalizePlate(plate.value);
+      historyStatus.textContent = 'Angaben übermittelt ✓';
+      taskStatus.textContent = 'Vollständig';
+    }
+
+    document.querySelector('[data-start]').addEventListener('click', showEdit);
+    document.querySelector('[data-back]').addEventListener('click', () => {
+      edit.hidden = true;
+      task.hidden = false;
+      task.scrollIntoView({behavior:'smooth',block:'center'});
+    });
+
+    toggleDetails.addEventListener('click', () => {
+      details.hidden = !details.hidden;
+      toggleDetails.textContent = details.hidden ? 'Alle Angaben anzeigen' : 'Angaben ausblenden';
+    });
+
+    form.addEventListener('input', validate);
+    form.addEventListener('change', validate);
+
+    form.addEventListener('submit', event => {
+      event.preventDefault();
+      if (!validate()) return;
+      showDone();
+      save();
+      toast.textContent = 'Angaben erfolgreich übermittelt';
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2400);
+      done.scrollIntoView({behavior:'smooth',block:'start'});
+    });
+
+    document.querySelector('[data-reset]').addEventListener('click', () => {
+      localStorage.removeItem('wp-grower-demo');
+      window.location.reload();
+    });
+
+    document.querySelectorAll('[data-help]').forEach(button => button.addEventListener('click', () => helpDialog.showModal()));
+    document.querySelectorAll('[data-help-close]').forEach(button => button.addEventListener('click', () => helpDialog.close()));
+
+    restore();
+  </script>
+</BaseLayout>
