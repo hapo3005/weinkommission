@@ -112,3 +112,10 @@
   .portal-profile-detail{grid-template-columns:1fr}
   .portal-profile-summary>div{border-right:0!important}
 }
+
+
+.lot-stack{display:grid;gap:12px}
+.profile-actions .demo-role-switch{margin-bottom:2px}
+@media(max-width:760px){
+  .lot-stack{gap:10px}
+}
