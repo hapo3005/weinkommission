@@ -227,9 +227,28 @@ const base = import.meta.env.BASE_URL;
 
     const form = document.querySelector('[data-profile-form]');
     const dialog = document.querySelector('[data-complete-dialog]');
-    const account = JSON.parse(localStorage.getItem('wp-demo-grower-account') || 'null');
+    const rawAccount = JSON.parse(localStorage.getItem('wp-demo-grower-account') || 'null');
     const stored = JSON.parse(localStorage.getItem('wp-demo-grower-profile') || 'null');
-    const grower = demoGrowers.find(item => item.growerId === (account?.growerId || 'TEST-001')) || demoGrowers[0];
+    const SHOWCASE_GROWER_ID = 'TEST-062';
+    const legacyGenericAccount = Boolean(rawAccount && /^Testweingut(?:\\s+\\d+)?/i.test(rawAccount.businessName || ''));
+    const selectedId = legacyGenericAccount ? SHOWCASE_GROWER_ID : (rawAccount?.growerId || SHOWCASE_GROWER_ID);
+    const grower = demoGrowers.find(item => item.growerId === selectedId)
+      || demoGrowers.find(item => item.growerId === SHOWCASE_GROWER_ID)
+      || demoGrowers[0];
+    const account = legacyGenericAccount
+      ? {
+          ...rawAccount,
+          growerId: grower.growerId,
+          businessName: grower.growerName,
+          place: grower.place,
+          contactPerson: grower.contactPerson,
+          businessNumber: grower.businessNumber
+        }
+      : rawAccount;
+
+    if (legacyGenericAccount) {
+      localStorage.setItem('wp-demo-grower-account', JSON.stringify(account));
+    }
 
     const fields = {
       businessName: document.querySelector('[data-profile-business]'),
@@ -296,10 +315,10 @@ const base = import.meta.env.BASE_URL;
     if (stored && stored.growerId === grower.growerId) {
       hydrate(stored);
     } else {
-      fields.businessName.value = account?.businessName || grower.growerName;
-      fields.person.value = account?.contactPerson || grower.contactPerson;
+      fields.businessName.value = grower.growerName;
+      fields.person.value = grower.contactPerson;
       fields.region.value = 'Mosel';
-      fields.businessNumber.value = account?.businessNumber || grower.businessNumber;
+      fields.businessNumber.value = grower.businessNumber;
       fields.preferredContact.value = 'email';
       fields.hectares.value = grower.profile.hectares + ' ha';
       fields.annualProduction.value = new Intl.NumberFormat('de-DE').format(grower.profile.annualProduction) + ' l';
@@ -317,10 +336,10 @@ const base = import.meta.env.BASE_URL;
     }
 
     document.querySelector('[data-fill-profile]').addEventListener('click', () => {
-      fields.businessName.value = account?.businessName || 'Weingut Demo';
-      fields.person.value = account?.contactPerson || 'Max Mustermann';
+      fields.businessName.value = grower.growerName;
+      fields.person.value = grower.contactPerson;
       fields.region.value = 'Mosel';
-      fields.businessNumber.value = account?.businessNumber || 'DEMO-12345';
+      fields.businessNumber.value = grower.businessNumber;
       fields.website.value = 'https://example.com';
       fields.preferredContact.value = 'email';
       fields.hectares.value = '18,4 ha';
