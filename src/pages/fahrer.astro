@@ -1,0 +1,235 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import RoleContextBar from '../components/RoleContextBar.astro';
+import '../styles/external-roles.css';
+import { demoRequirement, demoProcurementRows } from '../data/procurement-demo.js';
+import { runProcurement, formatLiters } from '../lib/procurementEngine.js';
+
+const base = import.meta.env.BASE_URL;
+const model = runProcurement(demoRequirement, demoProcurementRows);
+const assignments = model.transports.slice(0, 8);
+const first = assignments[0];
+---
+
+<BaseLayout
+  title="Fahrerportal · Weinkommission Porn"
+  description="Demo-Portal für Spedition und Fahrer."
+  canonicalPath="/weinkommission/fahrer/"
+>
+  <RoleContextBar role="driver" />
+
+  <div class="ext-app">
+    <header class="ext-header">
+      <a class="ext-brand" href={base}>
+        <span class="ext-mark">WP</span>
+        <span><strong>WEINKOMMISSION PORN</strong><small>Transportportal · Demo</small></span>
+      </a>
+      <span>Demo · nur zugewiesene Transporte</span>
+    </header>
+
+    <main class="ext-main">
+      <section class="ext-hero">
+        <div>
+          <p class="ext-eyebrow">Spedition / Fahrer</p>
+          <h1>Abholen.<br />Bestätigen. Fertig.</h1>
+          <p>Der Fahrer sieht nur seine zugewiesenen Transporte. Keine Winzerkartei, keine Einkaufsdaten und keine internen Kommissionsprozesse.</p>
+        </div>
+        <div class="ext-identity">
+          <span>Demo-Spedition</span>
+          <strong>Mosel Logistik</strong>
+        </div>
+      </section>
+
+      <section class="ext-kpis">
+        <div>
+          <span>Zugewiesene Transporte</span>
+          <strong>{assignments.length}</strong>
+          <small>im Demo-Ausschnitt</small>
+        </div>
+        <div>
+          <span>Gesamtmenge</span>
+          <strong>{formatLiters(assignments.reduce((sum,item)=>sum+item.volume,0))}</strong>
+          <small>über diese Touren</small>
+        </div>
+        <div>
+          <span>Dokument vorbereitet</span>
+          <strong>{assignments.filter(item => item.state === 'document-ready').length}</strong>
+          <small>weitere entstehen aus den Transportdaten</small>
+        </div>
+      </section>
+
+      <section class="ext-section">
+        <div class="ext-section-head">
+          <div>
+            <p class="ext-eyebrow">Meine Touren</p>
+            <h2>Zugewiesene Abholungen.</h2>
+          </div>
+          <p>Öffne eine Tour, ergänze nur die tatsächlichen Verladedaten und bestätige die Abholung.</p>
+        </div>
+
+        <div class="ext-list">
+          {assignments.map((transport, index) => (
+            <article class="transport-card">
+              <div>
+                <h3>{transport.growerName}</h3>
+                <p>{transport.transportId} · Partie {transport.lotId} · {formatLiters(transport.volume)}</p>
+              </div>
+              <button
+                class="ext-secondary"
+                type="button"
+                data-open-transport
+                data-id={transport.transportId}
+                data-grower={transport.growerName}
+                data-lot={transport.lotId}
+                data-volume={transport.volume}
+                data-sequence={index + 1}
+              >Tour öffnen →</button>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <dialog class="ext-dialog" data-driver-dialog>
+        <p class="ext-eyebrow">Transport bestätigen</p>
+        <h2 data-dialog-grower>{first?.growerName}</h2>
+        <p><span data-dialog-id>{first?.transportId}</span> · Partie <span data-dialog-lot>{first?.lotId}</span></p>
+
+        <div class="transport-detail">
+          <div><span>Sollmenge</span><strong data-dialog-volume>{formatLiters(first?.volume || 0)}</strong></div>
+          <div><span>Abnehmer</span><strong>{demoRequirement.buyer}</strong></div>
+          <div><span>Lieferfenster</span><strong>{demoRequirement.deliveryWindow}</strong></div>
+        </div>
+
+        <div class="ext-grid">
+          <label class="ext-field">
+            <span>Tatsächlich verladen *</span>
+            <input data-driver-volume inputmode="numeric" />
+          </label>
+          <label class="ext-field">
+            <span>Kennzeichen *</span>
+            <input data-driver-plate placeholder="z. B. WIL-ML 42" />
+          </label>
+          <label class="ext-field">
+            <span>Fahrer *</span>
+            <input data-driver-name value="Max Fahrer" />
+          </label>
+          <label class="ext-field">
+            <span>Abholzeit *</span>
+            <input data-driver-time type="datetime-local" />
+          </label>
+          <label class="ext-field wide">
+            <span>Bemerkung</span>
+            <textarea data-driver-note placeholder="z. B. Abweichung bei Menge, Wartezeit, Besonderheiten …"></textarea>
+          </label>
+        </div>
+
+        <p class="ext-error" data-driver-error hidden>Bitte tatsächliche Literzahl, Kennzeichen, Fahrer und Abholzeit angeben.</p>
+        <div class="ext-actions">
+          <button class="ext-secondary" type="button" data-close-driver>Abbrechen</button>
+          <button class="ext-primary" type="button" data-confirm-driver>Abholung bestätigen →</button>
+        </div>
+      </dialog>
+
+      <section class="ext-section">
+        <div class="ext-section-head">
+          <div>
+            <p class="ext-eyebrow">Bestätigt</p>
+            <h2>Meine abgeschlossenen Demo-Touren.</h2>
+          </div>
+        </div>
+        <div class="ext-list" data-driver-history>
+          <div class="ext-success" data-driver-empty>
+            <strong>Noch keine Tour bestätigt.</strong>
+            <small>Nach der Bestätigung erscheint sie hier und gleichzeitig in Nadines Cockpit.</small>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const dialog = document.querySelector('[data-driver-dialog]');
+    const history = document.querySelector('[data-driver-history]');
+    const empty = document.querySelector('[data-driver-empty]');
+    const error = document.querySelector('[data-driver-error]');
+    let active = null;
+
+    const escapeHtml = (value = '') => String(value).replace(/[&<>"']/g, char => ({
+      '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'
+    })[char]);
+
+    const formatLiters = value => new Intl.NumberFormat('de-DE').format(Math.round(Number(value) || 0)) + ' l';
+
+    function appendConfirmation(item) {
+      const article = document.createElement('article');
+      article.className = 'ext-row';
+      article.innerHTML = `
+        <div>
+          <strong>${escapeHtml(item.growerName)} · ${escapeHtml(item.lotId)}</strong>
+          <small>${escapeHtml(item.transportId)} · ${formatLiters(item.loadedVolume)} · ${escapeHtml(item.plate)}</small>
+        </div>
+        <span>Abholung bestätigt</span>
+      `;
+      history.appendChild(article);
+    }
+
+    function renderHistory() {
+      const confirmations = JSON.parse(localStorage.getItem('wp-demo-driver-confirmations') || '[]');
+      if (confirmations.length) empty.hidden = true;
+      confirmations.forEach(appendConfirmation);
+    }
+
+    document.querySelectorAll('[data-open-transport]').forEach(button => {
+      button.addEventListener('click', () => {
+        active = {
+          transportId: button.dataset.id,
+          growerName: button.dataset.grower,
+          lotId: button.dataset.lot,
+          volume: Number(button.dataset.volume || 0)
+        };
+        document.querySelector('[data-dialog-grower]').textContent = active.growerName;
+        document.querySelector('[data-dialog-id]').textContent = active.transportId;
+        document.querySelector('[data-dialog-lot]').textContent = active.lotId;
+        document.querySelector('[data-dialog-volume]').textContent = formatLiters(active.volume);
+        document.querySelector('[data-driver-volume]').value = String(active.volume);
+        error.hidden = true;
+        dialog.showModal();
+      });
+    });
+
+    document.querySelector('[data-close-driver]').addEventListener('click', () => dialog.close());
+
+    document.querySelector('[data-confirm-driver]').addEventListener('click', () => {
+      const loadedVolume = document.querySelector('[data-driver-volume]').value.trim();
+      const plate = document.querySelector('[data-driver-plate]').value.trim();
+      const driverName = document.querySelector('[data-driver-name]').value.trim();
+      const pickupTime = document.querySelector('[data-driver-time]').value;
+      const note = document.querySelector('[data-driver-note]').value.trim();
+
+      if (!active || !loadedVolume || !plate || !driverName || !pickupTime) {
+        error.hidden = false;
+        return;
+      }
+
+      const confirmations = JSON.parse(localStorage.getItem('wp-demo-driver-confirmations') || '[]');
+      const item = {
+        ...active,
+        loadedVolume: Number(String(loadedVolume).replace(/\./g,'').replace(',','.')) || active.volume,
+        plate,
+        driverName,
+        pickupTime,
+        note,
+        status: 'picked_up',
+        confirmedAt: new Date().toISOString(),
+        demo: true
+      };
+      confirmations.unshift(item);
+      localStorage.setItem('wp-demo-driver-confirmations', JSON.stringify(confirmations.slice(0,20)));
+      empty.hidden = true;
+      appendConfirmation(item);
+      dialog.close();
+    });
+
+    renderHistory();
+  </script>
+</BaseLayout>
