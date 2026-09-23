@@ -1,0 +1,260 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import RoleContextBar from '../components/RoleContextBar.astro';
+import '../styles/external-roles.css';
+import { demoRequirement, demoProcurementRows } from '../data/procurement-demo.js';
+import { runProcurement, formatLiters } from '../lib/procurementEngine.js';
+
+const base = import.meta.env.BASE_URL;
+const model = runProcurement(demoRequirement, demoProcurementRows);
+const coveragePercent = Math.round(model.coverage * 100);
+---
+
+<BaseLayout
+  title="Abnehmerportal · Weinkommission Porn"
+  description="Demo-Portal für Abnehmer und Kellereien."
+  canonicalPath="/weinkommission/abnehmer/"
+>
+  <RoleContextBar role="buyer" />
+
+  <div class="ext-app">
+    <header class="ext-header">
+      <a class="ext-brand" href={base}>
+        <span class="ext-mark">WP</span>
+        <span><strong>WEINKOMMISSION PORN</strong><small>Abnehmerportal · Demo</small></span>
+      </a>
+      <span>Demo · keine Echtdaten</span>
+    </header>
+
+    <main class="ext-main">
+      <section class="ext-hero">
+        <div>
+          <p class="ext-eyebrow">Abnehmer / Kellerei</p>
+          <h1>Bedarf melden.<br />Lieferstand sehen.</h1>
+          <p>Die Kellerei sieht ausschließlich ihre eigenen Bedarfe und deren Bearbeitungsstand – keine Winzerkartei und keine internen Kommissionsdaten.</p>
+        </div>
+        <div class="ext-identity">
+          <span>Demo-Abnehmer</span>
+          <strong>Peter Mertes</strong>
+        </div>
+      </section>
+
+      <section class="ext-kpis">
+        <div>
+          <span>Aktiver Bedarf</span>
+          <strong>{formatLiters(demoRequirement.targetVolume)}</strong>
+          <small>{demoRequirement.vintage} {demoRequirement.grape} · {demoRequirement.origin}</small>
+        </div>
+        <div>
+          <span>Aktuell zugeteilt</span>
+          <strong>{formatLiters(model.allocatedVolume)}</strong>
+          <small>{coveragePercent} % des Bedarfs</small>
+        </div>
+        <div>
+          <span>Noch offen</span>
+          <strong>{formatLiters(model.remainingVolume)}</strong>
+          <small>Lieferfenster {demoRequirement.deliveryWindow}</small>
+        </div>
+      </section>
+
+      <section class="ext-section">
+        <div class="ext-section-head">
+          <div>
+            <p class="ext-eyebrow">Laufender Bedarf</p>
+            <h2>{demoRequirement.vintage} {demoRequirement.grape} · {demoRequirement.origin}</h2>
+          </div>
+          <p>Die Kommission bündelt geeignete Partien, stimmt Winzer ab und organisiert die weiteren Schritte.</p>
+        </div>
+
+        <div class="ext-progress">
+          <div class="ext-progress-head">
+            <span>{formatLiters(model.allocatedVolume)} zugeteilt</span>
+            <strong>{coveragePercent} %</strong>
+          </div>
+          <div class="ext-track"><i style={`width:${Math.min(model.coverage * 100,100)}%`}></i></div>
+        </div>
+
+        <div class="transport-detail">
+          <div><span>Referenz</span><strong>{demoRequirement.id}</strong></div>
+          <div><span>Lieferfenster</span><strong>{demoRequirement.deliveryWindow}</strong></div>
+          <div><span>Status</span><strong>Beschaffung läuft</strong></div>
+        </div>
+      </section>
+
+      <section class="ext-section">
+        <div class="ext-section-head">
+          <div>
+            <p class="ext-eyebrow">Neuer Bedarf</p>
+            <h2>Bedarf an die Kommission übermitteln.</h2>
+          </div>
+          <p>Nur die Informationen, die die Kommission für die erste Einordnung braucht. Details können anschließend abgestimmt werden.</p>
+        </div>
+
+        <form data-buyer-form>
+          <div class="ext-grid">
+            <label class="ext-field">
+              <span>Abnehmer *</span>
+              <input data-buyer-company value="Peter Mertes" required />
+            </label>
+            <label class="ext-field">
+              <span>Ansprechpartner *</span>
+              <input data-buyer-contact value="Einkauf Wein" required />
+            </label>
+            <label class="ext-field">
+              <span>Rebsorte *</span>
+              <select data-buyer-grape>
+                <option>Riesling</option>
+                <option>Weißburgunder</option>
+                <option>Grauburgunder</option>
+                <option>Müller-Thurgau</option>
+                <option>Spätburgunder</option>
+              </select>
+            </label>
+            <label class="ext-field">
+              <span>Herkunft *</span>
+              <select data-buyer-origin>
+                <option>Mosel</option>
+                <option>Saar</option>
+                <option>Ruwer</option>
+                <option>Rheinhessen</option>
+                <option>Pfalz</option>
+              </select>
+            </label>
+            <label class="ext-field">
+              <span>Jahrgang *</span>
+              <input data-buyer-vintage inputmode="numeric" value="2025" required />
+            </label>
+            <label class="ext-field">
+              <span>Zielmenge *</span>
+              <input data-buyer-volume inputmode="numeric" placeholder="z. B. 500.000 l" required />
+            </label>
+            <label class="ext-field">
+              <span>Gewünschtes Lieferfenster *</span>
+              <input data-buyer-window placeholder="z. B. Januar–März 2027" required />
+            </label>
+            <label class="ext-field">
+              <span>Qualität / Spezifikation</span>
+              <input data-buyer-quality placeholder="z. B. Qualitätswein" />
+            </label>
+            <label class="ext-field wide">
+              <span>Weitere Anforderungen</span>
+              <textarea data-buyer-note placeholder="z. B. gewünschte Analytik, Mindestpartie, besondere Abwicklung …"></textarea>
+            </label>
+          </div>
+
+          <p class="ext-error" data-buyer-error hidden>Bitte Ansprechpartner, Zielmenge und Lieferfenster vollständig angeben.</p>
+          <div class="ext-actions">
+            <button class="ext-secondary" type="button" data-buyer-demo>Demo-Daten einsetzen</button>
+            <button class="ext-primary" type="submit">Bedarf übermitteln →</button>
+          </div>
+        </form>
+
+        <div class="ext-success" data-buyer-success hidden>
+          <strong>Bedarf an die Weinkommission übermittelt.</strong>
+          <small>Nadine/Roland sehen die Anfrage jetzt in ihrer internen Demo-Oberfläche.</small>
+        </div>
+      </section>
+
+      <section class="ext-section">
+        <div class="ext-section-head">
+          <div>
+            <p class="ext-eyebrow">Meine Anfragen</p>
+            <h2>Eigene Bedarfe im Überblick.</h2>
+          </div>
+        </div>
+        <div class="ext-list" data-buyer-history>
+          <article class="ext-row">
+            <div>
+              <strong>{demoRequirement.vintage} {demoRequirement.grape} · {formatLiters(demoRequirement.targetVolume)}</strong>
+              <small>{demoRequirement.origin} · {demoRequirement.deliveryWindow} · {demoRequirement.id}</small>
+            </div>
+            <span>Beschaffung läuft</span>
+          </article>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const form = document.querySelector('[data-buyer-form]');
+    const success = document.querySelector('[data-buyer-success]');
+    const history = document.querySelector('[data-buyer-history]');
+    const error = document.querySelector('[data-buyer-error]');
+
+    const escapeHtml = (value = '') => String(value).replace(/[&<>"']/g, char => ({
+      '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'
+    })[char]);
+
+    function readValues() {
+      return {
+        company: document.querySelector('[data-buyer-company]').value.trim(),
+        contact: document.querySelector('[data-buyer-contact]').value.trim(),
+        grape: document.querySelector('[data-buyer-grape]').value,
+        origin: document.querySelector('[data-buyer-origin]').value,
+        vintage: document.querySelector('[data-buyer-vintage]').value.trim(),
+        targetVolume: document.querySelector('[data-buyer-volume]').value.trim(),
+        deliveryWindow: document.querySelector('[data-buyer-window]').value.trim(),
+        quality: document.querySelector('[data-buyer-quality]').value.trim(),
+        note: document.querySelector('[data-buyer-note]').value.trim()
+      };
+    }
+
+    function renderHistory() {
+      const requests = JSON.parse(localStorage.getItem('wp-demo-buyer-requests') || '[]');
+      requests.forEach(request => {
+        const article = document.createElement('article');
+        article.className = 'ext-row';
+        article.innerHTML = `
+          <div>
+            <strong>${escapeHtml(request.vintage)} ${escapeHtml(request.grape)} · ${escapeHtml(request.targetVolume)}</strong>
+            <small>${escapeHtml(request.origin)} · ${escapeHtml(request.deliveryWindow)} · ${escapeHtml(request.id)}</small>
+          </div>
+          <span>Neu · Prüfung durch Kommission</span>
+        `;
+        history.appendChild(article);
+      });
+    }
+
+    document.querySelector('[data-buyer-demo]').addEventListener('click', () => {
+      document.querySelector('[data-buyer-volume]').value = '650.000 l';
+      document.querySelector('[data-buyer-window]').value = 'Januar–März 2027';
+      document.querySelector('[data-buyer-quality]').value = 'Qualitätswein';
+      document.querySelector('[data-buyer-note]').value = 'Tankwagenfähige Partien bevorzugt; möglichst gebündelte Abholung.';
+    });
+
+    form.addEventListener('submit', event => {
+      event.preventDefault();
+      const values = readValues();
+      if (!values.contact || !values.targetVolume || !values.deliveryWindow) {
+        error.hidden = false;
+        return;
+      }
+      error.hidden = true;
+
+      const requests = JSON.parse(localStorage.getItem('wp-demo-buyer-requests') || '[]');
+      const request = {
+        id: 'BED-' + Date.now(),
+        ...values,
+        status: 'review_required',
+        createdAt: new Date().toISOString(),
+        demo: true
+      };
+      requests.unshift(request);
+      localStorage.setItem('wp-demo-buyer-requests', JSON.stringify(requests.slice(0,10)));
+      success.hidden = false;
+
+      const article = document.createElement('article');
+      article.className = 'ext-row';
+      article.innerHTML = `
+        <div>
+          <strong>${escapeHtml(request.vintage)} ${escapeHtml(request.grape)} · ${escapeHtml(request.targetVolume)}</strong>
+          <small>${escapeHtml(request.origin)} · ${escapeHtml(request.deliveryWindow)} · ${escapeHtml(request.id)}</small>
+        </div>
+        <span>Neu · Prüfung durch Kommission</span>
+      `;
+      history.appendChild(article);
+    });
+
+    renderHistory();
+  </script>
+</BaseLayout>
