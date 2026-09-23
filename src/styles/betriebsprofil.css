@@ -22,3 +22,9 @@ html,body{margin:0;max-width:100%;overflow-x:hidden;background:var(--cream)}*,*:
 .profile-complete-dialog{width:min(560px,calc(100% - 28px));border:0;padding:30px;background:var(--paper);color:var(--ink);box-shadow:0 28px 90px rgba(0,0,0,.25)}.profile-complete-dialog::backdrop{background:rgba(9,18,14,.62);backdrop-filter:blur(3px)}.complete-mark{width:54px;height:54px;display:grid;place-items:center;border-radius:50%;background:#e1ece3;color:#2f674c;font-family:Georgia,serif;font-size:24px}.profile-complete-dialog h2{font-size:39px;margin-top:15px}.profile-complete-dialog>p:not(.eyebrow){color:var(--muted);font-size:10px;line-height:1.6}.complete-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:18px}
 @media(max-width:820px){.profile-edit-intro,.profile-edit-section{grid-template-columns:1fr}.profile-edit-intro{gap:24px}.profile-completeness{max-width:360px}.section-copy>p:not(.eyebrow){max-width:none}.profile-edit-section{gap:18px}}
 @media(max-width:640px){.profile-edit-header,.profile-edit-main{width:calc(100% - 28px)}.profile-edit-header{padding:14px 0;min-height:0;align-items:flex-start;flex-direction:column}.profile-edit-main{padding-top:30px}.profile-edit-intro h1{font-size:42px;max-width:100%}.profile-edit-intro>div>p:not(.eyebrow){font-size:15px}.profile-completeness{max-width:none}.profile-edit-nav{margin-left:-14px;margin-right:-14px;border-left:0;border-right:0}.profile-edit-section{padding:36px 0}.form-panel{padding:16px}.profile-grid,.choice-grid,.choice-grid.compact{grid-template-columns:1fr}.profile-savebar{grid-template-columns:1fr;padding:10px}.profile-savebar .primary-action,.profile-savebar .secondary-action{width:100%}.complete-actions{grid-template-columns:1fr}}
+
+
+.profile-edit-actions{display:flex;align-items:center;gap:8px}
+@media(max-width:640px){
+  .profile-edit-actions{width:100%;align-items:stretch;flex-direction:column}
+}
