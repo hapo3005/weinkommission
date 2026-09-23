@@ -235,9 +235,9 @@ const dateLabel = new Intl.DateTimeFormat('de-DE', {
   </div>
 
   <script>
-    import { demoRequirement, demoProcurementRows } from '../data/procurement-demo.js';
+    import { demoRequirement, demoProcurementRows, demoGrowers } from '../data/procurement-demo.js';
     import { runProcurement } from '../lib/procurementEngine.js';
-    import { getAllGrowerResponses } from '../lib/demoSession.js';
+    import { getAllGrowerResponses, getAllCustomLots, getApprovedGrowers } from '../lib/demoSession.js';
 
     const empty = document.querySelector('[data-home-access-empty]');
     const feed = document.querySelector('[data-home-access-feed]');
@@ -250,7 +250,26 @@ const dateLabel = new Intl.DateTimeFormat('de-DE', {
 
     function renderWorkflowState() {
       const allResponses = getAllGrowerResponses();
-      const workingRows = demoProcurementRows.map(row => {
+      const approvedGrowers = getApprovedGrowers();
+      const growerLookup = new Map([
+        ...demoGrowers.map(grower => [grower.growerId, grower]),
+        ...Object.values(approvedGrowers).map(grower => [grower.growerId, grower])
+      ]);
+      const customLots = getAllCustomLots();
+      const customRows = Object.entries(customLots).flatMap(([growerId, lots]) => {
+        const grower = growerLookup.get(growerId);
+        if (!grower) return [];
+        return lots.map(lot => ({
+          ...lot,
+          growerName: grower.growerName,
+          place: grower.place,
+          supplierGroups: grower.supplierGroups || [],
+          cooperationStatus: grower.cooperationStatus || 'active',
+          businessProfile: grower.profile
+        }));
+      });
+
+      const workingRows = [...demoProcurementRows, ...customRows].map(row => {
         const responses = allResponses[row.growerId] || [];
         const response = responses.find(item => item.lotId === row.lotId);
         if (!response) return row;
