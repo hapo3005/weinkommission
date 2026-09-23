@@ -63,6 +63,7 @@ const profileStatusClass =
         </div>
         <div class="profile-actions">
           <span class:list={['profile-state', profileStatusClass]}>{profileStatus}</span>
+          <a class="primary-button profile-invite-link" href={`${base}winzer/registrieren/?invite=${grower.growerId}`}>Zugang einladen</a>
           <button class="quiet-button" type="button" data-contact>Rückfrage anlegen</button>
         </div>
       </div>
