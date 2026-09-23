@@ -1,46 +1,65 @@
 export function evaluateLot(requirement, lot) {
   const reasons = [];
   const tasks = [];
+  const profile = lot.businessProfile || {};
 
+  if (lot.cooperationStatus && lot.cooperationStatus !== 'active') reasons.push('Kooperation nicht aktiv');
   if (lot.productType !== requirement.productType) reasons.push('Erzeugnisart passt nicht');
   if (lot.grape !== requirement.grape) reasons.push('Rebsorte passt nicht');
   if (lot.origin !== requirement.origin) reasons.push('Herkunft passt nicht');
   if (lot.vintage !== requirement.vintage) reasons.push('Jahrgang passt nicht');
+  if (!(lot.availableVolume > 0)) reasons.push('keine verfügbare Menge');
+
+  if (Array.isArray(profile.grapes) && !profile.grapes.includes(requirement.grape)) {
+    reasons.push('Rebsorte nicht im Betriebsprofil');
+  }
+  if (requirement.minLoadingVolume && profile.maxLoadingVolume && profile.maxLoadingVolume < requirement.minLoadingVolume) {
+    reasons.push('Verladekapazität unter Mindestgröße');
+  }
+
+  if ((profile.completeness || 0) < 80) tasks.push('Betriebsprofil vervollständigen');
   if (!lot.analysisConfirmed) tasks.push('Analyse bestätigen');
   if (!lot.treatmentsConfirmed) tasks.push('Behandlungscode prüfen');
   if (!lot.currentVolumeConfirmed) tasks.push('verfügbare Menge bestätigen');
-  if (!(lot.availableVolume > 0)) reasons.push('keine verfügbare Menge');
 
   return {
     eligible: reasons.length === 0,
     readyForAllocation: reasons.length === 0 && tasks.length === 0,
+    logisticallyCapable: !requirement.minLoadingVolume || !profile.maxLoadingVolume || profile.maxLoadingVolume >= requirement.minLoadingVolume,
     reasons,
     tasks
   };
 }
 
-export function runProcurement(requirement, growers) {
-  const inScopeGrowers = requirement.supplierGroup
-    ? growers.filter(grower => Array.isArray(grower.supplierGroups) && grower.supplierGroups.includes(requirement.supplierGroup))
-    : growers;
+export function runProcurement(requirement, rows) {
+  const allRows = rows || [];
+  const inScopeRows = requirement.supplierGroup
+    ? allRows.filter(row => Array.isArray(row.supplierGroups) && row.supplierGroups.includes(requirement.supplierGroup))
+    : allRows;
 
-  const evaluated = inScopeGrowers.map(lot => ({ ...lot, evaluation: evaluateLot(requirement, lot) }));
-
+  const evaluated = inScopeRows.map(row => ({ ...row, evaluation: evaluateLot(requirement, row) }));
   const eligible = evaluated.filter(x => x.evaluation.eligible);
   const matchingReady = eligible.filter(x => x.evaluation.readyForAllocation);
   const waiting = eligible.filter(x => !x.evaluation.readyForAllocation);
   const excluded = evaluated.filter(x => !x.evaluation.eligible);
 
+  const rankedReady = [...matchingReady].sort((a, b) => {
+    const aCapacity = a.businessProfile?.maxLoadingVolume || 0;
+    const bCapacity = b.businessProfile?.maxLoadingVolume || 0;
+    if (bCapacity !== aCapacity) return bCapacity - aCapacity;
+    return b.availableVolume - a.availableVolume;
+  });
+
   let remaining = requirement.targetVolume;
   const allocations = [];
 
-  for (const lot of matchingReady) {
+  for (const lot of rankedReady) {
     if (remaining <= 0) break;
     const allocatedVolume = Math.min(lot.availableVolume, remaining);
     remaining -= allocatedVolume;
 
     let status = 'ready';
-    let label = 'bereit';
+    let label = 'für Bedarf vorbereitet';
     let issue = '';
 
     if (lot.documentReady) {
@@ -60,11 +79,11 @@ export function runProcurement(requirement, growers) {
     ...lot,
     allocatedVolume: 0,
     status: 'waiting',
-    label: 'wartet auf Winzer',
+    label: 'Rückmeldung offen',
     issue: lot.evaluation.tasks.join(' · ')
   }));
 
-  const excludedRows = excluded.slice(0, 12).map(lot => ({
+  const excludedRows = excluded.map(lot => ({
     ...lot,
     allocatedVolume: 0,
     status: 'exception',
@@ -72,7 +91,7 @@ export function runProcurement(requirement, growers) {
     issue: lot.evaluation.reasons.join(' · ')
   }));
 
-  const unallocatedReady = matchingReady.filter(x => !allocatedIds.has(x.lotId)).map(lot => ({
+  const unallocatedReady = rankedReady.filter(x => !allocatedIds.has(x.lotId)).map(lot => ({
     ...lot,
     allocatedVolume: 0,
     status: 'reserve',
@@ -102,12 +121,14 @@ export function runProcurement(requirement, growers) {
 
   const exceptions = [
     ...excluded.map(lot => ({
+      growerId: lot.growerId,
       growerName: lot.growerName,
       lotId: lot.lotId,
       type: 'mismatch',
       detail: lot.evaluation.reasons.join(' · ')
     })),
     ...waiting.map(lot => ({
+      growerId: lot.growerId,
       growerName: lot.growerName,
       lotId: lot.lotId,
       type: 'missing-data',
@@ -123,6 +144,15 @@ export function runProcurement(requirement, growers) {
     volume: x.allocatedVolume,
     state: x.transportDataComplete ? (x.documentReady ? 'document-ready' : 'prepared') : 'waiting-for-loading-data'
   }));
+
+  const uniqueGrowers = list => new Set(list.map(x => x.growerId)).size;
+  const scopeGrowers = uniqueGrowers(inScopeRows);
+  const partnerGrowers = uniqueGrowers(allRows);
+  const matchingGrowers = uniqueGrowers(eligible);
+  const logisticallyCapableGrowers = uniqueGrowers(
+    evaluated.filter(x => x.evaluation.logisticallyCapable && x.grape === requirement.grape && x.origin === requirement.origin && x.vintage === requirement.vintage)
+  );
+  const autoAllocatableGrowers = uniqueGrowers(matchingReady);
 
   return {
     requirement,
@@ -140,12 +170,16 @@ export function runProcurement(requirement, growers) {
     exceptions,
     transports,
     stats: {
-      growersTotal: inScopeGrowers.length,
-      partnerGrowersTotal: growers.length,
+      growersTotal: scopeGrowers,
+      partnerGrowersTotal: partnerGrowers,
+      totalLots: inScopeRows.length,
       eligibleLots: eligible.length,
       readyLots: matchingReady.length,
-      growersAllocated: new Set(allocations.map(x => x.growerId)).size,
-      waitingGrowers: new Set(waiting.map(x => x.growerId)).size,
+      matchingGrowers,
+      logisticallyCapableGrowers,
+      autoAllocatableGrowers,
+      growersAllocated: uniqueGrowers(allocations),
+      waitingGrowers: uniqueGrowers(waiting),
       exceptionCount: exceptions.length,
       transports: transports.length,
       documentsReady: transports.filter(x => x.state === 'document-ready').length
@@ -154,5 +188,5 @@ export function runProcurement(requirement, growers) {
 }
 
 export function formatLiters(value) {
-  return new Intl.NumberFormat('de-DE').format(Math.round(value)) + ' l';
+  return new Intl.NumberFormat('de-DE').format(Math.round(value || 0)) + ' l';
 }
