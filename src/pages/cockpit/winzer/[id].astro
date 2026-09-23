@@ -95,6 +95,7 @@ const profileStatusClass =
         <a href="#partien">Partien</a>
         <a href="#transporte">Transporte</a>
         <a href="#stammdaten">Stammdaten</a>
+        <a href="#portalprofil">Betriebsprofil</a>
         <a href="#historie">Historie</a>
       </nav>
 
@@ -232,6 +233,49 @@ const profileStatusClass =
         </div>
       </section>
 
+      <section class="profile-section portal-profile-section" id="portalprofil" data-portal-profile data-grower-id={grower.growerId} hidden>
+        <div class="section-heading profile-section-heading">
+          <div><p class="overline">Vom Winzer gepflegt</p><h2>Betriebsprofil</h2></div>
+          <p>Diese dauerhaften Angaben stammen aus dem Winzerportal und helfen bei Matching, Mengenplanung und Logistik.</p>
+        </div>
+
+        <div class="portal-profile-summary">
+          <div><span>Profilstatus</span><strong data-internal-completeness>—</strong></div>
+          <div><span>Rebfläche</span><strong data-internal-hectares>—</strong></div>
+          <div><span>Jahresproduktion</span><strong data-internal-production>—</strong></div>
+          <div><span>Frei vermarktbar</span><strong data-internal-market-volume>—</strong></div>
+          <div><span>Tank-/Lagerkapazität</span><strong data-internal-storage>—</strong></div>
+          <div><span>Größter Tank</span><strong data-internal-largest-tank>—</strong></div>
+        </div>
+
+        <div class="portal-profile-detail">
+          <article>
+            <span>Rebsorten</span>
+            <strong data-internal-grapes>—</strong>
+          </article>
+          <article>
+            <span>Vermarktung</span>
+            <strong data-internal-offers>—</strong>
+          </article>
+          <article>
+            <span>Qualitätsstufen</span>
+            <strong data-internal-qualities>—</strong>
+          </article>
+          <article>
+            <span>Zertifizierungen</span>
+            <strong data-internal-certifications>—</strong>
+          </article>
+          <article>
+            <span>Typische Verladung</span>
+            <strong data-internal-loading>—</strong>
+          </article>
+          <article>
+            <span>Kontaktweg</span>
+            <strong data-internal-contact>—</strong>
+          </article>
+        </div>
+      </section>
+
       <section class="profile-section" id="historie">
         <div class="section-heading profile-section-heading">
           <div><p class="overline">Historie</p><h2>Eine nachvollziehbare Betriebsakte.</h2></div>
@@ -269,5 +313,27 @@ const profileStatusClass =
     const dialog = document.querySelector('[data-contact-dialog]');
     document.querySelector('[data-contact]').addEventListener('click', () => dialog.showModal());
     document.querySelectorAll('[data-close-contact]').forEach(button => button.addEventListener('click', () => dialog.close()));
+
+    const portalProfile = JSON.parse(localStorage.getItem('wp-demo-grower-profile') || 'null');
+    const profileSection = document.querySelector('[data-portal-profile]');
+    if (portalProfile && profileSection && portalProfile.growerId === profileSection.dataset.growerId) {
+      profileSection.hidden = false;
+      const set = (selector, value) => {
+        const el = document.querySelector(selector);
+        if (el) el.textContent = value || '—';
+      };
+      set('[data-internal-completeness]', (portalProfile.completeness || 0) + ' %');
+      set('[data-internal-hectares]', portalProfile.hectares);
+      set('[data-internal-production]', portalProfile.annualProduction);
+      set('[data-internal-market-volume]', portalProfile.marketVolume);
+      set('[data-internal-storage]', portalProfile.storage);
+      set('[data-internal-largest-tank]', portalProfile.largestTank);
+      set('[data-internal-grapes]', (portalProfile.grapes || []).join(', '));
+      set('[data-internal-offers]', (portalProfile.offers || []).join(', '));
+      set('[data-internal-qualities]', (portalProfile.qualities || []).join(', '));
+      set('[data-internal-certifications]', (portalProfile.certifications || []).join(', '));
+      set('[data-internal-loading]', portalProfile.loadingVolume);
+      set('[data-internal-contact]', portalProfile.preferredContact === 'phone' ? 'Telefon' : portalProfile.preferredContact === 'mobile' ? 'Mobil / Messenger' : 'E-Mail');
+    }
   </script>
 </BaseLayout>
