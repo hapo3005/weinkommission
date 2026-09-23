@@ -3,6 +3,7 @@ export const LEGACY_PROFILE_KEY = 'wp-demo-grower-profile';
 export const PROFILES_KEY = 'wp-demo-grower-profiles';
 export const RESPONSES_KEY = 'wp-demo-grower-responses';
 export const APPROVED_GROWERS_KEY = 'wp-demo-approved-growers';
+export const CUSTOM_LOTS_KEY = 'wp-demo-custom-lots';
 
 function readJson(key, fallback) {
   try {
@@ -79,4 +80,18 @@ export function saveApprovedGrower(grower) {
   const approved = getApprovedGrowers();
   approved[grower.growerId] = grower;
   localStorage.setItem(APPROVED_GROWERS_KEY, JSON.stringify(approved));
+}
+
+
+export function getCustomLots(growerId) {
+  const all = readJson(CUSTOM_LOTS_KEY, {});
+  return all[growerId] || [];
+}
+
+export function addCustomLot(lot) {
+  if (!lot?.growerId || !lot?.lotId) return;
+  const all = readJson(CUSTOM_LOTS_KEY, {});
+  const current = all[lot.growerId] || [];
+  all[lot.growerId] = [lot, ...current.filter(item => item.lotId !== lot.lotId)].slice(0, 50);
+  localStorage.setItem(CUSTOM_LOTS_KEY, JSON.stringify(all));
 }
