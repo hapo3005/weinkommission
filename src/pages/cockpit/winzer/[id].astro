@@ -1,6 +1,6 @@
 ---
 import BaseLayout from '../../../layouts/BaseLayout.astro';
-import DemoRoleSwitch from '../../../components/DemoRoleSwitch.astro';
+import RoleContextBar from '../../../components/RoleContextBar.astro';
 import '../../../styles/cockpit.css';
 import '../../../styles/winzerprofil.css';
 import { demoRequirement, demoGrowers, demoProcurementRows, getLotsForGrower } from '../../../data/procurement-demo.js';
@@ -53,6 +53,7 @@ const profileStatusClass =
   description="Interne Test-Betriebsakte im Cockpit der Weinkommission Porn."
   canonicalPath={`/weinkommission/cockpit/winzer/${grower.growerId}/`}
 >
+  <RoleContextBar role="internal" />
   <div class="profile-app">
     <header class="profile-header">
       <div class="profile-header-inner">
@@ -67,7 +68,6 @@ const profileStatusClass =
           </div>
         </div>
         <div class="profile-actions">
-          <DemoRoleSwitch active="nadine" />
           <span class:list={['profile-state', profileStatusClass]}>{profileStatus}</span>
           <a class="primary-button profile-invite-link" href={`${base}winzer/registrieren/?invite=${grower.growerId}`}>Zugang einladen</a>
           <button class="quiet-button" type="button" data-contact>Rückfrage anlegen</button>
