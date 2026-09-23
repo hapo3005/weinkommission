@@ -82,6 +82,7 @@ const base = import.meta.env.BASE_URL;
             <span>Einladungscode oder Link</span>
             <input data-invite-code value="TEST-001" autocomplete="off" />
             <small>In der Live-Version ist der Link signiert, zeitlich begrenzt und nur einmal verwendbar.</small>
+            <small class="form-error" data-invite-code-error hidden>Dieser Demo-Einladungscode existiert nicht.</small>
           </label>
 
           <button class="primary-action" type="button" data-invite-next="2">Betrieb bestätigen →</button>
@@ -298,6 +299,7 @@ const base = import.meta.env.BASE_URL;
 
   <script>
     import { demoGrowers } from '../../data/procurement-demo.js';
+    import { setActiveGrowerId } from '../../lib/demoSession.js';
 
     const landing = document.querySelector('[data-landing]');
     const inviteFlow = document.querySelector('[data-invite-flow]');
@@ -321,7 +323,9 @@ const base = import.meta.env.BASE_URL;
     }
 
     function loadInvite(id) {
-      currentGrower = demoGrowers.find(g => g.growerId === id) || demoGrowers[0];
+      currentGrower = demoGrowers.find(g => g.growerId === id) || null;
+      if (!currentGrower) return false;
+      setActiveGrowerId(currentGrower.growerId);
       landing.hidden = true;
       requestFlow.hidden = true;
       inviteFlow.hidden = false;
@@ -335,8 +339,13 @@ const base = import.meta.env.BASE_URL;
         : 'Sonstiger Partner · Testzuordnung';
       document.querySelector('[data-review-name]').value = currentGrower.growerName;
       document.querySelector('[data-review-place]').value = currentGrower.place;
+      document.querySelector('[data-review-number]').value = currentGrower.businessNumber;
+      document.querySelector('[data-review-contact]').value = currentGrower.contactPerson;
+      document.querySelector('[data-identity-contact]').value = currentGrower.email;
       document.querySelector('[data-blueband-claim]').checked = currentGrower.supplierGroups.includes('Blaues Band');
+      document.querySelector('[data-invite-code-error]').hidden = true;
       setInviteStep(1);
+      return true;
     }
 
     function startRequest() {
@@ -348,14 +357,22 @@ const base = import.meta.env.BASE_URL;
       if (typeof setRequestStep === 'function') setRequestStep(1);
     }
 
-    document.querySelector('[data-start-invite]').addEventListener('click', () => loadInvite('TEST-001'));
+    document.querySelector('[data-start-invite]').addEventListener('click', () => {
+      loadInvite(localStorage.getItem('wp-demo-active-grower-id') || 'TEST-001');
+    });
     document.querySelector('[data-start-request]').addEventListener('click', startRequest);
     document.querySelectorAll('[data-flow-home]').forEach(button => button.addEventListener('click', showLanding));
 
     document.querySelector('[data-invite-next]').addEventListener('click', () => {
       const code = document.querySelector('[data-invite-code]').value.trim();
       const found = demoGrowers.find(g => g.growerId === code);
-      if (found) loadInvite(found.growerId);
+      const error = document.querySelector('[data-invite-code-error]');
+      if (!found) {
+        error.hidden = false;
+        return;
+      }
+      error.hidden = true;
+      loadInvite(found.growerId);
       setInviteStep(2);
     });
 
@@ -396,6 +413,7 @@ const base = import.meta.env.BASE_URL;
         demo: true
       };
       localStorage.setItem('wp-demo-grower-account', JSON.stringify(account));
+      setActiveGrowerId(account.growerId);
       document.querySelector('[data-success-business]').textContent = account.businessName;
       document.querySelector('[data-success-id]').textContent = account.growerId;
       setInviteStep(4);
