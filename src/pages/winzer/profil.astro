@@ -224,31 +224,13 @@ const base = import.meta.env.BASE_URL;
 
   <script>
     import { demoGrowers } from '../../data/procurement-demo.js';
+    import { resolveActiveGrower, getGrowerProfile, saveGrowerProfile } from '../../lib/demoSession.js';
 
     const form = document.querySelector('[data-profile-form]');
     const dialog = document.querySelector('[data-complete-dialog]');
-    const rawAccount = JSON.parse(localStorage.getItem('wp-demo-grower-account') || 'null');
-    const stored = JSON.parse(localStorage.getItem('wp-demo-grower-profile') || 'null');
-    const SHOWCASE_GROWER_ID = 'TEST-062';
-    const legacyGenericAccount = Boolean(rawAccount && /^Testweingut(?:\\s+\\d+)?/i.test(rawAccount.businessName || ''));
-    const selectedId = legacyGenericAccount ? SHOWCASE_GROWER_ID : (rawAccount?.growerId || SHOWCASE_GROWER_ID);
-    const grower = demoGrowers.find(item => item.growerId === selectedId)
-      || demoGrowers.find(item => item.growerId === SHOWCASE_GROWER_ID)
-      || demoGrowers[0];
-    const account = legacyGenericAccount
-      ? {
-          ...rawAccount,
-          growerId: grower.growerId,
-          businessName: grower.growerName,
-          place: grower.place,
-          contactPerson: grower.contactPerson,
-          businessNumber: grower.businessNumber
-        }
-      : rawAccount;
-
-    if (legacyGenericAccount) {
-      localStorage.setItem('wp-demo-grower-account', JSON.stringify(account));
-    }
+    const account = JSON.parse(localStorage.getItem('wp-demo-grower-account') || 'null');
+    const grower = resolveActiveGrower(demoGrowers, window.location.search, 'TEST-001');
+    const stored = getGrowerProfile(grower.growerId);
 
     const fields = {
       businessName: document.querySelector('[data-profile-business]'),
@@ -396,7 +378,7 @@ const base = import.meta.env.BASE_URL;
         demo: true
       };
 
-      localStorage.setItem('wp-demo-grower-profile', JSON.stringify(profile));
+      saveGrowerProfile(profile);
       document.querySelector('[data-save-state]').textContent = 'Gespeichert · ' + profile.completeness + ' % vollständig';
       dialog.showModal();
     });
