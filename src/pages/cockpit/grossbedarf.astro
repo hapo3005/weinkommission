@@ -49,7 +49,7 @@ const coveragePercent = (model.coverage * 100).toFixed(1).replace('.', ',');
         <div>
           <p class="overline">Beschaffungsvorgang · Prozessmodell mit synthetischen Testdaten</p>
           <h1 data-requirement-title>Peter Mertes × Blaues Band</h1>
-          <p class="procurement-lead">Ein Bedarf, viele Winzer. Die reale Blaues-Band-Mitgliederliste ist noch nicht importiert; Matching und Zuteilung laufen hier bewusst auf synthetischen Testbetrieben.</p>
+          <p class="procurement-lead">Ein Bedarf, viele Winzer. Die reale Partnerliste ist noch nicht importiert; Matching und Zuteilung laufen hier bewusst auf synthetischen Testbetrieben.</p>
         </div>
         <div class="header-controls">
           <span class="scenario-badge">Testdaten · keine Mitgliederliste</span>
@@ -67,9 +67,9 @@ const coveragePercent = (model.coverage * 100).toFixed(1).replace('.', ',');
           <span data-mobile-remaining>{formatLiters(model.remainingVolume)} offen</span>
         </div>
         <div class="mobile-metrics">
-          <a href="#ausnahmen"><span>Ausnahmen</span><strong>{model.stats.exceptionCount}</strong></a>
+          <a href="#ausnahmen"><span>Ausnahmen</span><strong data-mobile-exceptions>{model.stats.exceptionCount}</strong></a>
           <a href="#winzer"><span>Winzer-Aufgaben</span><strong data-mobile-tasks>{model.tasks.length}</strong></a>
-          <a href="#transporte"><span>Transporte</span><strong>{model.stats.transports}</strong></a>
+          <a href="#transporte"><span>Transporte</span><strong data-mobile-transports>{model.stats.transports}</strong></a>
         </div>
       </section>
 
@@ -124,7 +124,7 @@ const coveragePercent = (model.coverage * 100).toFixed(1).replace('.', ',');
           <div class="flow-arrow">→</div>
           <div class="flow-node active">
             <span>Betrieb & Logistik</span>
-            <strong>{model.stats.logisticallyCapableGrowers} Betriebe logistisch geeignet</strong>
+            <strong data-flow-logistics>{model.stats.logisticallyCapableGrowers} Betriebe logistisch geeignet</strong>
             <small>Profil, Rebsorten, Verladekapazität und Vollständigkeit</small>
           </div>
           <div class="flow-arrow">→</div>
@@ -171,7 +171,7 @@ const coveragePercent = (model.coverage * 100).toFixed(1).replace('.', ',');
           <p class="overline">Datenstatus</p>
           <strong>Die Prozesslogik ist real – die Winzerliste noch nicht.</strong>
         </div>
-        <p>Peter Mertes und das Blaue Band bilden hier den realen Geschäftskontext. Die darunter angezeigten 200 Betriebe sind ausschließlich synthetische Belastungs- und Funktionstestdaten. Beim späteren Import werden sie vollständig durch reale Betriebe ersetzt.</p>
+        <p>Der Geschäftskontext ist realitätsnah modelliert; die darunter angezeigten Betriebe und Mengen sind ausschließlich synthetische Belastungs- und Funktionstestdaten. Beim späteren Import werden sie vollständig durch reale Partnerdaten ersetzt.</p>
       </section>
 
       <section class="grower-allocation" id="winzer">
@@ -411,6 +411,38 @@ const coveragePercent = (model.coverage * 100).toFixed(1).replace('.', ',');
       visibleCount.textContent = String(rows.length);
     }
 
+    function renderExceptionList(model) {
+      const list = document.querySelector('[data-exception-list]');
+      const items = model.exceptions.slice(0,3);
+      list.innerHTML = items.length ? items.map(item => `
+        <button type="button" data-filter="${item.type === 'missing-data' ? 'waiting' : 'exception'}">
+          <span class="exception-severity ${item.type === 'missing-data' ? 'medium' : 'high'}">${item.type === 'missing-data' ? 'wartet' : 'prüfen'}</span>
+          <div><strong>${escapeHtml(item.growerName)} · ${escapeHtml(item.lotId)}</strong><small>${escapeHtml(item.detail)}</small></div>
+          <span>${item.type === 'missing-data' ? 'Winzeraufgabe öffnen →' : 'Ausnahme prüfen →'}</span>
+        </button>`).join('') : `
+        <div class="empty-state"><strong>Keine blockierenden Ausnahmen.</strong><p>Der Bedarf kann ohne manuellen Eingriff weiterlaufen.</p></div>`;
+    }
+
+    function renderTransportWave(model) {
+      const list = document.querySelector('[data-transport-list]');
+      const confirmations = JSON.parse(localStorage.getItem('wp-demo-driver-confirmations') || '[]');
+      const confirmedIds = new Set(confirmations.map(item => item.transportId));
+      list.innerHTML = model.transports.slice(0,3).map((t,index) => {
+        const confirmed = confirmedIds.has(t.transportId);
+        const state = confirmed ? 'Abholung bestätigt'
+          : t.state === 'waiting-for-loading-data' ? 'Verladedaten fehlen'
+          : t.state === 'document-ready' ? 'Begleitdokument vorbereitet'
+          : 'Transport vorbereitet';
+        return `
+          <div>
+            <span>${['07:30','09:15','11:00'][index] || '—'}</span>
+            <strong>${escapeHtml(t.growerName)}</strong>
+            <small>${formatLiters(t.volume)} · ${escapeHtml(t.lotId)} · ${state}</small>
+            <em>${confirmed ? 'bestätigt' : t.state === 'waiting-for-loading-data' ? 'Winzer' : 'automatisch'}</em>
+          </div>`;
+      }).join('');
+    }
+
     function applyFilters() {
       const status = statusFilter.value;
       const term = search.value.trim().toLowerCase();
@@ -442,6 +474,7 @@ const coveragePercent = (model.coverage * 100).toFixed(1).replace('.', ',');
       document.querySelector('[data-coverage-bar]').style.width = (model.coverage * 100) + '%';
       document.querySelector('[data-remaining]').textContent = 'noch ' + formatLiters(model.remainingVolume) + ' offen';
       document.querySelector('[data-flow-matching]').textContent = model.stats.eligibleLots + ' Partien fachlich passend';
+      document.querySelector('[data-flow-logistics]').textContent = model.stats.logisticallyCapableGrowers + ' Betriebe logistisch geeignet';
       document.querySelector('[data-flow-allocation]').textContent = model.stats.growersAllocated + ' Betriebe zugeteilt';
       document.querySelector('[data-allocated-count]').textContent = model.stats.growersAllocated;
       document.querySelector('[data-task-count]').textContent = model.tasks.length;
@@ -451,11 +484,17 @@ const coveragePercent = (model.coverage * 100).toFixed(1).replace('.', ',');
       if (mobileCoverage) mobileCoverage.textContent = pct + ' % gedeckt';
       if (mobileRemaining) mobileRemaining.textContent = formatLiters(model.remainingVolume) + ' offen';
       if (mobileTasks) mobileTasks.textContent = model.tasks.length;
+      const mobileExceptions = document.querySelector('[data-mobile-exceptions]');
+      const mobileTransports = document.querySelector('[data-mobile-transports]');
+      if (mobileExceptions) mobileExceptions.textContent = model.stats.exceptionCount;
+      if (mobileTransports) mobileTransports.textContent = model.stats.transports;
     }
 
     const initialLiveModel = runProcurement(activeRequirement, workingGrowers);
     updateRequirementUI(activeRequirement);
     renderAllocationRows(initialLiveModel);
+    renderExceptionList(initialLiveModel);
+    renderTransportWave(initialLiveModel);
     updateHeadline(initialLiveModel);
 
     statusFilter.addEventListener('change', () => { mobileExpanded = false; applyFilters(); });
@@ -481,12 +520,14 @@ const coveragePercent = (model.coverage * 100).toFixed(1).replace('.', ',');
       engineToggle.querySelector('span').textContent = open ? '−' : '+';
     });
 
-    document.querySelectorAll('[data-filter]').forEach(button => button.addEventListener('click', () => {
+    document.querySelector('[data-exception-list]').addEventListener('click', event => {
+      const button = event.target.closest('[data-filter]');
+      if (!button) return;
       statusFilter.value = button.dataset.filter;
       search.value = '';
       applyFilters();
       document.querySelector('#winzer').scrollIntoView({behavior:'smooth', block:'start'});
-    }));
+    });
 
     document.querySelector('[data-open-spec]').addEventListener('click', () => specDialog.showModal());
     document.querySelector('[data-close-spec]').addEventListener('click', () => specDialog.close());
@@ -506,6 +547,8 @@ const coveragePercent = (model.coverage * 100).toFixed(1).replace('.', ',');
       const model = runProcurement(activeRequirement, workingGrowers);
       window.setTimeout(() => {
         renderAllocationRows(model);
+        renderExceptionList(model);
+        renderTransportWave(model);
         updateHeadline(model);
         applyFilters();
         button.textContent = '3 Rückmeldungen verarbeitet ✓';
