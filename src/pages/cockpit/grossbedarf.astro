@@ -284,40 +284,10 @@ const coveragePercent = (model.coverage * 100).toFixed(1).replace('.', ',');
   <script>
     import { demoRequirement, demoProcurementRows, demoGrowers } from '../../data/procurement-demo.js';
     import { runProcurement } from '../../lib/procurementEngine.js';
-    import { getAllGrowerResponses, getAllCustomLots, getApprovedGrowers } from '../../lib/demoSession.js';
+    import { buildDemoWorkingRows, resolveActiveRequirement, getDriverConfirmations } from '../../lib/demoSession.js';
 
     function buildWorkingRows() {
-      const approvedGrowers = getApprovedGrowers();
-      const growerLookup = new Map([
-        ...demoGrowers.map(grower => [grower.growerId, grower]),
-        ...Object.values(approvedGrowers).map(grower => [grower.growerId, grower])
-      ]);
-      const allCustomLots = getAllCustomLots();
-      const customRows = Object.entries(allCustomLots).flatMap(([growerId, lots]) => {
-        const grower = growerLookup.get(growerId);
-        if (!grower) return [];
-        return lots.map(lot => ({
-          ...lot,
-          growerName: grower.growerName,
-          place: grower.place,
-          supplierGroups: grower.supplierGroups || [],
-          cooperationStatus: grower.cooperationStatus || 'active',
-          businessProfile: grower.profile
-        }));
-      });
-
-      const responses = getAllGrowerResponses();
-      return [...demoProcurementRows, ...customRows].map(row => {
-        const response = (responses[row.growerId] || []).find(item => item.lotId === row.lotId);
-        if (!response) return {...row};
-        return {
-          ...row,
-          analysisConfirmed: response.type === 'confirmation' ? true : row.analysisConfirmed,
-          treatmentsConfirmed: response.type === 'confirmation' ? true : row.treatmentsConfirmed,
-          currentVolumeConfirmed: response.type === 'confirmation' ? true : row.currentVolumeConfirmed,
-          transportDataComplete: response.type === 'loading' ? true : row.transportDataComplete
-        };
-      });
+      return buildDemoWorkingRows(demoProcurementRows, demoGrowers);
     }
 
     let workingGrowers = buildWorkingRows();
@@ -333,33 +303,6 @@ const coveragePercent = (model.coverage * 100).toFixed(1).replace('.', ',');
     let mobileExpanded = false;
 
     const formatLiters = value => new Intl.NumberFormat('de-DE').format(Math.round(value)) + ' l';
-
-    function parseVolume(value) {
-      return Number(String(value || '').replace(/\./g,'').replace(',','.').replace(/[^0-9.]/g,'')) || 0;
-    }
-
-    function getActiveRequirement() {
-      const params = new URLSearchParams(location.search);
-      const requestedId = params.get('request') || localStorage.getItem('wp-demo-active-buyer-request');
-      const requests = JSON.parse(localStorage.getItem('wp-demo-buyer-requests') || '[]');
-      const request = requests.find(item => item.id === requestedId && item.status === 'accepted');
-      if (!request) return {...demoRequirement};
-
-      localStorage.setItem('wp-demo-active-buyer-request', request.id);
-      return {
-        ...demoRequirement,
-        id: request.id,
-        buyer: request.company,
-        grape: request.grape,
-        origin: request.origin,
-        vintage: Number(request.vintage),
-        targetVolume: parseVolume(request.targetVolume),
-        deliveryWindow: request.deliveryWindow,
-        quality: request.quality,
-        note: request.note,
-        datasetStatus: 'buyer-request-demo'
-      };
-    }
 
     function updateRequirementUI(requirement) {
       document.querySelector('[data-requirement-title]').textContent = requirement.buyer + ' × ' + (requirement.supplierGroup || 'Partnernetz');
@@ -378,7 +321,7 @@ const coveragePercent = (model.coverage * 100).toFixed(1).replace('.', ',');
       document.querySelector('[data-spec-buyer]').textContent = requirement.buyer;
     }
 
-    let activeRequirement = getActiveRequirement();
+    let activeRequirement = resolveActiveRequirement(demoRequirement);
 
     function escapeHtml(value = '') {
       return String(value).replace(/[&<>"']/g, char => ({
@@ -425,7 +368,7 @@ const coveragePercent = (model.coverage * 100).toFixed(1).replace('.', ',');
 
     function renderTransportWave(model) {
       const list = document.querySelector('[data-transport-list]');
-      const confirmations = JSON.parse(localStorage.getItem('wp-demo-driver-confirmations') || '[]');
+      const confirmations = getDriverConfirmations();
       const confirmedIds = new Set(confirmations.map(item => item.transportId));
       list.innerHTML = model.transports.slice(0,3).map((t,index) => {
         const confirmed = confirmedIds.has(t.transportId);
@@ -434,12 +377,12 @@ const coveragePercent = (model.coverage * 100).toFixed(1).replace('.', ',');
           : t.state === 'document-ready' ? 'Begleitdokument vorbereitet'
           : 'Transport vorbereitet';
         return `
-          <div>
+          <a class="transport-wave-link" href="${import.meta.env.BASE_URL}cockpit/begleitdokument/?transport=${encodeURIComponent(t.transportId)}">
             <span>${['07:30','09:15','11:00'][index] || '—'}</span>
             <strong>${escapeHtml(t.growerName)}</strong>
             <small>${formatLiters(t.volume)} · ${escapeHtml(t.lotId)} · ${state}</small>
-            <em>${confirmed ? 'bestätigt' : t.state === 'waiting-for-loading-data' ? 'Winzer' : 'automatisch'}</em>
-          </div>`;
+            <em>${confirmed ? 'bestätigt' : t.state === 'waiting-for-loading-data' ? 'Winzer' : 'Dokument öffnen →'}</em>
+          </a>`;
       }).join('');
     }
 
