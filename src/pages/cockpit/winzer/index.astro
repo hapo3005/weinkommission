@@ -264,7 +264,7 @@ const openCount = partners.filter(p => p.status === 'waiting' || p.status === 'e
   <script>
     import { getAllGrowerResponses, saveApprovedGrower, getApprovedGrowers } from '../../../lib/demoSession.js';
 
-    const rows = [...document.querySelectorAll('[data-partner-row]')];
+    let rows = [...document.querySelectorAll('[data-partner-row]')];
     const search = document.querySelector('[data-partner-search]');
     const group = document.querySelector('[data-partner-group]');
     const status = document.querySelector('[data-partner-status]');
@@ -386,7 +386,52 @@ const openCount = partners.filter(p => p.status === 'waiting' || p.status === 'e
       }
 
       localStorage.setItem('wp-demo-registration-requests', JSON.stringify(requests));
+      renderApprovedDirectoryRows();
+      applyFilters();
       renderAccessActivity();
+    }
+
+    function renderApprovedDirectoryRows() {
+      const list = document.querySelector('.partner-list');
+      list.querySelectorAll('[data-approved-dynamic]').forEach(node => node.remove());
+      const approved = Object.values(getApprovedGrowers());
+      const existingIds = new Set([...list.querySelectorAll('[data-grower-id]')].map(node => node.dataset.growerId));
+
+      approved.filter(grower => !existingIds.has(grower.growerId)).forEach(grower => {
+        const row = document.createElement('a');
+        row.className = 'partner-row';
+        row.href = import.meta.env.BASE_URL + 'winzer/registrieren/?invite=' + encodeURIComponent(grower.growerId);
+        row.dataset.partnerRow = '';
+        row.dataset.approvedDynamic = '';
+        row.dataset.growerId = grower.growerId;
+        row.dataset.openCount = '0';
+        row.dataset.openLots = '';
+        row.dataset.allocated = 'false';
+        row.dataset.group = 'other';
+        row.dataset.state = 'idle';
+        row.dataset.search = (grower.growerName + ' ' + grower.place + ' ' + grower.growerId).toLowerCase();
+        row.innerHTML = `
+          <span class="partner-identity">
+            <small class="card-label">Betrieb</small>
+            <strong>${escapeHtml(grower.growerName)}</strong>
+            <small>${escapeHtml(grower.place)} · ${escapeHtml(grower.growerId)}</small>
+          </span>
+          <span class="partner-cooperation">
+            <small class="card-label">Kooperation</small>
+            <em class="other">Neu aufgenommen</em>
+            <small>Verbundzugehörigkeit noch zu verifizieren</small>
+          </span>
+          <span class="current-process idle">
+            <span class="process-heading">
+              <small class="card-label">Aktueller Vorgang</small>
+              <em>Portalzugang / Stammdaten</em>
+            </span>
+          </span>
+          <span class="partner-open">Einladung →</span>
+        `;
+        list.appendChild(row);
+      });
+      rows = [...document.querySelectorAll('[data-partner-row]')];
     }
 
     function applyResponseOverlay() {
@@ -474,6 +519,7 @@ const openCount = partners.filter(p => p.status === 'waiting' || p.status === 'e
     document.querySelector('[data-import]').addEventListener('click', () => importDialog.showModal());
     document.querySelectorAll('[data-close-import]').forEach(button => button.addEventListener('click', () => importDialog.close()));
 
+    renderApprovedDirectoryRows();
     applyResponseOverlay();
     applyFilters();
     renderAccessActivity();
