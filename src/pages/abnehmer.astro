@@ -209,7 +209,7 @@ const coveragePercent = Math.round(model.coverage * 100);
             <strong>${escapeHtml(request.vintage)} ${escapeHtml(request.grape)} · ${escapeHtml(request.targetVolume)}</strong>
             <small>${escapeHtml(request.origin)} · ${escapeHtml(request.deliveryWindow)} · ${escapeHtml(request.id)}</small>
           </div>
-          <span>Neu · Prüfung durch Kommission</span>
+          <span>${request.status === 'accepted' ? 'Von Kommission übernommen' : request.status === 'rejected' ? 'Abgelehnt' : 'Neu · Prüfung durch Kommission'}</span>
         `;
         history.appendChild(article);
       });
