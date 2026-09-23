@@ -67,3 +67,10 @@
 @media(max-width:760px){
   .home-section{margin-left:-4px;margin-right:-4px;padding:20px 16px}
 }
+
+.home-section.external-home{
+  background:#edf0f1;
+  border-left:4px solid #415b68;
+}
+.home-access-item.buyer>span{background:#dce6eb;color:#334d5c}
+.home-access-item.driver>span{background:#e8e0d5;color:#5f5142}
