@@ -142,14 +142,27 @@ const base = import.meta.env.BASE_URL;
   <script>
     import { demoGrowers, demoLots, demoRequirement, demoProcurementRows } from '../data/procurement-demo.js';
     import { runProcurement } from '../lib/procurementEngine.js';
-    import { resolveActiveGrower, getGrowerProfile, addGrowerResponse } from '../lib/demoSession.js';
+    import { resolveActiveGrower, getGrowerProfile, getGrowerResponses, addGrowerResponse } from '../lib/demoSession.js';
 
     const formatLiters = value => new Intl.NumberFormat('de-DE').format(Math.round(value || 0)) + ' l';
     const account = JSON.parse(localStorage.getItem('wp-demo-grower-account') || 'null');
     const grower = resolveActiveGrower(demoGrowers, window.location.search, 'TEST-001');
     const savedProfile = getGrowerProfile(grower.growerId);
     const lots = demoLots.filter(lot => lot.growerId === grower.growerId);
-    const model = runProcurement(demoRequirement, demoProcurementRows);
+    const responses = getGrowerResponses(grower.growerId);
+    const responseByLot = new Map(responses.map(response => [response.lotId, response]));
+    const workingRows = demoProcurementRows.map(row => {
+      const response = row.growerId === grower.growerId ? responseByLot.get(row.lotId) : null;
+      if (!response) return row;
+      return {
+        ...row,
+        analysisConfirmed: response.type === 'confirmation' ? true : row.analysisConfirmed,
+        treatmentsConfirmed: response.type === 'confirmation' ? true : row.treatmentsConfirmed,
+        currentVolumeConfirmed: response.type === 'confirmation' ? true : row.currentVolumeConfirmed,
+        transportDataComplete: response.type === 'loading' ? true : row.transportDataComplete
+      };
+    });
+    const model = runProcurement(demoRequirement, workingRows);
     const growerRows = model.allocationRows.filter(row => row.growerId === grower.growerId);
     const allocatedRows = growerRows.filter(row => row.allocatedVolume > 0);
     const waitingRow = growerRows.find(row => row.status === 'waiting');
@@ -246,7 +259,12 @@ const base = import.meta.env.BASE_URL;
     const lotsEl = document.querySelector('[data-portal-lots]');
     lotsEl.innerHTML = lots.map(lot => {
       const row = lotRowsById.get(lot.lotId);
-      const status = row?.allocatedVolume > 0 ? 'zugeteilt' : row?.status === 'waiting' ? 'Angabe offen' : 'verfügbar';
+      const responded = responseByLot.has(lot.lotId);
+      const status = responded
+        ? 'bestätigt'
+        : row?.allocatedVolume > 0 ? 'zugeteilt'
+        : row?.status === 'waiting' ? 'Angabe offen'
+        : 'verfügbar';
       return `
         <article>
           <div><strong>${lot.lotId}</strong><small>${lot.vintage} ${lot.grape} · ${lot.origin}</small></div>
