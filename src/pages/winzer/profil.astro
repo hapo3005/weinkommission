@@ -1,6 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import DemoRoleSwitch from '../../components/DemoRoleSwitch.astro';
+import RoleContextBar from '../../components/RoleContextBar.astro';
 import '../../styles/betriebsprofil.css';
 
 const base = import.meta.env.BASE_URL;
@@ -11,6 +11,7 @@ const base = import.meta.env.BASE_URL;
   description="Demo-Betriebsprofil für Winzer der Weinkommission Porn."
   canonicalPath="/weinkommission/winzer/profil/"
 >
+  <RoleContextBar role="grower" />
   <div class="profile-edit-app">
     <header class="profile-edit-header">
       <a class="profile-edit-brand" href={`${base}winzer/`}>
@@ -18,7 +19,6 @@ const base = import.meta.env.BASE_URL;
         <span><strong>WEINKOMMISSION PORN</strong><small>Winzerportal · Betriebsprofil</small></span>
       </a>
       <div class="profile-edit-actions">
-        <DemoRoleSwitch active="winzer" />
         <span class="demo-label">Demo · lokal gespeichert</span>
       </div>
     </header>
