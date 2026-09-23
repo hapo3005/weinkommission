@@ -1,0 +1,369 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import '../../styles/betriebsprofil.css';
+
+const base = import.meta.env.BASE_URL;
+---
+
+<BaseLayout
+  title="Betriebsprofil · Weinkommission Porn"
+  description="Demo-Betriebsprofil für Winzer der Weinkommission Porn."
+  canonicalPath="/weinkommission/winzer/profil/"
+>
+  <div class="profile-edit-app">
+    <header class="profile-edit-header">
+      <a class="profile-edit-brand" href={`${base}winzer/`}>
+        <span class="brand-mark">WP</span>
+        <span><strong>WEINKOMMISSION PORN</strong><small>Winzerportal · Betriebsprofil</small></span>
+      </a>
+      <span class="demo-label">Demo · lokal gespeichert</span>
+    </header>
+
+    <main class="profile-edit-main" id="main">
+      <section class="profile-edit-intro">
+        <div>
+          <p class="eyebrow">Betriebsprofil</p>
+          <h1>Damit wir wissen,<br />was Ihr Betrieb leisten kann.</h1>
+          <p>Diese Angaben beschreiben den Betrieb dauerhaft. Konkrete Weine und Partien werden später separat erfasst und können sich von Jahr zu Jahr ändern.</p>
+        </div>
+        <div class="profile-completeness">
+          <span>Profil vollständig</span>
+          <strong data-completeness>0 %</strong>
+          <div class="completeness-track"><i data-completeness-bar></i></div>
+          <small data-completeness-hint>Angaben ergänzen</small>
+        </div>
+      </section>
+
+      <nav class="profile-edit-nav" aria-label="Profilbereiche">
+        <a href="#betrieb">Betrieb</a>
+        <a href="#produktion">Produktion</a>
+        <a href="#sortiment">Sortiment</a>
+        <a href="#kapazitaet">Kapazitäten</a>
+        <a href="#zertifikate">Besonderheiten</a>
+      </nav>
+
+      <form class="profile-edit-form" data-profile-form>
+        <section class="profile-edit-section" id="betrieb">
+          <div class="section-copy">
+            <p class="eyebrow">01 · Betrieb</p>
+            <h2>Grunddaten</h2>
+            <p>Einmal gepflegt, in allen Vorgängen wiederverwendet.</p>
+          </div>
+          <div class="form-panel">
+            <div class="profile-grid">
+              <label class="field"><span>Betrieb / Weingut *</span><input data-profile-business required /></label>
+              <label class="field"><span>Ansprechpartner *</span><input data-profile-person required /></label>
+              <label class="field"><span>Anbaugebiet *</span>
+                <select data-profile-region>
+                  <option>Mosel</option><option>Saar</option><option>Ruwer</option><option>Ahr</option><option>Nahe</option><option>Rheinhessen</option><option>Pfalz</option><option>Sonstiges</option>
+                </select>
+              </label>
+              <label class="field"><span>Weinbau-Betriebsnummer</span><input data-profile-number /></label>
+              <label class="field"><span>Webseite, falls vorhanden</span><input type="url" data-profile-website placeholder="https://…" /></label>
+              <label class="field"><span>Bevorzugter Kontaktweg</span>
+                <select data-profile-contact>
+                  <option value="email">E-Mail</option>
+                  <option value="phone">Telefon</option>
+                  <option value="mobile">Mobil / Messenger</option>
+                </select>
+              </label>
+            </div>
+          </div>
+        </section>
+
+        <section class="profile-edit-section" id="produktion">
+          <div class="section-copy">
+            <p class="eyebrow">02 · Größe & Produktion</p>
+            <h2>Wie groß ist der Betrieb?</h2>
+            <p>Diese Werte helfen der Kommission, Bedarfe realistisch zuzuordnen.</p>
+          </div>
+          <div class="form-panel">
+            <div class="profile-grid">
+              <label class="field"><span>Bewirtschaftete Rebfläche *</span><input data-profile-hectares inputmode="decimal" placeholder="z. B. 12,5 ha" /></label>
+              <label class="field"><span>Jahresproduktion gesamt *</span><input data-profile-production inputmode="numeric" placeholder="z. B. 145.000 l" /></label>
+              <label class="field"><span>Davon typischerweise frei vermarktbar</span><input data-profile-market-volume inputmode="numeric" placeholder="z. B. 90.000 l" /></label>
+              <label class="field"><span>Durchschnittliche Erntemenge</span><input data-profile-harvest inputmode="numeric" placeholder="z. B. 160.000 kg Trauben" /></label>
+            </div>
+
+            <fieldset class="profile-choice">
+              <legend>Betriebsstruktur</legend>
+              <div class="choice-grid compact">
+                <label><input type="radio" name="structure" value="family" data-profile-structure /><span>Familienbetrieb</span></label>
+                <label><input type="radio" name="structure" value="estate" data-profile-structure /><span>Weingut mit eigener Kellerwirtschaft</span></label>
+                <label><input type="radio" name="structure" value="grower" data-profile-structure /><span>Trauben-/Mostbetrieb</span></label>
+                <label><input type="radio" name="structure" value="other" data-profile-structure /><span>Sonstige Struktur</span></label>
+              </div>
+            </fieldset>
+          </div>
+        </section>
+
+        <section class="profile-edit-section" id="sortiment">
+          <div class="section-copy">
+            <p class="eyebrow">03 · Sortiment</p>
+            <h2>Was produziert der Betrieb?</h2>
+            <p>Keine Partieangaben – sondern das typische Betriebsprofil.</p>
+          </div>
+          <div class="form-panel">
+            <fieldset class="profile-choice">
+              <legend>Wichtigste Rebsorten *</legend>
+              <div class="choice-grid">
+                <label><input type="checkbox" value="Riesling" data-profile-grape /><span>Riesling</span></label>
+                <label><input type="checkbox" value="Müller-Thurgau" data-profile-grape /><span>Müller-Thurgau</span></label>
+                <label><input type="checkbox" value="Weißburgunder" data-profile-grape /><span>Weißburgunder</span></label>
+                <label><input type="checkbox" value="Grauburgunder" data-profile-grape /><span>Grauburgunder</span></label>
+                <label><input type="checkbox" value="Spätburgunder" data-profile-grape /><span>Spätburgunder</span></label>
+                <label><input type="checkbox" value="Sonstige" data-profile-grape /><span>Sonstige</span></label>
+              </div>
+            </fieldset>
+
+            <fieldset class="profile-choice">
+              <legend>Typische Vermarktungsformen *</legend>
+              <div class="choice-grid">
+                <label><input type="checkbox" value="Fasswein" data-profile-offer /><span>Fasswein</span></label>
+                <label><input type="checkbox" value="Most" data-profile-offer /><span>Most</span></label>
+                <label><input type="checkbox" value="Trauben" data-profile-offer /><span>Trauben</span></label>
+                <label><input type="checkbox" value="Flaschenwein" data-profile-offer /><span>Flaschenwein</span></label>
+              </div>
+            </fieldset>
+
+            <fieldset class="profile-choice">
+              <legend>Typische Qualitätsstufen</legend>
+              <div class="choice-grid">
+                <label><input type="checkbox" value="Deutscher Wein" data-profile-quality /><span>Deutscher Wein</span></label>
+                <label><input type="checkbox" value="Landwein" data-profile-quality /><span>Landwein</span></label>
+                <label><input type="checkbox" value="Qualitätswein" data-profile-quality /><span>Qualitätswein</span></label>
+                <label><input type="checkbox" value="Prädikatswein" data-profile-quality /><span>Prädikatswein</span></label>
+              </div>
+            </fieldset>
+          </div>
+        </section>
+
+        <section class="profile-edit-section" id="kapazitaet">
+          <div class="section-copy">
+            <p class="eyebrow">04 · Keller & Logistik</p>
+            <h2>Welche Mengen sind praktisch handhabbar?</h2>
+            <p>Damit Transporte und größere Bedarfe nicht an der Realität des Betriebs vorbeigeplant werden.</p>
+          </div>
+          <div class="form-panel">
+            <div class="profile-grid">
+              <label class="field"><span>Gesamte Tank-/Lagerkapazität</span><input data-profile-storage inputmode="numeric" placeholder="z. B. 180.000 l" /></label>
+              <label class="field"><span>Größter einzelner Tank</span><input data-profile-largest-tank inputmode="numeric" placeholder="z. B. 25.000 l" /></label>
+              <label class="field"><span>Typische Abholmenge je Verladung</span><input data-profile-loading inputmode="numeric" placeholder="z. B. 20.000–25.000 l" /></label>
+              <label class="field"><span>Verladung</span>
+                <select data-profile-loading-method>
+                  <option value="">Bitte wählen</option>
+                  <option value="tank-truck">Tankwagen möglich</option>
+                  <option value="container">Behälter / IBC</option>
+                  <option value="both">Beides</option>
+                </select>
+              </label>
+            </div>
+
+            <label class="confirm-line">
+              <input type="checkbox" data-profile-flexible />
+              <span>Der Betrieb ist grundsätzlich an kurzfristigen Bedarfsanfragen interessiert.</span>
+            </label>
+          </div>
+        </section>
+
+        <section class="profile-edit-section" id="zertifikate">
+          <div class="section-copy">
+            <p class="eyebrow">05 · Besonderheiten</p>
+            <h2>Was sollte die Kommission noch wissen?</h2>
+            <p>Nur dauerhafte Merkmale. Analysewerte einzelner Weine gehören weiterhin zur Partie.</p>
+          </div>
+          <div class="form-panel">
+            <fieldset class="profile-choice">
+              <legend>Zertifizierungen / Bewirtschaftung</legend>
+              <div class="choice-grid">
+                <label><input type="checkbox" value="Bio" data-profile-cert /><span>Bio</span></label>
+                <label><input type="checkbox" value="Fair'n Green" data-profile-cert /><span>Fair'n Green</span></label>
+                <label><input type="checkbox" value="Nachhaltig" data-profile-cert /><span>Nachhaltigkeitsprogramm</span></label>
+                <label><input type="checkbox" value="Keine" data-profile-cert /><span>Keine / nicht relevant</span></label>
+              </div>
+            </fieldset>
+
+            <label class="field">
+              <span>Weitere dauerhafte Besonderheiten</span>
+              <textarea data-profile-note rows="5" placeholder="z. B. Steillagenanteil, besondere Lagen, bevorzugte Lieferzeiträume, technische Besonderheiten …"></textarea>
+            </label>
+
+            <label class="membership-claim">
+              <input type="checkbox" data-profile-blueband />
+              <span><strong>Unser Betrieb gehört zum Blauen Band.</strong><small>In der Live-Version wird diese Angabe von der Weinkommission bestätigt.</small></span>
+            </label>
+          </div>
+        </section>
+
+        <div class="profile-savebar">
+          <div>
+            <span data-save-state>Noch nicht gespeichert</span>
+            <small>Demo: Speicherung nur in diesem Browser.</small>
+          </div>
+          <button class="secondary-action" type="button" data-fill-profile>Demo-Profil einsetzen</button>
+          <button class="primary-action" type="submit">Betriebsprofil speichern</button>
+        </div>
+      </form>
+
+      <dialog class="profile-complete-dialog" data-complete-dialog>
+        <span class="complete-mark">✓</span>
+        <p class="eyebrow">Betriebsprofil gespeichert</p>
+        <h2>Jetzt kennt die Kommission den Betrieb.</h2>
+        <p>Das Profil enthält dauerhafte Kapazitäts- und Produktionsdaten. Konkrete verfügbare Weine werden als separate Partien gepflegt.</p>
+        <div class="complete-actions">
+          <a class="primary-action link-action" href={`${base}winzer/`}>Zum Winzerportal →</a>
+          <button class="secondary-action" type="button" data-close-complete>Profil weiter bearbeiten</button>
+        </div>
+      </dialog>
+    </main>
+  </div>
+
+  <script>
+    const form = document.querySelector('[data-profile-form]');
+    const dialog = document.querySelector('[data-complete-dialog]');
+    const account = JSON.parse(localStorage.getItem('wp-demo-grower-account') || 'null');
+    const stored = JSON.parse(localStorage.getItem('wp-demo-grower-profile') || 'null');
+
+    const fields = {
+      businessName: document.querySelector('[data-profile-business]'),
+      person: document.querySelector('[data-profile-person]'),
+      region: document.querySelector('[data-profile-region]'),
+      businessNumber: document.querySelector('[data-profile-number]'),
+      website: document.querySelector('[data-profile-website]'),
+      preferredContact: document.querySelector('[data-profile-contact]'),
+      hectares: document.querySelector('[data-profile-hectares]'),
+      annualProduction: document.querySelector('[data-profile-production]'),
+      marketVolume: document.querySelector('[data-profile-market-volume]'),
+      harvest: document.querySelector('[data-profile-harvest]'),
+      storage: document.querySelector('[data-profile-storage]'),
+      largestTank: document.querySelector('[data-profile-largest-tank]'),
+      loadingVolume: document.querySelector('[data-profile-loading]'),
+      loadingMethod: document.querySelector('[data-profile-loading-method]'),
+      note: document.querySelector('[data-profile-note]')
+    };
+
+    function checkedValues(selector) {
+      return [...document.querySelectorAll(selector + ':checked')].map(el => el.value);
+    }
+
+    function setChecked(selector, values = []) {
+      document.querySelectorAll(selector).forEach(el => {
+        el.checked = values.includes(el.value);
+      });
+    }
+
+    function completeness() {
+      const checks = [
+        fields.businessName.value.trim(),
+        fields.person.value.trim(),
+        fields.region.value,
+        fields.hectares.value.trim(),
+        fields.annualProduction.value.trim(),
+        checkedValues('[data-profile-grape]').length,
+        checkedValues('[data-profile-offer]').length,
+        document.querySelector('[data-profile-structure]:checked')?.value || ''
+      ];
+      const done = checks.filter(Boolean).length;
+      const pct = Math.round((done / checks.length) * 100);
+      document.querySelector('[data-completeness]').textContent = pct + ' %';
+      document.querySelector('[data-completeness-bar]').style.width = pct + '%';
+      document.querySelector('[data-completeness-hint]').textContent = pct === 100 ? 'Grundprofil vollständig' : (checks.length - done) + ' Kernangabe(n) fehlen';
+      return pct;
+    }
+
+    function hydrate(profile) {
+      if (!profile) return;
+      Object.entries(fields).forEach(([key, el]) => {
+        if (profile[key] != null) el.value = profile[key];
+      });
+      setChecked('[data-profile-grape]', profile.grapes);
+      setChecked('[data-profile-offer]', profile.offers);
+      setChecked('[data-profile-quality]', profile.qualities);
+      setChecked('[data-profile-cert]', profile.certifications);
+      const structure = document.querySelector(`[data-profile-structure][value="${profile.structure || ''}"]`);
+      if (structure) structure.checked = true;
+      document.querySelector('[data-profile-flexible]').checked = Boolean(profile.flexibleRequests);
+      document.querySelector('[data-profile-blueband]').checked = Boolean(profile.blueBandClaimed);
+    }
+
+    if (stored) hydrate(stored);
+    else if (account) {
+      fields.businessName.value = account.businessName || '';
+      fields.person.value = account.contactPerson || '';
+      fields.businessNumber.value = account.businessNumber || '';
+      document.querySelector('[data-profile-blueband]').checked = Boolean(account.blueBandClaimed);
+    } else {
+      fields.businessName.value = 'Testweingut 001';
+      fields.region.value = 'Mosel';
+    }
+
+    document.querySelector('[data-fill-profile]').addEventListener('click', () => {
+      fields.businessName.value = account?.businessName || 'Weingut Demo';
+      fields.person.value = account?.contactPerson || 'Max Mustermann';
+      fields.region.value = 'Mosel';
+      fields.businessNumber.value = account?.businessNumber || 'DEMO-12345';
+      fields.website.value = 'https://example.com';
+      fields.preferredContact.value = 'email';
+      fields.hectares.value = '18,4 ha';
+      fields.annualProduction.value = '175.000 l';
+      fields.marketVolume.value = '110.000 l';
+      fields.harvest.value = '195.000 kg';
+      fields.storage.value = '220.000 l';
+      fields.largestTank.value = '30.000 l';
+      fields.loadingVolume.value = '20.000–25.000 l';
+      fields.loadingMethod.value = 'tank-truck';
+      fields.note.value = 'Schwerpunkt Riesling; regelmäßige Fassweinmengen; flexible Abholung nach Abstimmung.';
+      setChecked('[data-profile-grape]', ['Riesling','Weißburgunder']);
+      setChecked('[data-profile-offer]', ['Fasswein','Most']);
+      setChecked('[data-profile-quality]', ['Qualitätswein','Prädikatswein']);
+      setChecked('[data-profile-cert]', ['Keine']);
+      document.querySelector('[data-profile-structure][value="estate"]').checked = true;
+      document.querySelector('[data-profile-flexible]').checked = true;
+      document.querySelector('[data-profile-blueband]').checked = Boolean(account?.blueBandClaimed ?? true);
+      completeness();
+    });
+
+    form.addEventListener('input', completeness);
+    form.addEventListener('change', completeness);
+
+    form.addEventListener('submit', (event) => {
+      event.preventDefault();
+
+      const profile = {
+        growerId: account?.growerId || 'TEST-001',
+        businessName: fields.businessName.value.trim(),
+        person: fields.person.value.trim(),
+        region: fields.region.value,
+        businessNumber: fields.businessNumber.value.trim(),
+        website: fields.website.value.trim(),
+        preferredContact: fields.preferredContact.value,
+        hectares: fields.hectares.value.trim(),
+        annualProduction: fields.annualProduction.value.trim(),
+        marketVolume: fields.marketVolume.value.trim(),
+        harvest: fields.harvest.value.trim(),
+        structure: document.querySelector('[data-profile-structure]:checked')?.value || '',
+        grapes: checkedValues('[data-profile-grape]'),
+        offers: checkedValues('[data-profile-offer]'),
+        qualities: checkedValues('[data-profile-quality]'),
+        storage: fields.storage.value.trim(),
+        largestTank: fields.largestTank.value.trim(),
+        loadingVolume: fields.loadingVolume.value.trim(),
+        loadingMethod: fields.loadingMethod.value,
+        flexibleRequests: document.querySelector('[data-profile-flexible]').checked,
+        certifications: checkedValues('[data-profile-cert]'),
+        note: fields.note.value.trim(),
+        blueBandClaimed: document.querySelector('[data-profile-blueband]').checked,
+        completeness: completeness(),
+        updatedAt: new Date().toISOString(),
+        demo: true
+      };
+
+      localStorage.setItem('wp-demo-grower-profile', JSON.stringify(profile));
+      document.querySelector('[data-save-state]').textContent = 'Gespeichert · ' + profile.completeness + ' % vollständig';
+      dialog.showModal();
+    });
+
+    document.querySelector('[data-close-complete]').addEventListener('click', () => dialog.close());
+    completeness();
+  </script>
+</BaseLayout>
