@@ -89,7 +89,7 @@ export const demoGrowers = Array.from({ length: 230 }, (_, index) => {
     supplierGroups: isBlueBandMember ? ['Blaues Band'] : [],
     membershipDataStatus: 'synthetic',
     profile: {
-      completeness: n % 11 === 0 ? 72 : n % 17 === 0 ? 84 : 100,
+      completeness: n % 11 === 0 ? 75 : n % 17 === 0 ? 88 : 100,
       hectares,
       annualProduction,
       harvestVolume,
