@@ -41,6 +41,30 @@ const base = import.meta.env.BASE_URL;
         </div>
         <strong>Winzerportal öffnen →</strong>
       </a>
+
+      <a class="demo-role buyer" href={`${base}abnehmer/`}>
+        <span class="role-kicker">Externe Ansicht</span>
+        <h2>Abnehmer / Kellerei</h2>
+        <p>Die Kellerei meldet eigene Bedarfe und verfolgt den Lieferstand, ohne Winzerakten oder interne Kommissionsabläufe zu sehen.</p>
+        <div>
+          <span>Eigene Bedarfe einstellen</span>
+          <span>Deckung und Lieferstatus verfolgen</span>
+          <span>Keine internen Winzerdaten sichtbar</span>
+        </div>
+        <strong>Abnehmerportal öffnen →</strong>
+      </a>
+
+      <a class="demo-role driver" href={`${base}fahrer/`}>
+        <span class="role-kicker">Externe Ansicht</span>
+        <h2>Spedition / Fahrer</h2>
+        <p>Der Fahrer sieht ausschließlich die zugewiesenen Abholungen und bestätigt die tatsächlich verladenen Daten.</p>
+        <div>
+          <span>Nur eigene Touren sichtbar</span>
+          <span>Liter, Kennzeichen und Abholung bestätigen</span>
+          <span>Keine Einkaufs- oder Winzerkartei sichtbar</span>
+        </div>
+        <strong>Transportportal öffnen →</strong>
+      </a>
     </section>
 
     <section class="demo-public">
@@ -57,8 +81,10 @@ const base = import.meta.env.BASE_URL;
       <div class="map-flow">
         <span>Öffentliche Website</span><i>→</i>
         <span>Nadine / Roland intern</span><i>↔</i>
-        <span>Datenbank / Prozesse</span><i>↔</i>
-        <span>Winzer extern</span>
+        <span>Zentrale Daten & Prozesse</span><i>↔</i>
+        <span>Winzer</span>
+        <span>Abnehmer / Kellerei</span>
+        <span>Spedition / Fahrer</span>
       </div>
     </section>
   </main>
