@@ -14,6 +14,31 @@ export const demoRequirement = {
 
 const places = ['Bernkastel-Kues','Piesport','Leiwen','Trittenheim','Brauneberg','Wintrich','Ürzig','Graach','Zeltingen-Rachtig','Mehring','Neumagen-Dhron','Kröv'];
 
+const fictionalFamilies = [
+  'Ahrensberg','Bellenau','Corten','Demerath','Elsenborn','Falkenau','Gressenich','Harenberg',
+  'Ivenau','Josten','Kellenborn','Lamberti','Maringer','Nellesen','Osterau','Pellenz',
+  'Quinter','Rosenbach','Scharenberg','Thielenau','Uhlenfeld','Vossen','Wellenburg'
+];
+
+const fictionalNameFormats = [
+  (name) => `Weingut ${name} & Sohn`,
+  (name) => `Familienweingut ${name}`,
+  (name) => `Weinhof ${name}`,
+  (name) => `Weingut ${name} am Schieferhang`,
+  (name) => `Weingut ${name} an der Mosel`,
+  (name) => `Weingut ${name} Rebenhof`,
+  (name) => `Weingut ${name} Sonnenlay`,
+  (name) => `Weingut ${name} Terrassen`,
+  (name) => `Weingut ${name} Alte Kelter`,
+  (name) => `Hofgut ${name}`
+];
+
+function fictionalGrowerName(index) {
+  const family = fictionalFamilies[index % fictionalFamilies.length];
+  const format = fictionalNameFormats[Math.floor(index / fictionalFamilies.length) % fictionalNameFormats.length];
+  return format(family);
+}
+
 export const demoGrowers = Array.from({ length: 230 }, (_, index) => {
   const n = index + 1;
   const grape = n % 9 === 0 ? 'Weißburgunder' : 'Riesling';
@@ -27,7 +52,7 @@ export const demoGrowers = Array.from({ length: 230 }, (_, index) => {
 
   return {
     growerId: 'TEST-' + String(n).padStart(3,'0'),
-    growerName: 'Testweingut ' + String(n).padStart(3,'0'),
+    growerName: fictionalGrowerName(index),
     place: places[index % places.length],
     dataStatus: 'synthetic',
     cooperationStatus: 'active',
