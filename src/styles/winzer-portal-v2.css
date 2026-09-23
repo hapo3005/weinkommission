@@ -1,4 +1,4 @@
-:root{--cream:#f1e5d8;--paper:#fcfaf5;--ink:#162126;--muted:#69747a;--green:#102d38;--line:rgba(16,45,56,.15);--gold:#b16842}
+:root{--cream:#f2eee7;--paper:#fcfaf7;--ink:#17191c;--muted:#6e7478;--green:#26343e;--line:rgba(16,45,56,.15);--gold:#a65f3b}
 html,body{margin:0;max-width:100%;overflow-x:hidden;background:var(--cream)}*,*::before,*::after{box-sizing:border-box}
 .portal2-app{min-height:100vh;background:var(--cream);color:var(--ink)}
 .portal2-header{width:min(calc(100% - 40px),1120px);min-height:82px;margin:auto;display:flex;justify-content:space-between;align-items:center;gap:20px;border-bottom:1px solid var(--line)}
@@ -7,14 +7,14 @@ html,body{margin:0;max-width:100%;overflow-x:hidden;background:var(--cream)}*,*:
 .portal2-header-actions{display:flex;gap:8px;align-items:center}.portal2-quiet{min-height:35px;display:grid;place-items:center;padding:0 10px;border:1px solid var(--line);color:var(--green);text-decoration:none;font-size:8px;background:#f8f1e8}
 .portal2-main{width:min(calc(100% - 40px),920px);margin:auto;padding:42px 0 90px}
 .portal2-eyebrow{margin:0 0 8px;font-size:8px;letter-spacing:.11em;text-transform:uppercase;color:var(--gold)}
-.portal2-identity{display:flex;justify-content:space-between;align-items:end;gap:24px;padding-bottom:24px;border-bottom:1px solid var(--line)}.portal2-identity h1{margin:0;font-family:Georgia,serif;font-size:clamp(42px,7vw,68px);font-weight:400;line-height:1}.portal2-identity>div>p:last-child{margin:9px 0 0;color:var(--muted);font-size:9px}.portal2-demo{align-self:flex-start;padding:6px 8px;background:#e8d7c6;color:#765f39;font-size:8px;text-transform:uppercase;letter-spacing:.07em}
+.portal2-identity{display:flex;justify-content:space-between;align-items:end;gap:24px;padding-bottom:24px;border-bottom:1px solid var(--line)}.portal2-identity h1{margin:0;font-family:Georgia,serif;font-size:clamp(42px,7vw,68px);font-weight:400;line-height:1}.portal2-identity>div>p:last-child{margin:9px 0 0;color:var(--muted);font-size:9px}.portal2-demo{align-self:flex-start;padding:6px 8px;background:#ebe4dc;color:#765f39;font-size:8px;text-transform:uppercase;letter-spacing:.07em}
 .portal2-profile-card{display:grid;grid-template-columns:1fr 220px;gap:25px;align-items:center;margin-top:20px;padding:19px;background:#e9f0ef;border:1px solid var(--line)}.portal2-profile-card h2{margin:0;font-family:Georgia,serif;font-size:24px;font-weight:400}.portal2-profile-card p:not(.portal2-eyebrow){margin:7px 0 0;color:var(--muted);font-size:9px;line-height:1.55}
 .portal2-profile-meter>strong{display:block;font-family:Georgia,serif;font-size:27px;font-weight:400}.portal2-profile-meter>div{height:6px;margin:8px 0 10px;background:rgba(53,84,94,.1)}.portal2-profile-meter i{display:block;height:100%;width:0;background:var(--green)}.portal2-profile-meter a{font-size:8px;color:var(--green);text-decoration:none}
 .portal2-overview{display:grid;grid-template-columns:repeat(3,1fr);margin-top:12px;border:1px solid var(--line);background:var(--paper)}.portal2-overview article{padding:15px;border-right:1px solid var(--line)}.portal2-overview article:last-child{border-right:0}.portal2-overview span,.portal2-overview strong,.portal2-overview small{display:block}.portal2-overview span{font-size:7px;text-transform:uppercase;letter-spacing:.07em;color:var(--muted)}.portal2-overview strong{margin-top:5px;font-family:Georgia,serif;font-size:20px;font-weight:400}.portal2-overview small{margin-top:4px;color:var(--muted);font-size:7px}
-.portal2-task,.portal2-edit{margin-top:22px;padding:24px;background:var(--paper);border:1px solid var(--line)}.portal2-task-head{display:flex;justify-content:space-between;gap:18px;align-items:start}.portal2-task h2,.portal2-edit h2,.portal2-section-head h2{margin:0;font-family:Georgia,serif;font-size:clamp(28px,4vw,40px);font-weight:400;line-height:1.05}.portal2-task-head>span{padding:6px 8px;background:#e7d8ca;color:#795d32;font-size:8px}
+.portal2-task,.portal2-edit{margin-top:22px;padding:24px;background:var(--paper);border:1px solid var(--line)}.portal2-task-head{display:flex;justify-content:space-between;gap:18px;align-items:start}.portal2-task h2,.portal2-edit h2,.portal2-section-head h2{margin:0;font-family:Georgia,serif;font-size:clamp(28px,4vw,40px);font-weight:400;line-height:1.05}.portal2-task-head>span{padding:6px 8px;background:#e9e2d9;color:#795d32;font-size:8px}
 .portal2-task-grid{display:grid;grid-template-columns:repeat(3,1fr);margin-top:18px;border:1px solid var(--line)}.portal2-task-grid>div{padding:12px;border-right:1px solid var(--line);border-bottom:1px solid var(--line)}.portal2-task-grid>div:nth-child(3n){border-right:0}.portal2-task-grid>div:nth-last-child(-n+3){border-bottom:0}.portal2-task-grid span,.portal2-task-grid strong{display:block}.portal2-task-grid span{font-size:7px;text-transform:uppercase;color:var(--muted)}.portal2-task-grid strong{margin-top:4px;font-family:Georgia,serif;font-size:15px;font-weight:400}
 .portal2-primary{width:100%;min-height:48px;margin-top:18px;border:0;background:var(--green);color:#fff;font-size:9px}.portal2-back{border:0;background:none;padding:0;color:var(--muted);font-size:9px;margin-bottom:18px}.portal2-edit>p:not(.portal2-eyebrow){color:var(--muted);font-size:9px;line-height:1.55}
-.portal2-prepared{display:grid;grid-template-columns:repeat(2,1fr);margin-top:18px;border:1px solid var(--line);background:#f6efe6}.portal2-prepared>div{padding:12px;border-right:1px solid var(--line);border-bottom:1px solid var(--line)}.portal2-prepared>div:nth-child(2n){border-right:0}.portal2-prepared>div:nth-last-child(-n+2){border-bottom:0}.portal2-prepared span,.portal2-prepared strong{display:block}.portal2-prepared span{font-size:7px;text-transform:uppercase;color:var(--muted)}.portal2-prepared strong{margin-top:4px;font-family:Georgia,serif;font-size:14px;font-weight:400}
+.portal2-prepared{display:grid;grid-template-columns:repeat(2,1fr);margin-top:18px;border:1px solid var(--line);background:#f7f3ed}.portal2-prepared>div{padding:12px;border-right:1px solid var(--line);border-bottom:1px solid var(--line)}.portal2-prepared>div:nth-child(2n){border-right:0}.portal2-prepared>div:nth-last-child(-n+2){border-bottom:0}.portal2-prepared span,.portal2-prepared strong{display:block}.portal2-prepared span{font-size:7px;text-transform:uppercase;color:var(--muted)}.portal2-prepared strong{margin-top:4px;font-family:Georgia,serif;font-size:14px;font-weight:400}
 .portal2-form-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:18px}.portal2-form-grid label{display:grid;gap:6px}.portal2-form-grid span{font-size:8px;text-transform:uppercase;color:var(--muted)}.portal2-form-grid input{height:45px;border:1px solid var(--line);background:#fff;padding:0 11px;font-size:10px}
 .portal2-confirm{display:flex;gap:10px;align-items:flex-start;margin-top:16px;padding:12px;border:1px solid var(--line);background:#fff}.portal2-confirm span{font-size:9px;line-height:1.5}.portal2-error{margin:10px 0 0;color:#8a4e30;font-size:8px}
 .portal2-section{padding:42px 0 0}.portal2-section-head{display:grid;grid-template-columns:1fr minmax(220px,.6fr);gap:22px;align-items:end;margin-bottom:14px}.portal2-section-head>small{color:var(--muted);font-size:8px;line-height:1.5}
@@ -243,26 +243,26 @@ html,body{margin:0;max-width:100%;overflow-x:hidden;background:var(--cream)}*,*:
 }
 /* Brand system 2026-09-23 · grower portal */
 .portal2-mark{
-  background:#162126;
-  color:#702235
+  background:#17191c;
+  color:#6b1f2b
 }
 .portal2-header{border-bottom-color:rgba(53,84,94,.22)}
-.portal2-eyebrow{color:#702235}
+.portal2-eyebrow{color:#6b1f2b}
 .partner-active{
   background:#e8efd1;
-  color:#102d38;
-  border-left:3px solid #702235
+  color:#26343e;
+  border-left:3px solid #6b1f2b
 }
 .portal2-primary{
-  background:#102d38;
+  background:#26343e;
   color:#fff
 }
-.portal2-primary:hover,.portal2-primary:focus-visible{background:#1e4652}
-.portal2-profile-meter i{background:#102d38}
-.portal2-quiet{background:#f1e5d8}
+.portal2-primary:hover,.portal2-primary:focus-visible{background:#364a58}
+.portal2-profile-meter i{background:#26343e}
+.portal2-quiet{background:#f2eee7}
 @media(max-width:720px){
-  .grower-bottom-nav{background:#162126}
-  .grower-bottom-nav a.active{color:#702235}
+  .grower-bottom-nav{background:#17191c}
+  .grower-bottom-nav a.active{color:#6b1f2b}
 }
 
 
@@ -301,25 +301,41 @@ html,body{margin:0;max-width:100%;overflow-x:hidden;background:var(--cream)}*,*:
 
 /* Grower trust layer */
 .portal2-header{border-bottom-color:rgba(18,58,46,.18)}
-.portal2-mark{background:#102d38}
-.partner-active,.portal2-header-status{background:#e5eee9;color:#102d38}
-.grower-today{border-left-color:#702235}
-.grower-today.clear{border-left-color:#102d38}
-.portal2-primary{background:#102d38}
-.grower-bottom-nav{background:#102d38}
+.portal2-mark{background:#26343e}
+.partner-active,.portal2-header-status{background:#e8eee9;color:#26343e}
+.grower-today{border-left-color:#6b1f2b}
+.grower-today.clear{border-left-color:#26343e}
+.portal2-primary{background:#26343e}
+.grower-bottom-nav{background:#26343e}
 
 /* grower portal: partner of a powerful institution */
-.portal2-header{width:100%;min-height:88px;padding-left:max(20px,calc((100vw - 1120px)/2));padding-right:max(20px,calc((100vw - 1120px)/2));background:#102d38;color:#fcfaf5;border-bottom:5px solid #702235}
-.portal2-brand{color:#fcfaf5}.portal2-brand small{color:rgba(252,250,245,.65)}
-.portal2-mark{background:#fcfaf5;color:#102d38}
-.portal2-header-status{background:transparent;color:#d8c4af;border:1px solid rgba(252,250,245,.24)}
-.dashboard-identity{margin:0 -18px;padding:32px 18px 28px;background:#162126;color:#fcfaf5;border:0}
-.dashboard-identity .portal2-eyebrow{color:#b16842}
-.dashboard-identity h1{color:#fcfaf5}
+.portal2-header{width:100%;min-height:88px;padding-left:max(20px,calc((100vw - 1120px)/2));padding-right:max(20px,calc((100vw - 1120px)/2));background:#26343e;color:#fcfaf7;border-bottom:5px solid #6b1f2b}
+.portal2-brand{color:#fcfaf7}.portal2-brand small{color:rgba(252,250,245,.65)}
+.portal2-mark{background:#fcfaf7;color:#26343e}
+.portal2-header-status{background:transparent;color:#b8ada0;border:1px solid rgba(252,250,245,.24)}
+.dashboard-identity{margin:0 -18px;padding:32px 18px 28px;background:#17191c;color:#fcfaf7;border:0}
+.dashboard-identity .portal2-eyebrow{color:#a65f3b}
+.dashboard-identity h1{color:#fcfaf7}
 .dashboard-identity>div>p:last-child{color:rgba(252,250,245,.68)}
-.partner-active{background:#fcfaf5;color:#102d38}
-.grower-today{margin-top:0;border-left:0;border-bottom:5px solid #702235;background:#f1e5d8}
-.grower-today.clear{border-bottom-color:#102d38;background:#e5eee9}
-.portal2-section-head h2,.portal2-profile-card h2{color:#102d38}
-.portal2-primary{background:#102d38}
-.grower-bottom-nav{background:#102d38}
+.partner-active{background:#fcfaf7;color:#26343e}
+.grower-today{margin-top:0;border-left:0;border-bottom:5px solid #6b1f2b;background:#f2eee7}
+.grower-today.clear{border-bottom-color:#26343e;background:#e8eee9}
+.portal2-section-head h2,.portal2-profile-card h2{color:#26343e}
+.portal2-primary{background:#26343e}
+.grower-bottom-nav{background:#26343e}
+
+/* Partner portal: graphite authority + warm paper */
+.portal2-header{width:100%;min-height:90px;padding-left:max(20px,calc((100vw - 1120px)/2));padding-right:max(20px,calc((100vw - 1120px)/2));background:#26343e;color:#fcfaf7;border-bottom:6px solid #6b1f2b}
+.portal2-brand{color:#fcfaf7}.portal2-brand small{color:rgba(252,250,247,.65)}
+.portal2-mark{background:#fcfaf7;color:#26343e}
+.portal2-header-status{background:transparent;color:#b8ada0;border:1px solid rgba(252,250,247,.22)}
+.dashboard-identity{margin:0 -18px;padding:34px 18px 30px;background:#17191c;color:#fcfaf7;border:0}
+.dashboard-identity .portal2-eyebrow{color:#a65f3b}
+.dashboard-identity h1{color:#fcfaf7}
+.dashboard-identity>div>p:last-child{color:rgba(252,250,247,.68)}
+.partner-active{background:#fcfaf7;color:#26343e}
+.grower-today{margin-top:0;border-left:0;border-bottom:5px solid #6b1f2b;background:#f2eee7}
+.grower-today.clear{border-bottom-color:#26343e;background:#e8eee9}
+.portal2-section-head h2,.portal2-profile-card h2{color:#26343e}
+.portal2-primary{background:#26343e}
+.grower-bottom-nav{background:#17191c}
