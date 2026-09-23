@@ -9,7 +9,9 @@ export const demoRequirement = {
   grape: 'Riesling',
   origin: 'Mosel',
   vintage: 2025,
-  deliveryWindow: 'Okt.–Dez. 2026'
+  deliveryWindow: 'Okt.–Dez. 2026',
+  minLoadingVolume: 12000,
+  preferredLoadingVolume: 22000
 };
 
 const places = ['Bernkastel-Kues','Piesport','Leiwen','Trittenheim','Brauneberg','Wintrich','Ürzig','Graach','Zeltingen-Rachtig','Mehring','Neumagen-Dhron','Kröv'];
@@ -41,14 +43,12 @@ function fictionalGrowerName(index) {
 
 export const demoGrowers = Array.from({ length: 230 }, (_, index) => {
   const n = index + 1;
-  const grape = n % 9 === 0 ? 'Weißburgunder' : 'Riesling';
-  const origin = n % 17 === 0 ? 'Saar' : 'Mosel';
-  const vintage = n % 13 === 0 ? 2024 : 2025;
-  const availableVolume = 7000 + ((n * 3700) % 24000);
-  const analysisConfirmed = n % 14 !== 0;
-  const treatmentsConfirmed = n % 19 !== 0;
-  const currentVolumeConfirmed = n % 23 !== 0;
   const isBlueBandMember = n <= 200;
+  const hectares = Number((5.5 + ((n * 17) % 235) / 10).toFixed(1));
+  const annualProduction = Math.round((hectares * (7200 + ((n * 113) % 1800))) / 1000) * 1000;
+  const marketVolume = Math.round((annualProduction * (0.38 + ((n % 5) * 0.08))) / 1000) * 1000;
+  const storageCapacity = Math.round((annualProduction * (1.05 + ((n % 4) * 0.12))) / 1000) * 1000;
+  const largestTank = [8000,12000,16000,20000,25000,30000,40000][n % 7];
 
   return {
     growerId: 'TEST-' + String(n).padStart(3,'0'),
@@ -58,16 +58,69 @@ export const demoGrowers = Array.from({ length: 230 }, (_, index) => {
     cooperationStatus: 'active',
     supplierGroups: isBlueBandMember ? ['Blaues Band'] : [],
     membershipDataStatus: 'synthetic',
-    lotId: 'R25-' + String(10+n).padStart(3,'0'),
-    productType: 'wine',
-    grape,
-    origin,
-    vintage,
-    availableVolume,
-    analysisConfirmed,
-    treatmentsConfirmed,
-    currentVolumeConfirmed,
-    transportDataComplete: n % 7 !== 0,
-    documentReady: n % 11 === 0
+    profile: {
+      completeness: n % 11 === 0 ? 72 : n % 17 === 0 ? 84 : 100,
+      hectares,
+      annualProduction,
+      typicalMarketVolume: marketVolume,
+      storageCapacity,
+      largestTank,
+      maxLoadingVolume: Math.min(largestTank, 26000),
+      grapes: n % 9 === 0 ? ['Weißburgunder','Riesling'] : ['Riesling', n % 4 === 0 ? 'Weißburgunder' : 'Müller-Thurgau'],
+      offers: n % 6 === 0 ? ['Fasswein','Most'] : ['Fasswein'],
+      flexibleRequests: n % 8 !== 0,
+      loadingMethod: largestTank >= 12000 ? 'tank-truck' : 'container'
+    }
   };
 });
+
+const grapes = ['Riesling','Riesling','Riesling','Weißburgunder','Riesling','Müller-Thurgau'];
+const vintages = [2025,2025,2024,2025];
+
+export const demoLots = demoGrowers.flatMap((grower, growerIndex) => {
+  const n = growerIndex + 1;
+  const lotCount = 2 + (n % 3);
+
+  return Array.from({ length: lotCount }, (_, lotIndex) => {
+    const serial = n * 10 + lotIndex + 1;
+    const grape = grapes[(n + lotIndex) % grapes.length];
+    const vintage = vintages[(n + lotIndex) % vintages.length];
+    const origin = (n + lotIndex) % 23 === 0 ? 'Saar' : 'Mosel';
+    const availableVolume = 4500 + ((n * 3100 + lotIndex * 4700) % 26000);
+
+    return {
+      lotId: 'R' + String(vintage).slice(2) + '-' + String(serial).padStart(4,'0'),
+      growerId: grower.growerId,
+      productType: 'wine',
+      grape,
+      origin,
+      vintage,
+      availableVolume,
+      analysisConfirmed: serial % 14 !== 0,
+      treatmentsConfirmed: serial % 19 !== 0,
+      currentVolumeConfirmed: serial % 23 !== 0,
+      transportDataComplete: serial % 7 !== 0,
+      documentReady: serial % 11 === 0
+    };
+  });
+});
+
+export const demoProcurementRows = demoLots.map(lot => {
+  const grower = demoGrowers.find(item => item.growerId === lot.growerId);
+  return {
+    ...lot,
+    growerName: grower.growerName,
+    place: grower.place,
+    supplierGroups: grower.supplierGroups,
+    cooperationStatus: grower.cooperationStatus,
+    businessProfile: grower.profile
+  };
+});
+
+export function getGrowerById(id) {
+  return demoGrowers.find(grower => grower.growerId === id);
+}
+
+export function getLotsForGrower(id) {
+  return demoLots.filter(lot => lot.growerId === id);
+}
