@@ -50,10 +50,16 @@ export const demoGrowers = Array.from({ length: 230 }, (_, index) => {
   const storageCapacity = Math.round((annualProduction * (1.05 + ((n % 4) * 0.12))) / 1000) * 1000;
   const largestTank = [8000,12000,16000,20000,25000,30000,40000][n % 7];
 
+  const family = fictionalFamilies[index % fictionalFamilies.length];
+
   return {
     growerId: 'TEST-' + String(n).padStart(3,'0'),
     growerName: fictionalGrowerName(index),
     place: places[index % places.length],
+    contactPerson: 'Familie ' + family,
+    email: family.toLowerCase() + '@demo-weingut.de',
+    phone: '06531 ' + String(410000 + n),
+    businessNumber: 'DEMO-RP-' + String(n).padStart(5,'0'),
     dataStatus: 'synthetic',
     cooperationStatus: 'active',
     supplierGroups: isBlueBandMember ? ['Blaues Band'] : [],
