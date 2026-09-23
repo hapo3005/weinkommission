@@ -312,9 +312,10 @@ const base = import.meta.env.BASE_URL;
       fields.loadingVolume.value = new Intl.NumberFormat('de-DE').format(grower.profile.maxLoadingVolume) + ' l';
       fields.loadingMethod.value = grower.profile.loadingMethod;
       setChecked('[data-profile-grape]', grower.profile.grapes);
-      setChecked('[data-profile-offer]', grower.profile.offers);
+      setChecked('[data-profile-offer]', grower.profile.completeness >= 88 ? grower.profile.offers : []);
       setChecked('[data-profile-quality]', ['Qualitätswein']);
-      document.querySelector('[data-profile-structure][value="estate"]').checked = true;
+      const initialStructure = document.querySelector('[data-profile-structure][value="estate"]');
+      if (initialStructure) initialStructure.checked = grower.profile.completeness >= 100;
       document.querySelector('[data-profile-flexible]').checked = Boolean(grower.profile.flexibleRequests);
       document.querySelector('[data-profile-blueband]').checked = grower.supplierGroups.includes('Blaues Band');
     }
