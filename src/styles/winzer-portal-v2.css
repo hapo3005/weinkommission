@@ -22,3 +22,207 @@ html,body{margin:0;max-width:100%;overflow-x:hidden;background:var(--cream)}*,*:
 .portal2-help-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.portal2-help-grid a{display:grid;grid-template-columns:1fr auto;gap:4px 12px;min-height:95px;padding:16px;background:var(--paper);border:1px solid var(--line);color:var(--ink);text-decoration:none}.portal2-help-grid strong{font-family:Georgia,serif;font-size:18px;font-weight:400}.portal2-help-grid small{grid-column:1;color:var(--muted);font-size:8px}.portal2-help-grid span{grid-column:2;grid-row:1/3;align-self:center;color:var(--green)}
 @media(max-width:720px){.portal2-header{width:calc(100% - 28px);padding:14px 0;align-items:flex-start;flex-direction:column}.portal2-header-actions{width:100%;align-items:stretch;flex-direction:column}.portal2-main{width:calc(100% - 28px);padding-top:30px}.portal2-identity{align-items:flex-start;flex-direction:column}.portal2-profile-card,.portal2-section-head{grid-template-columns:1fr}.portal2-overview{grid-template-columns:1fr}.portal2-overview article{border-right:0;border-bottom:1px solid var(--line)}.portal2-overview article:last-child{border-bottom:0}.portal2-task-grid{grid-template-columns:1fr 1fr}.portal2-task-grid>div{border-right:1px solid var(--line)!important;border-bottom:1px solid var(--line)!important}.portal2-task-grid>div:nth-child(2n){border-right:0!important}.portal2-task-grid>div:nth-last-child(-n+2){border-bottom:0!important}.portal2-form-grid,.portal2-prepared,.portal2-help-grid{grid-template-columns:1fr}.portal2-prepared>div{border-right:0!important}.portal2-prepared>div:nth-last-child(-n+2){border-bottom:1px solid var(--line)}.portal2-prepared>div:last-child{border-bottom:0}.portal2-lots article{grid-template-columns:1fr auto}.portal2-lots>article>div:first-child{grid-column:1/-1}.portal2-lots em{grid-column:2;grid-row:2}}
 @media(max-width:440px){.portal2-identity h1{font-size:40px}.portal2-task-grid{grid-template-columns:1fr}.portal2-task-grid>div{border-right:0!important;border-bottom:1px solid var(--line)!important}.portal2-task-grid>div:last-child{border-bottom:0!important}}
+
+
+/* Registered grower dashboard */
+.dashboard-identity{
+  padding-bottom:22px;
+  border-bottom:0;
+}
+.dashboard-identity h1{max-width:14ch}
+.partner-active{
+  align-self:flex-start;
+  padding:7px 9px;
+  background:#e3eee5;
+  color:#2f674c;
+  font-size:8px;
+  text-transform:uppercase;
+  letter-spacing:.06em
+}
+.grower-today{
+  display:grid;
+  grid-template-columns:46px minmax(0,1fr) auto;
+  gap:16px;
+  align-items:center;
+  margin-top:14px;
+  padding:20px;
+  background:#f4eee4;
+  border:1px solid var(--line);
+  border-left:4px solid #9b7047
+}
+.grower-today.clear{
+  background:#edf3ee;
+  border-left-color:#3e7657
+}
+.grower-today.needs-action{
+  background:#f6eee3;
+  border-left-color:#9b7047
+}
+.grower-today-mark{
+  width:40px;
+  height:40px;
+  display:grid;
+  place-items:center;
+  border-radius:50%;
+  background:#fff;
+  font-family:Georgia,serif;
+  font-size:20px
+}
+.grower-today-copy h2{
+  margin:0;
+  font-family:Georgia,serif;
+  font-size:clamp(24px,3.5vw,34px);
+  line-height:1.08;
+  font-weight:400
+}
+.grower-today-copy>p:not(.portal2-eyebrow){
+  margin:7px 0 0;
+  color:var(--muted);
+  font-size:9px;
+  line-height:1.55
+}
+.today-status{
+  display:inline-flex;
+  margin-top:9px;
+  padding:5px 7px;
+  background:rgba(255,255,255,.65);
+  font-size:8px;
+  color:var(--green)
+}
+.today-button{
+  width:auto;
+  min-width:150px;
+  margin-top:0
+}
+.dashboard-stats{
+  grid-template-columns:repeat(4,1fr);
+  margin-top:12px
+}
+.current-section{
+  margin-top:22px;
+  padding:22px;
+  background:var(--paper);
+  border:1px solid var(--line)
+}
+.current-section .portal2-section-head{margin-bottom:0}
+.current-grid{margin-top:16px}
+.task-editor{margin-top:22px}
+.dashboard-profile{
+  margin-top:22px
+}
+.portal2-lots article{
+  grid-template-columns:1.05fr .72fr .72fr auto
+}
+.portal2-lots article>div:nth-child(3) span,
+.portal2-lots article>div:nth-child(3) strong{display:block}
+.portal2-lots article>div:nth-child(3) span{
+  font-size:7px;
+  color:var(--muted)
+}
+.portal2-lots article>div:nth-child(3) strong{
+  margin-top:3px;
+  font-family:Georgia,serif;
+  font-size:14px;
+  font-weight:400
+}
+.grower-bottom-nav{
+  display:none
+}
+@media(max-width:720px){
+  .portal2-main{
+    padding-bottom:110px
+  }
+  .portal2-header-actions{
+    width:100%
+  }
+  .portal2-quiet{
+    width:100%
+  }
+  .dashboard-identity{
+    gap:12px
+  }
+  .dashboard-identity h1{
+    font-size:42px;
+    max-width:100%
+  }
+  .grower-today{
+    grid-template-columns:38px 1fr;
+    gap:12px;
+    padding:16px
+  }
+  .grower-today-mark{
+    width:34px;
+    height:34px;
+    font-size:18px
+  }
+  .today-button{
+    grid-column:1/-1;
+    width:100%;
+    min-width:0
+  }
+  .dashboard-stats{
+    grid-template-columns:1fr 1fr
+  }
+  .dashboard-stats article{
+    border-right:1px solid var(--line);
+    border-bottom:1px solid var(--line)
+  }
+  .dashboard-stats article:nth-child(2n){border-right:0}
+  .dashboard-stats article:nth-last-child(-n+2){border-bottom:0}
+  .current-section{
+    padding:16px
+  }
+  .current-grid{
+    grid-template-columns:1fr 1fr
+  }
+  .portal2-lots article{
+    grid-template-columns:1fr auto;
+    gap:8px 12px
+  }
+  .portal2-lots article>div:first-child{
+    grid-column:1/-1
+  }
+  .portal2-lots article>div:nth-child(2),
+  .portal2-lots article>div:nth-child(3){
+    display:block
+  }
+  .portal2-lots article em{
+    grid-column:2;
+    grid-row:2/4;
+    align-self:center
+  }
+  .grower-bottom-nav{
+    position:fixed;
+    left:0;
+    right:0;
+    bottom:0;
+    z-index:80;
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    min-height:68px;
+    padding:6px 10px calc(6px + env(safe-area-inset-bottom));
+    background:#132a21;
+    border-top:1px solid rgba(255,255,255,.1)
+  }
+  .grower-bottom-nav a{
+    display:grid;
+    place-items:center;
+    align-content:center;
+    gap:3px;
+    color:rgba(255,255,255,.65);
+    text-decoration:none
+  }
+  .grower-bottom-nav a.active{color:#fff}
+  .grower-bottom-nav a>span{
+    font-family:Georgia,serif;
+    font-size:18px
+  }
+  .grower-bottom-nav small{
+    font-size:8px
+  }
+}
+@media(max-width:440px){
+  .dashboard-stats article{padding:13px}
+  .dashboard-stats strong{font-size:20px}
+  .grower-today-copy h2{font-size:24px}
+}
