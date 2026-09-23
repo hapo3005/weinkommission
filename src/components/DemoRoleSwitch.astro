@@ -1,0 +1,21 @@
+---
+interface Props {
+  active: 'nadine' | 'winzer';
+}
+const { active } = Astro.props;
+const base = import.meta.env.BASE_URL;
+---
+
+<nav class="demo-role-switch" aria-label="Demo-Perspektive">
+  <span>Demo-Perspektive</span>
+  <a class:list={{active: active === 'nadine'}} href={`${base}cockpit/`}>Nadine</a>
+  <a class:list={{active: active === 'winzer'}} href={`${base}winzer/`}>Winzer</a>
+</nav>
+
+<style>
+  .demo-role-switch{display:inline-flex;align-items:center;gap:4px;padding:4px;background:#e8e1d6;border:1px solid rgba(23,34,29,.14);font-family:Arial,sans-serif}
+  .demo-role-switch>span{padding:0 7px;font-size:7px;letter-spacing:.09em;text-transform:uppercase;color:#6a716d}
+  .demo-role-switch a{padding:7px 10px;color:#19342a;text-decoration:none;font-size:9px}
+  .demo-role-switch a.active{background:#19342a;color:#fff}
+  @media(max-width:560px){.demo-role-switch{width:100%;display:grid;grid-template-columns:auto 1fr 1fr}.demo-role-switch a{text-align:center}}
+</style>
