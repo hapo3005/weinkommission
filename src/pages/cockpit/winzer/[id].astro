@@ -43,7 +43,7 @@ const profileStatusClass =
 
 <BaseLayout
   title={`${grower.growerName} · Winzerprofil`}
-  description="Interne Betriebsakte im Cockpit der Weinkommission Porn."
+  description="Interne Test-Betriebsakte im Cockpit der Weinkommission Porn."
   canonicalPath={`/weinkommission/cockpit/winzer/${grower.growerId}/`}
 >
   <div class="profile-app">
@@ -51,11 +51,11 @@ const profileStatusClass =
       <div class="profile-header-inner">
         <a class="profile-back" href={`${base}cockpit/grossbedarf/`}>← Großbedarf</a>
         <div class="profile-title">
-          <p class="overline">Interne Betriebsakte · Demo-Datensatz</p>
+          <p class="overline">Interne Betriebsakte · synthetischer Testdatensatz</p>
           <h1>{grower.growerName}</h1>
           <div class="profile-meta">
             <span>{grower.place}</span>
-            <span>Blaues Band</span>
+            <span>Verbundzuordnung noch nicht importiert</span>
             <span>{grower.growerId}</span>
           </div>
         </div>
@@ -220,7 +220,7 @@ const profileStatusClass =
         <div class="master-data">
           <div><span>Betrieb</span><strong>{grower.growerName}</strong></div>
           <div><span>Ort</span><strong>{grower.place}</strong></div>
-          <div><span>Verbund</span><strong>Blaues Band · Demo-Zuordnung</strong></div>
+          <div class="missing"><span>Verbundzuordnung</span><strong>noch nicht importiert</strong></div>
           <div class="missing"><span>Betriebsnummer</span><strong>noch nicht importiert</strong></div>
           <div class="missing"><span>Ansprechpartner</span><strong>noch nicht importiert</strong></div>
           <div class="missing"><span>Telefon</span><strong>noch nicht importiert</strong></div>
@@ -244,8 +244,8 @@ const profileStatusClass =
       </section>
 
       <section class="profile-footnote">
-        <strong>Demo-Betriebsakte</strong>
-        <p>Namen und operative Werte auf dieser Seite stammen aus unserem Testbestand. Nicht vorhandene reale Stammdaten werden bewusst nicht erfunden.</p>
+        <strong>Synthetische Test-Betriebsakte</strong>
+        <p>Dieser Betrieb ist kein recherchiertes Mitglied des Blauen Bandes. Name, Mengen und Status stammen ausschließlich aus dem Testbestand. Reale Betriebe werden später aus Rolands/Nadines Datenbestand importiert und ersetzen diese Datensätze vollständig.</p>
       </section>
 
       <dialog class="profile-dialog" data-contact-dialog>
