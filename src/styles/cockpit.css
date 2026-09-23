@@ -185,3 +185,222 @@ h3{font-size:25px;line-height:1.12}
   .result-dialog{padding:28px 22px}
 }
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{transition-duration:.01ms!important}}
+
+
+/* Responsive app shell — mobile-first overrides */
+html,body{max-width:100%;overflow-x:hidden}
+.cockpit-main,.overview,.workbench,.operations,.automation-note,.attention-card,.info-block,.document-panel{min-width:0}
+.transport-fields input,.transport-fields select{min-width:0}
+.card-topline{flex-wrap:wrap}
+
+@media(max-width:1024px){
+  .cockpit-app{grid-template-columns:1fr}
+  .sidebar{
+    position:sticky;
+    top:0;
+    z-index:90;
+    height:auto;
+    min-height:0;
+    padding:12px 18px;
+    display:block;
+    border-right:0;
+    border-bottom:1px solid rgba(255,255,255,.1)
+  }
+  .cockpit-brand{
+    padding:0;
+    border-bottom:0;
+    min-height:48px;
+  }
+  .brand-mark{width:36px;height:36px;font-size:16px}
+  .cockpit-brand strong{font-size:12px}
+  .cockpit-brand small{font-size:9px}
+  .side-nav{
+    position:fixed;
+    left:0;
+    right:0;
+    bottom:0;
+    z-index:120;
+    margin:0;
+    padding:7px 8px calc(7px + env(safe-area-inset-bottom));
+    background:#12231d;
+    border-top:1px solid rgba(255,255,255,.12);
+    display:grid;
+    grid-template-columns:repeat(5,minmax(0,1fr));
+    gap:3px;
+    overflow:visible;
+    box-shadow:0 -10px 30px rgba(0,0,0,.12)
+  }
+  .side-nav a{
+    min-width:0;
+    min-height:50px;
+    padding:5px 2px;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    gap:3px;
+    text-align:center;
+    font-size:9px;
+    line-height:1.1;
+    border:0;
+  }
+  .side-nav .nav-icon{
+    display:block;
+    font-size:18px;
+    line-height:1
+  }
+  .side-nav a.active{background:rgba(255,255,255,.07)}
+  .sidebar-foot{display:none}
+  .cockpit-main{
+    padding:28px clamp(18px,4vw,38px) calc(105px + env(safe-area-inset-bottom));
+  }
+  .cockpit-topbar{align-items:start}
+  .attention-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .attention-card:last-child{grid-column:1/-1}
+  .workbench-grid{grid-template-columns:1fr}
+  .document-panel{position:static}
+}
+
+@media(max-width:760px){
+  .cockpit-main{padding-top:22px}
+  .cockpit-topbar{
+    display:grid;
+    grid-template-columns:1fr;
+    gap:18px;
+  }
+  .topbar-actions{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    width:100%;
+  }
+  .topbar-actions button{width:100%}
+  h1{font-size:clamp(34px,11vw,48px)}
+  h2{font-size:clamp(29px,8.5vw,39px)}
+  .overview,.workbench,.operations{padding-top:34px}
+  .section-heading{
+    grid-template-columns:1fr;
+    gap:14px;
+    margin-bottom:18px;
+  }
+  .section-heading>p{max-width:56ch}
+  .attention-grid{grid-template-columns:1fr}
+  .attention-card:last-child{grid-column:auto}
+  .attention-card{min-height:0;padding:18px}
+  .attention-card h3{margin-top:20px;font-size:21px}
+  .card-footer{margin-top:18px}
+  .workbench{margin-top:34px}
+  .workbench-head{
+    display:grid;
+    grid-template-columns:1fr;
+    gap:12px;
+    align-items:start;
+  }
+  .info-block,.document-panel{padding:18px}
+  .block-head{
+    align-items:flex-start;
+    gap:12px;
+    flex-wrap:wrap;
+  }
+  .facts{grid-template-columns:1fr}
+  .facts div:nth-child(n){
+    grid-template-columns:110px minmax(0,1fr);
+    padding:11px 0;
+    border-left:0;
+  }
+  .compact-checks{grid-template-columns:1fr}
+  .transport-fields{grid-template-columns:1fr}
+  .form-actions{
+    display:grid;
+    grid-template-columns:1fr;
+  }
+  .form-actions button{width:100%}
+  .readiness{grid-template-columns:72px minmax(0,1fr)}
+  .readiness-ring{width:68px;height:68px}
+  .readiness-ring::before{width:54px;height:54px}
+  .ledger{
+    background:transparent;
+    border:0;
+    overflow:visible
+  }
+  .ledger-head{display:none}
+  .ledger-row:not(.ledger-head){
+    min-width:0;
+    grid-template-columns:1fr 1fr;
+    gap:12px 16px;
+    margin-bottom:12px;
+    padding:17px;
+    border:1px solid var(--line);
+    background:var(--paper);
+  }
+  .ledger-row:not(.ledger-head)>strong{
+    grid-column:1/-1;
+    font-size:18px;
+    padding-bottom:9px;
+    border-bottom:1px solid var(--line)
+  }
+  .ledger-row:not(.ledger-head)>span{
+    display:grid;
+    gap:4px;
+    min-width:0;
+    overflow-wrap:anywhere
+  }
+  .ledger-row:not(.ledger-head)>span:nth-child(2)::before{content:"Partie"}
+  .ledger-row:not(.ledger-head)>span:nth-child(3)::before{content:"Menge"}
+  .ledger-row:not(.ledger-head)>span:nth-child(4)::before{content:"Termin"}
+  .ledger-row:not(.ledger-head)>span:nth-child(5)::before{content:"Status"}
+  .ledger-row:not(.ledger-head)>span::before{
+    font-size:8px;
+    line-height:1;
+    text-transform:uppercase;
+    letter-spacing:.09em;
+    color:var(--muted)
+  }
+  .ledger-row:not(.ledger-head)>.status{
+    display:inline-flex;
+    justify-self:start;
+    align-self:start
+  }
+  .automation-note{
+    grid-template-columns:1fr;
+    gap:18px;
+    margin-top:38px;
+    padding:25px 20px
+  }
+  .automation-note>p{font-size:17px}
+}
+
+@media(max-width:480px){
+  .sidebar{padding:10px 14px}
+  .cockpit-brand{min-height:44px}
+  .cockpit-brand small{display:none}
+  .cockpit-main{padding-left:14px;padding-right:14px}
+  .topbar-actions{grid-template-columns:1fr}
+  .quiet-button,.primary-button,.secondary-button{min-height:46px}
+  .overline{font-size:9px}
+  .attention-card{padding:16px}
+  .card-topline{align-items:flex-start}
+  .status{white-space:normal;text-align:center}
+  .info-block,.document-panel{padding:16px}
+  .facts div:nth-child(n){grid-template-columns:1fr;gap:4px}
+  .facts dt{font-size:9px;text-transform:uppercase;letter-spacing:.07em}
+  .transport-fields input,.transport-fields select{height:50px;font-size:16px}
+  .field-with-unit input{height:48px}
+  .ledger-row:not(.ledger-head){grid-template-columns:1fr}
+  .ledger-row:not(.ledger-head)>strong{grid-column:auto}
+  .result-dialog{
+    width:calc(100% - 20px);
+    max-height:calc(100dvh - 20px);
+    overflow:auto;
+    padding:28px 18px 20px
+  }
+  .result-dialog h2{font-size:32px}
+  .result-dialog dl div{grid-template-columns:1fr;gap:4px}
+  .side-nav{padding-left:4px;padding-right:4px}
+  .side-nav a{font-size:8px}
+  .side-nav .nav-icon{font-size:17px}
+}
+
+@media(max-width:360px){
+  .cockpit-main{padding-left:10px;padding-right:10px}
+  .cockpit-brand strong{font-size:11px}
+  .side-nav a{font-size:7.5px}
+}
