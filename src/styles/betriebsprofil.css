@@ -28,3 +28,10 @@ html,body{margin:0;max-width:100%;overflow-x:hidden;background:var(--cream)}*,*:
 @media(max-width:640px){
   .profile-edit-actions{width:100%;align-items:stretch;flex-direction:column}
 }
+/* Brand system 2026-09-23 · grower profile */
+.brand-mark{background:#12191d;color:#bcd63f}
+.profile-completeness{background:#35545e}
+.completeness-track i{background:#bcd63f}
+.primary-action{background:#35545e;color:#fff}
+.primary-action:hover,.primary-action:focus-visible{background:#496a73}
+.profile-edit-nav a:hover,.profile-edit-nav a:focus-visible{background:#d9dedb}
