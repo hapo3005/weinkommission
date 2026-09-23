@@ -1,0 +1,276 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import '../../../styles/cockpit.css';
+import '../../../styles/winzerliste.css';
+import { demoRequirement, demoGrowers } from '../../../data/procurement-demo.js';
+import { runProcurement, formatLiters } from '../../../lib/procurementEngine.js';
+
+const base = import.meta.env.BASE_URL;
+const model = runProcurement(demoRequirement, demoGrowers);
+const allocationByGrower = new Map(model.allocationRows.map(row => [row.growerId, row]));
+const taskGrowers = new Set(model.tasks.map(task => task.growerId));
+
+const partners = demoGrowers.map(grower => {
+  const allocation = allocationByGrower.get(grower.growerId);
+  const inBlueBand = grower.supplierGroups.includes('Blaues Band');
+
+  let status = 'partner';
+  let statusLabel = 'Kooperationspartner';
+  let attention = '';
+
+  if (taskGrowers.has(grower.growerId)) {
+    status = 'waiting';
+    statusLabel = 'Rückmeldung offen';
+    attention = 'Angabe fehlt';
+  } else if (allocation?.allocatedVolume > 0) {
+    status = allocation.status;
+    statusLabel = allocation.label;
+    attention = allocation.issue || '';
+  } else if (inBlueBand) {
+    status = 'blueband';
+    statusLabel = 'Blaues Band';
+  }
+
+  return {
+    ...grower,
+    inBlueBand,
+    allocation,
+    status,
+    statusLabel,
+    attention
+  };
+});
+
+const blueBandCount = partners.filter(p => p.inBlueBand).length;
+const otherCount = partners.length - blueBandCount;
+const openCount = partners.filter(p => p.status === 'waiting' || p.status === 'exception').length;
+---
+
+<BaseLayout
+  title="Winzer · Porn Cockpit"
+  description="Interne Übersicht der kooperierenden Winzer der Weinkommission Porn."
+  canonicalPath="/weinkommission/cockpit/winzer/"
+>
+  <div class="cockpit-app partner-app">
+    <aside class="sidebar" aria-label="Cockpit Navigation">
+      <a class="cockpit-brand" href={base}>
+        <span class="brand-mark">WP</span>
+        <span><strong>WEINKOMMISSION PORN</strong><small>Mosel · Cockpit</small></span>
+      </a>
+
+      <nav class="side-nav">
+        <a href={`${base}cockpit/`}><span class="nav-icon">⌂</span><span>Übersicht</span></a>
+        <a class="active" href={`${base}cockpit/winzer/`} aria-current="page"><span class="nav-icon">○</span><span>Winzer</span></a>
+        <a href={`${base}cockpit/grossbedarf/`}><span class="nav-icon">◎</span><span>Großbedarf</span></a>
+        <a href={`${base}cockpit/begleitdokument/`}><span class="nav-icon">▤</span><span>Begleitdokumente</span></a>
+      </nav>
+
+      <div class="sidebar-foot">
+        <div class="api-state">
+          <span class="state-dot pending"></span>
+          <div><strong>Partnerkartei</strong><small>Testdaten · Import offen</small></div>
+        </div>
+        <a class="back-link" href={`${base}cockpit/`}>← Cockpit</a>
+      </div>
+    </aside>
+
+    <main class="cockpit-main partner-main" id="main">
+      <header class="partner-header">
+        <div>
+          <p class="overline">Interne Partnerkartei</p>
+          <h1>Winzer</h1>
+          <p class="partner-lead">Alle Betriebe, mit denen die Weinkommission zusammenarbeitet. Verbundzugehörigkeiten wie „Blaues Band“ sind Eigenschaften des Winzers und können gezielt gefiltert werden.</p>
+        </div>
+        <div class="partner-head-actions">
+          <span class="scenario-badge">synthetische Testdaten</span>
+          <button class="primary-button" type="button" data-import>Reale Liste importieren</button>
+        </div>
+      </header>
+
+      <section class="partner-stats" aria-label="Partnerübersicht">
+        <button type="button" data-group-filter="all" class="active">
+          <span>Kooperationspartner</span>
+          <strong>{partners.length}</strong>
+          <small>alle aktiven Testbetriebe</small>
+        </button>
+        <button type="button" data-group-filter="blueband">
+          <span>Blaues Band</span>
+          <strong>{blueBandCount}</strong>
+          <small>Testzuordnung</small>
+        </button>
+        <button type="button" data-group-filter="other">
+          <span>Sonstige Partner</span>
+          <strong>{otherCount}</strong>
+          <small>außerhalb Blaues Band</small>
+        </button>
+        <button type="button" data-status-filter-button="attention">
+          <span>Aufmerksamkeit</span>
+          <strong>{openCount}</strong>
+          <small>offene Rückmeldungen</small>
+        </button>
+      </section>
+
+      <section class="partner-note">
+        <strong>Struktur steht, Echtdaten fehlen noch.</strong>
+        <p>Die Übersicht ist die künftige zentrale Winzerkartei. Die aktuell angezeigten Betriebe und Blaues-Band-Zuordnungen sind ausschließlich Testdaten. Beim Import werden sie durch Rolands/Nadines reale Partnerliste ersetzt.</p>
+      </section>
+
+      <section class="partner-directory">
+        <div class="directory-tools">
+          <label class="partner-search">
+            <span class="sr-only">Winzer suchen</span>
+            <input type="search" placeholder="Winzer, Ort oder ID suchen" data-partner-search />
+          </label>
+          <select data-partner-group aria-label="Verbund filtern">
+            <option value="all">Alle Kooperationen</option>
+            <option value="blueband">Blaues Band</option>
+            <option value="other">Sonstige Partner</option>
+          </select>
+          <select data-partner-status aria-label="Status filtern">
+            <option value="all">Alle Status</option>
+            <option value="attention">Aufmerksamkeit</option>
+            <option value="allocated">Im Großbedarf zugeteilt</option>
+            <option value="idle">Ohne aktuelle Zuteilung</option>
+          </select>
+        </div>
+
+        <div class="directory-meta">
+          <span><strong data-visible-partners>{partners.length}</strong> Winzer sichtbar</span>
+          <span>Sortierung: Name</span>
+        </div>
+
+        <div class="partner-list">
+          {partners.map((partner) => {
+            const allocated = partner.allocation?.allocatedVolume || 0;
+            const state =
+              partner.status === 'waiting' || partner.status === 'exception' ? 'attention' :
+              allocated > 0 ? 'allocated' : 'idle';
+
+            return (
+              <a
+                class="partner-row"
+                href={`${base}cockpit/winzer/${partner.growerId}/`}
+                data-partner-row
+                data-group={partner.inBlueBand ? 'blueband' : 'other'}
+                data-state={state}
+                data-search={`${partner.growerName} ${partner.place} ${partner.growerId}`.toLowerCase()}
+              >
+                <span class="partner-name">
+                  <strong>{partner.growerName}</strong>
+                  <small>{partner.place} · {partner.growerId}</small>
+                </span>
+
+                <span class="partner-group">
+                  <em class:list={{blueband: partner.inBlueBand, other: !partner.inBlueBand}}>
+                    {partner.inBlueBand ? 'Blaues Band' : 'Sonstiger Partner'}
+                  </em>
+                  <small>Testzuordnung</small>
+                </span>
+
+                <span class="partner-lot">
+                  <strong>{partner.lotId}</strong>
+                  <small>{partner.vintage} {partner.grape}</small>
+                </span>
+
+                <span class="partner-volume">
+                  <strong>{formatLiters(partner.availableVolume)}</strong>
+                  <small>{allocated > 0 ? `${formatLiters(allocated)} zugeteilt` : 'nicht zugeteilt'}</small>
+                </span>
+
+                <span class="partner-status">
+                  <em class:list={['row-status', partner.status]}>{partner.statusLabel}</em>
+                  <small>{partner.attention || 'keine offene Aktion'}</small>
+                </span>
+
+                <span class="partner-open">Profil →</span>
+              </a>
+            );
+          })}
+        </div>
+
+        <button type="button" class="partner-more" data-partner-more>Weitere Winzer anzeigen</button>
+      </section>
+
+      <dialog class="import-dialog" data-import-dialog>
+        <button class="dialog-close" type="button" data-close-import aria-label="Schließen">×</button>
+        <p class="overline">Reale Partnerdaten</p>
+        <h2>Die Testkartei wird später ersetzt.</h2>
+        <p>Die echte Winzerübersicht kann aus Rolands/Nadines vorhandener Excel-, CSV- oder Adressliste importiert werden. Dabei übernehmen wir Namen, Betriebsnummern, Ansprechpartner, Kontaktdaten und die Zugehörigkeit zum Blauen Band.</p>
+        <div class="import-fields">
+          <span>Winzer/Betrieb</span>
+          <span>Betriebsnummer</span>
+          <span>Kontakt</span>
+          <span>Blaues Band: Ja/Nein</span>
+        </div>
+        <button class="primary-button" type="button" data-close-import>Verstanden</button>
+      </dialog>
+    </main>
+  </div>
+
+  <script>
+    const rows = [...document.querySelectorAll('[data-partner-row]')];
+    const search = document.querySelector('[data-partner-search]');
+    const group = document.querySelector('[data-partner-group]');
+    const status = document.querySelector('[data-partner-status]');
+    const count = document.querySelector('[data-visible-partners]');
+    const more = document.querySelector('[data-partner-more]');
+    const importDialog = document.querySelector('[data-import-dialog]');
+    let expanded = false;
+
+    function applyFilters() {
+      const term = search.value.trim().toLowerCase();
+      const groupValue = group.value;
+      const statusValue = status.value;
+
+      const matches = rows.filter(row => {
+        const groupMatch = groupValue === 'all' || row.dataset.group === groupValue;
+        const statusMatch = statusValue === 'all' || row.dataset.state === statusValue;
+        const searchMatch = !term || row.dataset.search.includes(term);
+        return groupMatch && statusMatch && searchMatch;
+      });
+
+      const mobile = window.matchMedia('(max-width: 700px)').matches;
+      const limit = mobile && !expanded ? 12 : matches.length;
+
+      rows.forEach(row => row.hidden = true);
+      matches.slice(0, limit).forEach(row => row.hidden = false);
+
+      count.textContent = mobile && !expanded && matches.length > limit
+        ? limit + ' von ' + matches.length
+        : matches.length;
+
+      more.hidden = !mobile || matches.length <= 12;
+      if (!more.hidden) more.textContent = expanded ? 'Weniger anzeigen' : 'Weitere ' + (matches.length - 12) + ' Winzer anzeigen';
+    }
+
+    function setGroup(value) {
+      group.value = value;
+      expanded = false;
+      applyFilters();
+      document.querySelector('.partner-directory').scrollIntoView({behavior:'smooth', block:'start'});
+    }
+
+    document.querySelectorAll('[data-group-filter]').forEach(button => button.addEventListener('click', () => setGroup(button.dataset.groupFilter)));
+    document.querySelector('[data-status-filter-button]').addEventListener('click', () => {
+      status.value = 'attention';
+      expanded = false;
+      applyFilters();
+      document.querySelector('.partner-directory').scrollIntoView({behavior:'smooth', block:'start'});
+    });
+
+    search.addEventListener('input', () => { expanded = false; applyFilters(); });
+    group.addEventListener('change', () => { expanded = false; applyFilters(); });
+    status.addEventListener('change', () => { expanded = false; applyFilters(); });
+    window.addEventListener('resize', applyFilters);
+
+    more.addEventListener('click', () => {
+      expanded = !expanded;
+      applyFilters();
+    });
+
+    document.querySelector('[data-import]').addEventListener('click', () => importDialog.showModal());
+    document.querySelectorAll('[data-close-import]').forEach(button => button.addEventListener('click', () => importDialog.close()));
+
+    applyFilters();
+  </script>
+</BaseLayout>
