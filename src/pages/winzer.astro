@@ -16,10 +16,19 @@ const base = import.meta.env.BASE_URL;
         <span class="brand-mark">WP</span>
         <span><strong>WEINKOMMISSION PORN</strong><small>Winzerportal</small></span>
       </a>
-      <button class="help-button" type="button" data-help>Hilfe</button>
+      <div class="grower-header-actions">
+        <a class="access-link" href={`${base}winzer/registrieren/`}>Zugang / Registrierung</a>
+        <button class="help-button" type="button" data-help>Hilfe</button>
+      </div>
     </header>
 
     <main id="main" class="grower-main">
+      <section class="portal-demo-note">
+        <strong>Winzerportal-Demo</strong>
+        <span>Noch keinen Zugang?</span>
+        <a href={`${base}winzer/registrieren/`}>Registrierung & Einladung testen →</a>
+      </section>
+
       <section class="welcome" aria-labelledby="welcome-title">
         <p class="eyebrow">Ihr Vorgang für heute</p>
         <h1 id="welcome-title">Guten Morgen,<br />Herr Musterberg.</h1>
