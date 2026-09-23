@@ -82,8 +82,8 @@ const dateLabel = new Intl.DateTimeFormat('de-DE', {
         </a>
         <a href={`${base}cockpit/grossbedarf/#transporte`}>
           <span>Erzeugte Transporte</span>
-          <strong>{model.stats.transports}</strong>
-          <small>{model.stats.documentsReady} Dokumente bereits vorbereitet</small>
+          <strong data-home-transport-kpi>{model.stats.transports}</strong>
+          <small data-home-document-kpi>{model.stats.documentsReady} Dokumente bereits vorbereitet</small>
         </a>
       </section>
 
@@ -143,16 +143,16 @@ const dateLabel = new Intl.DateTimeFormat('de-DE', {
         <div class="home-section-head compact">
           <div>
             <p class="overline">Laufender Großbedarf</p>
-            <h2>{demoRequirement.buyer} × {demoRequirement.supplierGroup}</h2>
+            <h2 data-home-requirement-title>{demoRequirement.buyer} × {demoRequirement.supplierGroup}</h2>
           </div>
           <a class="home-link" href={`${base}cockpit/grossbedarf/`}>Vorgang öffnen →</a>
         </div>
 
         <div class="need-card">
           <div class="need-main">
-            <span class="need-code">{demoRequirement.id}</span>
-            <strong>{demoRequirement.vintage} {demoRequirement.grape} · {demoRequirement.origin}</strong>
-            <small>Lieferfenster {demoRequirement.deliveryWindow}</small>
+            <span class="need-code" data-home-requirement-id>{demoRequirement.id}</span>
+            <strong data-home-requirement-wine>{demoRequirement.vintage} {demoRequirement.grape} · {demoRequirement.origin}</strong>
+            <small data-home-requirement-window>Lieferfenster {demoRequirement.deliveryWindow}</small>
           </div>
           <div class="need-progress">
             <div><span data-home-allocated>{formatLiters(model.allocatedVolume)} zugeteilt</span><strong data-home-coverage>{coveragePercent} %</strong></div>
@@ -237,7 +237,15 @@ const dateLabel = new Intl.DateTimeFormat('de-DE', {
   <script>
     import { demoRequirement, demoProcurementRows, demoGrowers } from '../data/procurement-demo.js';
     import { runProcurement } from '../lib/procurementEngine.js';
-    import { getAllGrowerResponses, getAllCustomLots, getApprovedGrowers } from '../lib/demoSession.js';
+    import {
+      buildDemoWorkingRows,
+      resolveActiveRequirement,
+      getGrowerProfile,
+      getGrowerAccount,
+      getRegistrationRequests,
+      getBuyerRequests,
+      getDriverConfirmations
+    } from '../lib/demoSession.js';
 
     const empty = document.querySelector('[data-home-access-empty]');
     const feed = document.querySelector('[data-home-access-feed]');
@@ -249,40 +257,9 @@ const dateLabel = new Intl.DateTimeFormat('de-DE', {
     }
 
     function renderWorkflowState() {
-      const allResponses = getAllGrowerResponses();
-      const approvedGrowers = getApprovedGrowers();
-      const growerLookup = new Map([
-        ...demoGrowers.map(grower => [grower.growerId, grower]),
-        ...Object.values(approvedGrowers).map(grower => [grower.growerId, grower])
-      ]);
-      const customLots = getAllCustomLots();
-      const customRows = Object.entries(customLots).flatMap(([growerId, lots]) => {
-        const grower = growerLookup.get(growerId);
-        if (!grower) return [];
-        return lots.map(lot => ({
-          ...lot,
-          growerName: grower.growerName,
-          place: grower.place,
-          supplierGroups: grower.supplierGroups || [],
-          cooperationStatus: grower.cooperationStatus || 'active',
-          businessProfile: grower.profile
-        }));
-      });
-
-      const workingRows = [...demoProcurementRows, ...customRows].map(row => {
-        const responses = allResponses[row.growerId] || [];
-        const response = responses.find(item => item.lotId === row.lotId);
-        if (!response) return row;
-        return {
-          ...row,
-          analysisConfirmed: response.type === 'confirmation' ? true : row.analysisConfirmed,
-          treatmentsConfirmed: response.type === 'confirmation' ? true : row.treatmentsConfirmed,
-          currentVolumeConfirmed: response.type === 'confirmation' ? true : row.currentVolumeConfirmed,
-          transportDataComplete: response.type === 'loading' ? true : row.transportDataComplete
-        };
-      });
-
-      const liveModel = runProcurement(demoRequirement, workingRows);
+      const workingRows = buildDemoWorkingRows(demoProcurementRows, demoGrowers);
+      const activeRequirement = resolveActiveRequirement(demoRequirement);
+      const liveModel = runProcurement(activeRequirement, workingRows);
       const format = value => new Intl.NumberFormat('de-DE').format(Math.round(value || 0)) + ' l';
       const pct = Math.round(liveModel.coverage * 100);
 
@@ -290,6 +267,8 @@ const dateLabel = new Intl.DateTimeFormat('de-DE', {
       document.querySelector('[data-home-remaining-kpi]').textContent = format(liveModel.remainingVolume) + ' noch offen';
       document.querySelector('[data-home-open-kpi]').textContent = String(liveModel.tasks.length);
       document.querySelector('[data-home-open-copy]').textContent = liveModel.stats.waitingGrowers + ' Betriebe betroffen';
+      document.querySelector('[data-home-transport-kpi]').textContent = String(liveModel.stats.transports);
+      document.querySelector('[data-home-document-kpi]').textContent = liveModel.stats.documentsReady + ' Dokumente bereits vorbereitet';
       document.querySelector('[data-home-matching]').textContent = String(liveModel.stats.matchingGrowers);
       document.querySelector('[data-home-logistics]').textContent = String(liveModel.stats.logisticallyCapableGrowers);
       document.querySelector('[data-home-auto]').textContent = String(liveModel.stats.autoAllocatableGrowers);
@@ -297,9 +276,14 @@ const dateLabel = new Intl.DateTimeFormat('de-DE', {
       document.querySelector('[data-home-allocated]').textContent = format(liveModel.allocatedVolume) + ' zugeteilt';
       document.querySelector('[data-home-coverage]').textContent = pct + ' %';
       document.querySelector('[data-home-coverage-bar]').style.width = Math.min(liveModel.coverage * 100,100) + '%';
-      document.querySelector('[data-home-remaining]').textContent = format(liveModel.remainingVolume) + ' fehlen bis zur Zielmenge von ' + format(demoRequirement.targetVolume);
+      document.querySelector('[data-home-remaining]').textContent = format(liveModel.remainingVolume) + ' fehlen bis zur Zielmenge von ' + format(activeRequirement.targetVolume);
       document.querySelector('[data-home-growers-allocated]').textContent = String(liveModel.stats.growersAllocated);
       document.querySelector('[data-home-eligible-lots]').textContent = String(liveModel.stats.eligibleLots);
+
+      document.querySelector('[data-home-requirement-title]').textContent = activeRequirement.buyer + ' × ' + (activeRequirement.supplierGroup || 'Partnernetz');
+      document.querySelector('[data-home-requirement-id]').textContent = activeRequirement.id;
+      document.querySelector('[data-home-requirement-wine]').textContent = activeRequirement.vintage + ' ' + activeRequirement.grape + ' · ' + activeRequirement.origin;
+      document.querySelector('[data-home-requirement-window]').textContent = 'Lieferfenster ' + activeRequirement.deliveryWindow;
 
       const attention = document.querySelector('[data-home-attention-list]');
       const taskItems = liveModel.tasks.slice(0,5).map(task => `
@@ -321,7 +305,7 @@ const dateLabel = new Intl.DateTimeFormat('de-DE', {
           <div><strong>Keine offenen Aufgaben</strong><small>Alle Vorgänge können automatisch weiterlaufen.</small></div>
         </article>`;
 
-      const confirmations = JSON.parse(localStorage.getItem('wp-demo-driver-confirmations') || '[]');
+      const confirmations = getDriverConfirmations();
       const confirmationIds = new Set(confirmations.map(item => item.transportId));
       const transportList = document.querySelector('[data-home-transport-list]');
       transportList.innerHTML = liveModel.transports.slice(0,5).map(transport => {
@@ -332,7 +316,7 @@ const dateLabel = new Intl.DateTimeFormat('de-DE', {
           : transport.state === 'prepared' ? 'Transport vorbereitet'
           : 'Verladedaten fehlen';
         return `
-          <a href="${import.meta.env.BASE_URL}cockpit/winzer/${encodeURIComponent(transport.growerId)}/">
+          <a href="${import.meta.env.BASE_URL}cockpit/begleitdokument/?transport=${encodeURIComponent(transport.transportId)}">
             <span class="transport-home-id">${escapeHtml(transport.transportId)}</span>
             <div><strong>${escapeHtml(transport.growerName)}</strong><small>${escapeHtml(transport.lotId)} · ${format(transport.volume)}</small></div>
             <em class="transport-home-state ${confirmed ? 'document-ready' : escapeHtml(transport.state)}">${label}</em>
@@ -341,9 +325,9 @@ const dateLabel = new Intl.DateTimeFormat('de-DE', {
       }).join('');
     }
 
-    const account = JSON.parse(localStorage.getItem('wp-demo-grower-account') || 'null');
-    const requests = JSON.parse(localStorage.getItem('wp-demo-registration-requests') || '[]');
-    const profile = JSON.parse(localStorage.getItem('wp-demo-grower-profile') || 'null');
+    const account = getGrowerAccount();
+    const requests = getRegistrationRequests();
+    const profile = account?.growerId ? getGrowerProfile(account.growerId) : null;
     const items = [];
 
     if (account) {
@@ -374,8 +358,8 @@ const dateLabel = new Intl.DateTimeFormat('de-DE', {
 
     const externalEmpty = document.querySelector('[data-external-empty]');
     const externalFeed = document.querySelector('[data-external-feed]');
-    const buyerRequests = JSON.parse(localStorage.getItem('wp-demo-buyer-requests') || '[]');
-    const driverConfirmations = JSON.parse(localStorage.getItem('wp-demo-driver-confirmations') || '[]');
+    const buyerRequests = getBuyerRequests();
+    const driverConfirmations = getDriverConfirmations();
     const externalItems = [];
 
     buyerRequests.slice(0, 5).forEach(request => {
