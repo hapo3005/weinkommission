@@ -1,6 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import DemoRoleSwitch from '../components/DemoRoleSwitch.astro';
+import RoleContextBar from '../components/RoleContextBar.astro';
 import '../styles/winzer-portal-v2.css';
 
 const base = import.meta.env.BASE_URL;
@@ -11,6 +11,7 @@ const base = import.meta.env.BASE_URL;
   description="Digitaler Arbeitsbereich für kooperierende Winzer der Weinkommission Porn."
   canonicalPath="/weinkommission/winzer/"
 >
+  <RoleContextBar role="grower" />
   <div class="portal2-app">
     <header class="portal2-header">
       <a class="portal2-brand" href={base}>
@@ -18,7 +19,6 @@ const base = import.meta.env.BASE_URL;
         <span><strong>WEINKOMMISSION PORN</strong><small>Winzerportal · Demo</small></span>
       </a>
       <div class="portal2-header-actions">
-        <DemoRoleSwitch active="winzer" />
         <a class="portal2-quiet" href={`${base}winzer/registrieren/`}>Zugang / Registrierung</a>
       </div>
     </header>
