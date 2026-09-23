@@ -163,3 +163,18 @@ html,body{margin:0;padding:0;max-width:100%;overflow-x:hidden;background:var(--c
     grid-template-columns:1fr;
   }
 }
+
+
+.demo-form-actions{
+  display:grid;
+  grid-template-columns:.8fr 1.2fr;
+  gap:8px;
+  margin-top:22px
+}
+.demo-form-actions .primary-action,
+.demo-form-actions .secondary-action{
+  margin-top:0
+}
+@media(max-width:680px){
+  .demo-form-actions{grid-template-columns:1fr}
+}
