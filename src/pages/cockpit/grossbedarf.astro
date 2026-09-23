@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import DemoRoleSwitch from '../../components/DemoRoleSwitch.astro';
 import '../../styles/cockpit.css';
 import '../../styles/grossbedarf.css';
 import { demoRequirement, demoProcurementRows } from '../../data/procurement-demo.js';
@@ -50,6 +51,7 @@ const coveragePercent = (model.coverage * 100).toFixed(1).replace('.', ',');
           <p class="procurement-lead">Ein Bedarf, viele Winzer. Die reale Blaues-Band-Mitgliederliste ist noch nicht importiert; Matching und Zuteilung laufen hier bewusst auf synthetischen Testbetrieben.</p>
         </div>
         <div class="header-controls">
+          <DemoRoleSwitch active="nadine" />
           <span class="scenario-badge">Testdaten · keine Mitgliederliste</span>
           <button class="quiet-button" type="button" data-open-spec>Bedarf ansehen</button>
           <button class="primary-button" type="button" data-run-auto>3 Winzer-Rückmeldungen simulieren</button>
@@ -115,9 +117,15 @@ const coveragePercent = (model.coverage * 100).toFixed(1).replace('.', ',');
           </div>
           <div class="flow-arrow">→</div>
           <div class="flow-node active">
-            <span>Matching</span>
+            <span>Fachliches Matching</span>
             <strong data-flow-matching>{model.stats.eligibleLots} Partien fachlich passend</strong>
-            <small>nach Weinart, Herkunft, Analytik, Menge</small>
+            <small>Weinart, Herkunft, Jahrgang und Partiedaten</small>
+          </div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-node active">
+            <span>Betrieb & Logistik</span>
+            <strong>{model.stats.logisticallyCapableGrowers} Betriebe logistisch geeignet</strong>
+            <small>Profil, Rebsorten, Verladekapazität und Vollständigkeit</small>
           </div>
           <div class="flow-arrow">→</div>
           <div class="flow-node active">
