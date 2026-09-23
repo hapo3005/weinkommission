@@ -56,6 +56,21 @@ const coveragePercent = (model.coverage * 100).toFixed(1).replace('.', ',');
         </div>
       </header>
 
+      <section class="mobile-command" aria-label="Mobile Übersicht">
+        <div class="mobile-command-top">
+          <div>
+            <p class="overline">Auf einen Blick</p>
+            <strong data-mobile-coverage>{coveragePercent} % gedeckt</strong>
+          </div>
+          <span data-mobile-remaining>{formatLiters(model.remainingVolume)} offen</span>
+        </div>
+        <div class="mobile-metrics">
+          <a href="#ausnahmen"><span>Ausnahmen</span><strong>{model.stats.exceptionCount}</strong></a>
+          <a href="#winzer"><span>Winzer-Aufgaben</span><strong data-mobile-tasks>{model.tasks.length}</strong></a>
+          <a href="#transporte"><span>Transporte</span><strong>{model.stats.transports}</strong></a>
+        </div>
+      </section>
+
       <section class="master-order">
         <div class="order-identity">
           <span class="order-code">{demoRequirement.id}</span>
@@ -91,7 +106,8 @@ const coveragePercent = (model.coverage * 100).toFixed(1).replace('.', ',');
           <p>Das System übernimmt Standardfälle automatisch. Nur echte Abweichungen landen bei Nadine oder Roland.</p>
         </div>
 
-        <div class="flow-strip">
+        <button class="mobile-section-toggle" type="button" data-toggle-flow aria-expanded="false">Automationsablauf anzeigen <span>+</span></button>
+        <div class="flow-strip" data-flow-strip>
           <div class="flow-node done">
             <span>Bedarf</span>
             <strong>erfasst</strong>
@@ -185,15 +201,16 @@ const coveragePercent = (model.coverage * 100).toFixed(1).replace('.', ',');
               data-search-text={`${g.growerName} ${g.place} ${g.lotId} ${g.grape} ${g.vintage}`.toLowerCase()}
               role="row"
             >
-              <span class="grower-name"><strong>{g.growerName}</strong><small>{g.place}</small></span>
-              <span><strong>{g.lotId}</strong><small>{g.grape} · {g.vintage}</small></span>
-              <span>{formatLiters(g.availableVolume)}</span>
-              <span>{formatLiters(g.allocatedVolume)}</span>
-              <span><em class:list={['row-status', g.status]}>{g.label}</em></span>
-              <span class="issue-text">{g.issue || '—'}</span>
+              <span class="grower-name" data-label="Winzer"><strong>{g.growerName}</strong><small>{g.place}</small></span>
+              <span data-label="Partie"><strong>{g.lotId}</strong><small>{g.grape} · {g.vintage}</small></span>
+              <span data-label="Angeboten">{formatLiters(g.availableVolume)}</span>
+              <span data-label="Zugeordnet">{formatLiters(g.allocatedVolume)}</span>
+              <span data-label="Status"><em class:list={['row-status', g.status]}>{g.label}</em></span>
+              <span class="issue-text" data-label="Hinweis">{g.issue || '—'}</span>
             </button>
           ))}
         </div>
+        <button class="mobile-more" type="button" data-mobile-more>Weitere Treffer anzeigen</button>
       </section>
 
       <section class="automation-engine">
@@ -201,7 +218,8 @@ const coveragePercent = (model.coverage * 100).toFixed(1).replace('.', ',');
           <p class="overline">Automationslogik</p>
           <h2>Was im Hintergrund automatisch passiert.</h2>
         </div>
-        <div class="engine-steps">
+        <button class="mobile-section-toggle" type="button" data-toggle-engine aria-expanded="false">Automationslogik anzeigen <span>+</span></button>
+        <div class="engine-steps" data-engine-steps>
           <article><span>01</span><strong>Bedarf normalisieren</strong><p>Ein Bedarf wird in strukturierte Kriterien übersetzt: Erzeugnis, Herkunft, Analytik, Menge, Zeitraum und weitere Vorgaben.</p></article>
           <article><span>02</span><strong>Passende Partien finden</strong><p>Nur hinterlegte und fachlich passende Partien werden vorgeschlagen. Fehlende Angaben werden gezielt beim betreffenden Winzer angefragt.</p></article>
           <article><span>03</span><strong>Mengen verteilen</strong><p>Zuteilungen berücksichtigen verfügbare Mengen und verhindern Doppelbelegung derselben Partie.</p></article>
@@ -258,21 +276,35 @@ const coveragePercent = (model.coverage * 100).toFixed(1).replace('.', ',');
     const visibleCount = document.querySelector('[data-visible-count]');
     const toast = document.querySelector('[data-toast]');
     const specDialog = document.querySelector('[data-spec-dialog]');
+    const moreButton = document.querySelector('[data-mobile-more]');
+    const flowToggle = document.querySelector('[data-toggle-flow]');
+    const engineToggle = document.querySelector('[data-toggle-engine]');
+    let mobileExpanded = false;
 
     const formatLiters = value => new Intl.NumberFormat('de-DE').format(Math.round(value)) + ' l';
 
     function applyFilters() {
       const status = statusFilter.value;
       const term = search.value.trim().toLowerCase();
-      let visible = 0;
-      rows.forEach(row => {
+      const mobile = window.matchMedia('(max-width: 700px)').matches;
+      const matched = rows.filter(row => {
         const matchesStatus = status === 'all' || row.dataset.status === status;
         const matchesSearch = !term || row.dataset.searchText.includes(term);
-        const show = matchesStatus && matchesSearch;
-        row.hidden = !show;
-        if (show) visible++;
+        return matchesStatus && matchesSearch;
       });
-      visibleCount.textContent = visible;
+
+      rows.forEach(row => row.hidden = true);
+      const shown = mobile && !mobileExpanded ? matched.slice(0, 8) : matched;
+      shown.forEach(row => row.hidden = false);
+
+      visibleCount.textContent = mobile && !mobileExpanded && matched.length > 8
+        ? shown.length + ' von ' + matched.length
+        : matched.length;
+
+      if (moreButton) {
+        moreButton.hidden = !mobile || matched.length <= 8;
+        moreButton.textContent = mobileExpanded ? 'Weniger anzeigen' : 'Weitere ' + (matched.length - Math.min(8, matched.length)) + ' Treffer anzeigen';
+      }
     }
 
     function updateHeadline(model) {
@@ -285,10 +317,36 @@ const coveragePercent = (model.coverage * 100).toFixed(1).replace('.', ',');
       document.querySelector('[data-flow-allocation]').textContent = model.stats.growersAllocated + ' Betriebe zugeteilt';
       document.querySelector('[data-allocated-count]').textContent = model.stats.growersAllocated;
       document.querySelector('[data-task-count]').textContent = model.tasks.length;
+      const mobileCoverage = document.querySelector('[data-mobile-coverage]');
+      const mobileRemaining = document.querySelector('[data-mobile-remaining]');
+      const mobileTasks = document.querySelector('[data-mobile-tasks]');
+      if (mobileCoverage) mobileCoverage.textContent = pct + ' % gedeckt';
+      if (mobileRemaining) mobileRemaining.textContent = formatLiters(model.remainingVolume) + ' offen';
+      if (mobileTasks) mobileTasks.textContent = model.tasks.length;
     }
 
-    statusFilter.addEventListener('change', applyFilters);
-    search.addEventListener('input', applyFilters);
+    statusFilter.addEventListener('change', () => { mobileExpanded = false; applyFilters(); });
+    search.addEventListener('input', () => { mobileExpanded = false; applyFilters(); });
+    window.addEventListener('resize', applyFilters);
+
+    if (moreButton) moreButton.addEventListener('click', () => {
+      mobileExpanded = !mobileExpanded;
+      applyFilters();
+    });
+
+    if (flowToggle) flowToggle.addEventListener('click', () => {
+      const strip = document.querySelector('[data-flow-strip]');
+      const open = strip.classList.toggle('mobile-open');
+      flowToggle.setAttribute('aria-expanded', String(open));
+      flowToggle.querySelector('span').textContent = open ? '−' : '+';
+    });
+
+    if (engineToggle) engineToggle.addEventListener('click', () => {
+      const steps = document.querySelector('[data-engine-steps]');
+      const open = steps.classList.toggle('mobile-open');
+      engineToggle.setAttribute('aria-expanded', String(open));
+      engineToggle.querySelector('span').textContent = open ? '−' : '+';
+    });
 
     document.querySelectorAll('[data-filter]').forEach(button => button.addEventListener('click', () => {
       statusFilter.value = button.dataset.filter;
@@ -328,5 +386,7 @@ const coveragePercent = (model.coverage * 100).toFixed(1).replace('.', ',');
       toast.classList.add('show');
       window.setTimeout(() => toast.classList.remove('show'), 2200);
     }));
+
+    applyFilters();
   </script>
 </BaseLayout>
