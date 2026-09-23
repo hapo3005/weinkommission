@@ -153,7 +153,7 @@ const coveragePercent = (model.coverage * 100).toFixed(1).replace('.', ',');
               <span class:list={['exception-severity', item.type === 'missing-data' ? 'medium' : 'high']}>{item.type === 'missing-data' ? 'wartet' : 'prüfen'}</span>
               <div><strong>{item.growerName} · {item.lotId}</strong><small>{item.detail}</small></div>
               <span>{item.type === 'missing-data' ? 'Winzeraufgabe öffnen →' : 'Ausnahme prüfen →'}</span>
-            </a>
+            </button>
           ))}
         </div>
       </section>
