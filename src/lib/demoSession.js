@@ -83,8 +83,12 @@ export function saveApprovedGrower(grower) {
 }
 
 
+export function getAllCustomLots() {
+  return readJson(CUSTOM_LOTS_KEY, {});
+}
+
 export function getCustomLots(growerId) {
-  const all = readJson(CUSTOM_LOTS_KEY, {});
+  const all = getAllCustomLots();
   return all[growerId] || [];
 }
 
