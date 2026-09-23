@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import RoleContextBar from '../../components/RoleContextBar.astro';
 import '../../styles/registrieren.css';
 
 const base = import.meta.env.BASE_URL;
@@ -10,6 +11,7 @@ const base = import.meta.env.BASE_URL;
   description="Demo für Einladung, Registrierung und Kooperationsanfrage im Winzerportal."
   canonicalPath="/weinkommission/winzer/registrieren/"
 >
+  <RoleContextBar role="grower" />
   <div class="onboarding-app">
     <header class="onboarding-header">
       <a class="onboarding-brand" href={`${base}winzer/`}>
