@@ -27,3 +27,23 @@ html,body{margin:0;background:var(--cream);color:var(--ink)}*,*::before,*::after
 @media(min-width:721px){
   .demo-role-grid{grid-template-columns:1fr 1fr}
 }
+/* Brand system 2026-09-23 · demo hub */
+.demo-hub{background:#f3f0e9}
+.demo-role.internal{
+  background:#12191d;
+  color:#f3f0e9;
+  border-top:4px solid #bcd63f
+}
+.demo-role.internal>strong{color:#bcd63f}
+.demo-role.grower{
+  background:#faf9f5;
+  border-top:4px solid #35545e
+}
+.demo-role.buyer{
+  background:#d9dedb;
+  border-top:4px solid #718b91
+}
+.demo-role.driver{
+  background:#e7ebe8;
+  border-top:4px solid #12191d
+}
