@@ -24,7 +24,7 @@ const base = import.meta.env.BASE_URL;
         <a href="#transporte"><span class="nav-icon" aria-hidden="true">↗</span><span>Transporte</span></a>
         <a href="#begleitdokument"><span class="nav-icon" aria-hidden="true">□</span><span>Begleitdokumente</span></a>
         <a href="#geschaefte"><span class="nav-icon" aria-hidden="true">◇</span><span>Geschäfte</span></a>
-        <a href="#betriebe"><span class="nav-icon" aria-hidden="true">○</span><span>Betriebe</span></a>
+        <a href={`${base}cockpit/winzer/`}><span class="nav-icon" aria-hidden="true">○</span><span>Winzer</span></a>
       </nav>
 
       <div class="sidebar-foot">
@@ -64,6 +64,15 @@ const base = import.meta.env.BASE_URL;
           <p>Alle Beteiligten-, Erzeugnis-, Herkunfts-, Analyse-, Behandlungs- und Transportdaten werden dort sichtbar geprüft.</p>
         </div>
         <a class="primary-button launch-link" href={`${base}cockpit/begleitdokument/`}>Vollständiges Begleitdokument öffnen →</a>
+      </section>
+
+      <section class="partner-launch">
+        <div>
+          <p class="overline">Winzerkartei</p>
+          <h2>Alle kooperierenden Winzer zentral verwalten.</h2>
+          <p>Suche, Betriebsakte, Partien und Zugehörigkeit zum Blauen Band – unabhängig vom einzelnen Großbedarf.</p>
+        </div>
+        <a class="primary-button launch-link" href={`${base}cockpit/winzer/`}>Winzerübersicht öffnen →</a>
       </section>
 
       <section class="grower-launch">
