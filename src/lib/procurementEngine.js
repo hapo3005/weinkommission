@@ -120,13 +120,6 @@ export function runProcurement(requirement, rows) {
   ];
 
   const exceptions = [
-    ...excluded.map(lot => ({
-      growerId: lot.growerId,
-      growerName: lot.growerName,
-      lotId: lot.lotId,
-      type: 'mismatch',
-      detail: lot.evaluation.reasons.join(' · ')
-    })),
     ...waiting.map(lot => ({
       growerId: lot.growerId,
       growerName: lot.growerName,
