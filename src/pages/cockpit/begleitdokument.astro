@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import RoleContextBar from '../../components/RoleContextBar.astro';
 import '../../styles/cockpit.css';
 const base = import.meta.env.BASE_URL;
 ---
@@ -9,6 +10,7 @@ const base = import.meta.env.BASE_URL;
   description="Vollständige Arbeitsmaske für Weinbegleitdokumente der Weinkommission Porn."
   canonicalPath="/weinkommission/cockpit/begleitdokument/"
 >
+  <RoleContextBar role="internal" />
   <div class="document-app">
     <header class="document-header">
       <div class="document-header-inner">
