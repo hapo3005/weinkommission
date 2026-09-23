@@ -115,7 +115,7 @@
 .access-actions{display:flex;gap:6px;justify-content:flex-end}
 .access-actions button,.access-action{min-height:34px;border:0;padding:0 10px;font-size:8px;text-decoration:none;display:inline-grid;place-items:center}
 .access-actions button,.access-action.primary{background:var(--green);color:#fff}
-.access-actions button.reject{background:#e9e2d9;color:#6d5447}
+.access-actions button.reject{background:#e3e9e9;color:#6d5447}
 .access-decision{font-size:8px;color:var(--muted)}
 @media(max-width:760px){
   .access-item-action{min-width:0}
