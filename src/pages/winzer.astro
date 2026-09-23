@@ -142,30 +142,12 @@ const base = import.meta.env.BASE_URL;
   <script>
     import { demoGrowers, demoLots, demoRequirement, demoProcurementRows } from '../data/procurement-demo.js';
     import { runProcurement } from '../lib/procurementEngine.js';
+    import { resolveActiveGrower, getGrowerProfile, addGrowerResponse } from '../lib/demoSession.js';
 
     const formatLiters = value => new Intl.NumberFormat('de-DE').format(Math.round(value || 0)) + ' l';
-    const rawAccount = JSON.parse(localStorage.getItem('wp-demo-grower-account') || 'null');
-    const savedProfile = JSON.parse(localStorage.getItem('wp-demo-grower-profile') || 'null');
-    const SHOWCASE_GROWER_ID = 'TEST-062';
-    const legacyGenericAccount = Boolean(rawAccount && /^Testweingut(?:\\s+\\d+)?/i.test(rawAccount.businessName || ''));
-    const selectedId = legacyGenericAccount ? SHOWCASE_GROWER_ID : (rawAccount?.growerId || SHOWCASE_GROWER_ID);
-    const grower = demoGrowers.find(item => item.growerId === selectedId)
-      || demoGrowers.find(item => item.growerId === SHOWCASE_GROWER_ID)
-      || demoGrowers[0];
-    const account = legacyGenericAccount
-      ? {
-          ...rawAccount,
-          growerId: grower.growerId,
-          businessName: grower.growerName,
-          place: grower.place,
-          contactPerson: grower.contactPerson,
-          businessNumber: grower.businessNumber
-        }
-      : rawAccount;
-
-    if (legacyGenericAccount) {
-      localStorage.setItem('wp-demo-grower-account', JSON.stringify(account));
-    }
+    const account = JSON.parse(localStorage.getItem('wp-demo-grower-account') || 'null');
+    const grower = resolveActiveGrower(demoGrowers, window.location.search, 'TEST-001');
+    const savedProfile = getGrowerProfile(grower.growerId);
     const lots = demoLots.filter(lot => lot.growerId === grower.growerId);
     const model = runProcurement(demoRequirement, demoProcurementRows);
     const growerRows = model.allocationRows.filter(row => row.growerId === grower.growerId);
@@ -321,7 +303,7 @@ const base = import.meta.env.BASE_URL;
       }
 
       error.hidden = true;
-      localStorage.setItem('wp-demo-grower-response', JSON.stringify({
+      addGrowerResponse({
         growerId: grower.growerId,
         lotId: currentRow?.lotId,
         type: taskMode,
@@ -329,7 +311,7 @@ const base = import.meta.env.BASE_URL;
         plate: taskMode === 'loading' ? plate : null,
         confirmedAt: new Date().toISOString(),
         demo: true
-      }));
+      });
 
       editor.hidden = true;
       todayCard.hidden = false;
