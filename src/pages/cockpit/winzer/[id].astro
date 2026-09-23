@@ -85,7 +85,7 @@ const profileStatusClass =
         </div>
         <div class="command-stat">
           <span>Verfügbar</span>
-          <strong>{formatLiters(availableVolume)}</strong>
+          <strong data-profile-available>{formatLiters(availableVolume)}</strong>
         </div>
         <div class="command-stat">
           <span>Zugeordnet</span>
@@ -335,7 +335,7 @@ const profileStatusClass =
   </div>
 
   <script>
-    import { getGrowerProfile, getGrowerResponses } from '../../../lib/demoSession.js';
+    import { getGrowerProfile, getGrowerResponses, getCustomLots } from '../../../lib/demoSession.js';
 
     const dialog = document.querySelector('[data-contact-dialog]');
     document.querySelector('[data-contact]').addEventListener('click', () => dialog.showModal());
@@ -362,6 +362,41 @@ const profileStatusClass =
       set('[data-internal-certifications]', (portalProfile.certifications || []).join(', '));
       set('[data-internal-loading]', portalProfile.loadingVolume);
       set('[data-internal-contact]', portalProfile.preferredContact === 'phone' ? 'Telefon' : portalProfile.preferredContact === 'mobile' ? 'Mobil / Messenger' : 'E-Mail');
+    }
+
+    const customLots = growerId ? getCustomLots(growerId) : [];
+    if (customLots.length) {
+      const lotStack = document.querySelector('.lot-stack');
+      const existingAvailableText = document.querySelector('[data-profile-available]')?.textContent || '0';
+      const existingAvailable = Number(existingAvailableText.replace(/\./g,'').replace(/[^0-9]/g,'')) || 0;
+      const customAvailable = customLots.reduce((sum, lot) => sum + (Number(lot.availableVolume) || 0), 0);
+      const fmt = value => new Intl.NumberFormat('de-DE').format(Math.round(value || 0)) + ' l';
+      document.querySelector('[data-profile-available]').textContent = fmt(existingAvailable + customAvailable);
+
+      customLots.forEach(lot => {
+        const article = document.createElement('article');
+        article.className = 'lot-card';
+        article.innerHTML = `
+          <div class="lot-card-head">
+            <div>
+              <span class="lot-code">${lot.lotId}</span>
+              <h3>${lot.vintage} ${lot.grape} · ${lot.origin}</h3>
+            </div>
+            <span class="row-status waiting">neu gemeldet</span>
+          </div>
+          <div class="lot-metrics">
+            <div><span>Verfügbar</span><strong>${fmt(lot.availableVolume)}</strong></div>
+            <div><span>Zugeordnet</span><strong>0 l</strong></div>
+            <div><span>Erzeugnis</span><strong>Wein</strong></div>
+            <div><span>Quelle</span><strong>Winzerportal</strong></div>
+          </div>
+          <div class="lot-checks">
+            <div class="${lot.analysisConfirmed ? 'ok' : 'open'}"><span>${lot.analysisConfirmed ? '✓' : '○'}</span><strong>Analytik</strong><small>${lot.analysisConfirmed ? 'bestätigt' : 'fehlt'}</small></div>
+            <div class="${lot.treatmentsConfirmed ? 'ok' : 'open'}"><span>${lot.treatmentsConfirmed ? '✓' : '○'}</span><strong>Behandlungen</strong><small>${lot.treatmentsConfirmed ? 'bestätigt' : 'fehlt'}</small></div>
+            <div class="${lot.currentVolumeConfirmed ? 'ok' : 'open'}"><span>${lot.currentVolumeConfirmed ? '✓' : '○'}</span><strong>Menge</strong><small>${lot.currentVolumeConfirmed ? 'bestätigt' : 'fehlt'}</small></div>
+          </div>`;
+        lotStack.prepend(article);
+      });
     }
 
     const responses = growerId ? getGrowerResponses(growerId) : [];
