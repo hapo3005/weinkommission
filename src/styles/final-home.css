@@ -1,12 +1,12 @@
-:root{--cream:#f3eee6;--paper:#fbf8f2;--ink:#171b1e;--muted:#667078;--green:#242d33;--green2:#384750;--sand:#d6cabb;--line:rgba(16,45,56,.16);--serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;--sans:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;--max:1320px}*{box-sizing:border-box}html{scroll-behavior:smooth;background:var(--cream)}body{margin:0;background:var(--cream);color:var(--ink);font-family:var(--sans);-webkit-font-smoothing:antialiased}.shell{width:min(calc(100% - 48px),var(--max));margin:auto}.skip-link{position:fixed;left:16px;top:16px;z-index:200;transform:translateY(-180%);background:#111;color:#fff;padding:12px 16px}.skip-link:focus{transform:none}a{color:inherit}.eyebrow{margin:0 0 18px;font-size:11px;letter-spacing:.2em;text-transform:uppercase;font-weight:700;color:var(--muted)}h1,h2,h3{font-family:var(--serif);font-weight:400;letter-spacing:-.045em}h1{font-size:clamp(62px,8.7vw,132px);line-height:.88;margin:0;max-width:8.5ch}h2{font-size:clamp(42px,5.2vw,76px);line-height:.96;margin:0}h3{font-size:clamp(28px,3.2vw,46px);line-height:1.03;margin:0}.lead{font-family:var(--serif);font-size:clamp(20px,2vw,28px);line-height:1.5;color:#4d5751}.btn{display:inline-flex;align-items:center;justify-content:center;min-height:52px;padding:0 20px;text-decoration:none;border:1px solid var(--green);font-size:13px}.btn.primary{background:var(--green);color:#fff}.btn.secondary{background:transparent}.site-header{position:sticky;top:0;z-index:50;background:rgba(250,249,245,.94);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}.header-row{min-height:82px;display:grid;grid-template-columns:1fr auto auto;align-items:center;gap:32px}.brand{text-decoration:none;display:grid;gap:2px}.brand strong{font-family:var(--serif);font-size:20px;letter-spacing:.02em}.brand span{font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:var(--muted)}.nav{display:flex;gap:28px}.nav a,.header-cta{text-decoration:none;font-size:13px}.header-cta{padding:11px 14px;border:1px solid var(--line)}.mobile-menu{display:none}.hero{background:var(--paper);padding:clamp(72px,9vw,120px) 0 clamp(72px,8vw,108px)}.hero-grid{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(360px,.95fr);gap:clamp(50px,8vw,105px);align-items:center}.hero-copy .lead{max-width:690px;margin:30px 0 0}.hero-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:32px}.trustline{display:flex;gap:18px;flex-wrap:wrap;margin-top:22px;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}.hero-visual{min-height:610px;border-left:1px solid var(--line);padding-left:42px;display:grid;align-content:center;position:relative}.hero-visual::before{content:"MOSEL";position:absolute;right:-8px;top:-10px;font-family:var(--serif);font-size:clamp(88px,12vw,170px);color:rgba(53,84,94,.055);writing-mode:vertical-rl;transform:rotate(180deg);letter-spacing:-.06em}.hero-map svg{width:100%;height:auto}.hero-map .contour{fill:none;stroke:#c8bdae;stroke-width:1}.hero-map .river{fill:none;stroke:var(--green);stroke-width:3;stroke-linecap:round}.hero-map .dot{fill:var(--sand)}.hero-map text{fill:#4d5751;font:11px var(--sans);letter-spacing:.12em}.hero-caption{margin-top:18px;padding-top:16px;border-top:1px solid var(--line);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}.section{padding:clamp(88px,10vw,140px) 0}.profile{background:var(--cream)}.split{display:grid;grid-template-columns:.8fr 1.2fr;gap:clamp(50px,8vw,110px)}.profile h2{max-width:10ch}.profile-copy p{font-family:var(--serif);font-size:clamp(22px,2.2vw,31px);line-height:1.55;color:#4d5751}.profile-copy p+p{font-family:var(--sans);font-size:15px;line-height:1.8;color:var(--muted);max-width:650px}.values{display:flex;gap:24px;flex-wrap:wrap;margin-top:34px;padding-top:18px;border-top:1px solid var(--line);font-size:11px;letter-spacing:.15em;text-transform:uppercase;color:var(--muted)}.services{background:var(--green);color:#fff}.services .eyebrow{color:var(--sand)}.services-head{display:grid;grid-template-columns:1fr .75fr;gap:70px;align-items:end;margin-bottom:54px}.services-head p{margin:0;color:rgba(255,255,255,.64);line-height:1.75;max-width:560px}.service-row{display:grid;grid-template-columns:90px minmax(230px,.65fr) 1fr auto;gap:28px;align-items:center;min-height:220px;border-top:1px solid rgba(255,255,255,.2);text-decoration:none}.service-row:last-child{border-bottom:1px solid rgba(255,255,255,.2)}.service-row .no{font-family:var(--serif);font-style:italic;color:var(--sand)}.service-row p{margin:0;color:rgba(255,255,255,.62);line-height:1.7}.service-row small{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--sand)}.region{background:var(--paper)}.region-grid{display:grid;grid-template-columns:.85fr 1.15fr;gap:clamp(50px,8vw,110px);align-items:center}.region-copy h2{max-width:9ch}.region-copy p{color:var(--muted);line-height:1.8;max-width:560px}.map-panel{border:1px solid var(--line);padding:32px;background:#f8f4ed}.map-panel svg{width:100%;height:auto}.map-panel .contour{fill:none;stroke:#c8bdae;stroke-width:1;opacity:.55}.map-panel .river{fill:none;stroke:var(--green);stroke-width:3}.map-panel .dot{fill:var(--sand)}.map-panel text{fill:#4d5751;font:11px var(--sans);letter-spacing:.09em}.map-note{font-size:11px;color:var(--muted);margin:14px 0 0}.brand-moment{background:#d6cabb;overflow:hidden}.brand-grid{display:grid;grid-template-columns:1.2fr .8fr;gap:clamp(50px,8vw,100px);align-items:center}.brand-word{font-family:var(--serif);font-size:clamp(110px,20vw,300px);line-height:.68;letter-spacing:-.08em;color:var(--green);margin:0}.brand-copy{border-left:1px solid rgba(16,45,56,.2);padding-left:clamp(32px,5vw,70px)}.brand-copy h2{font-size:clamp(38px,4.3vw,62px)}.brand-copy p{color:#4d5751;line-height:1.8}.roland{background:var(--cream)}.roland-grid{display:grid;grid-template-columns:.8fr 1.2fr;gap:clamp(50px,8vw,110px);align-items:center}.portrait-placeholder{min-height:560px;border:1px solid var(--line);display:grid;place-items:end start;padding:24px;background:linear-gradient(145deg,#e7ded1,#c8bdae)}.portrait-placeholder span{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#667078}.roland-copy h2{max-width:8ch}.roland-copy .lead{max-width:690px}.fact-list{margin-top:34px;border-top:1px solid var(--line)}.fact-list div{display:grid;grid-template-columns:150px 1fr;gap:20px;padding:15px 0;border-bottom:1px solid var(--line);font-size:13px}.fact-list dt{color:var(--muted)}.fact-list dd{margin:0}.process{background:var(--paper)}.process-grid{display:grid;grid-template-columns:.72fr 1.28fr;gap:clamp(50px,8vw,110px)}.steps{border-top:1px solid var(--line)}.step{display:grid;grid-template-columns:64px 180px 1fr;gap:24px;padding:24px 0;border-bottom:1px solid var(--line);align-items:baseline}.step span{font-family:var(--serif);font-style:italic;color:#b66b42}.step strong{font-family:var(--serif);font-size:24px;font-weight:400}.step p{margin:0;color:var(--muted);line-height:1.7}.contact{background:#171b1e;color:#fff}.contact-grid{display:grid;grid-template-columns:1fr .85fr;gap:80px;align-items:end}.contact .eyebrow{color:var(--sand)}.contact h2{max-width:8ch}.contact-copy p{color:rgba(255,255,255,.64);line-height:1.8}.contact-links{display:flex;gap:12px;flex-wrap:wrap;margin-top:28px}.contact .btn.primary{background:#fff;color:var(--green);border-color:#fff}.contact .btn.secondary{border-color:rgba(255,255,255,.3);color:#fff}.contact-note{margin-top:28px;padding-top:18px;border-top:1px solid rgba(255,255,255,.16);font-size:11px;color:rgba(255,255,255,.48)}.footer{background:#171b1e;color:rgba(255,255,255,.62);padding:28px 0}.footer-row{display:flex;justify-content:space-between;gap:24px;font-size:12px}.footer nav{display:flex;gap:18px}.footer a{text-decoration:none}@media(max-width:980px){.nav,.header-cta{display:none}.mobile-menu{display:block;justify-self:end}.mobile-menu summary{list-style:none}.hero-grid,.split,.services-head,.region-grid,.brand-grid,.roland-grid,.process-grid,.contact-grid{grid-template-columns:1fr}.hero-visual{border-left:0;border-top:1px solid var(--line);padding:36px 0 0;min-height:auto}.hero-visual::before{display:none}.service-row{grid-template-columns:60px 1fr}.service-row p,.service-row small{grid-column:2}.brand-copy{border-left:0;border-top:1px solid rgba(16,45,56,.2);padding:32px 0 0}.portrait-placeholder{min-height:420px}}@media(max-width:700px){.shell{width:min(calc(100% - 28px),var(--max))}.header-row{min-height:70px}.brand strong{font-size:17px}.hero{padding-top:62px}.hero-actions,.contact-links{flex-direction:column;align-items:stretch}.btn{width:100%}.service-row{min-height:0;padding:28px 0}.portrait-placeholder{min-height:340px}.step{grid-template-columns:42px 1fr}.step p{grid-column:2}.fact-list div{grid-template-columns:110px 1fr}.footer-row{flex-direction:column;align-items:flex-start}}/* Brand system 2026-09-23 · visible mineral/Mosel application */
+:root{--cream:#f3f0e9;--paper:#faf9f5;--ink:#12191d;--muted:#65767b;--green:#35545e;--green2:#496a73;--sand:#d9dedb;--line:rgba(16,45,56,.16);--serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;--sans:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;--max:1320px}*{box-sizing:border-box}html{scroll-behavior:smooth;background:var(--cream)}body{margin:0;background:var(--cream);color:var(--ink);font-family:var(--sans);-webkit-font-smoothing:antialiased}.shell{width:min(calc(100% - 48px),var(--max));margin:auto}.skip-link{position:fixed;left:16px;top:16px;z-index:200;transform:translateY(-180%);background:#111;color:#fff;padding:12px 16px}.skip-link:focus{transform:none}a{color:inherit}.eyebrow{margin:0 0 18px;font-size:11px;letter-spacing:.2em;text-transform:uppercase;font-weight:700;color:var(--muted)}h1,h2,h3{font-family:var(--serif);font-weight:400;letter-spacing:-.045em}h1{font-size:clamp(62px,8.7vw,132px);line-height:.88;margin:0;max-width:8.5ch}h2{font-size:clamp(42px,5.2vw,76px);line-height:.96;margin:0}h3{font-size:clamp(28px,3.2vw,46px);line-height:1.03;margin:0}.lead{font-family:var(--serif);font-size:clamp(20px,2vw,28px);line-height:1.5;color:#4d5751}.btn{display:inline-flex;align-items:center;justify-content:center;min-height:52px;padding:0 20px;text-decoration:none;border:1px solid var(--green);font-size:13px}.btn.primary{background:var(--green);color:#fff}.btn.secondary{background:transparent}.site-header{position:sticky;top:0;z-index:50;background:rgba(250,249,245,.94);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}.header-row{min-height:82px;display:grid;grid-template-columns:1fr auto auto;align-items:center;gap:32px}.brand{text-decoration:none;display:grid;gap:2px}.brand strong{font-family:var(--serif);font-size:20px;letter-spacing:.02em}.brand span{font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:var(--muted)}.nav{display:flex;gap:28px}.nav a,.header-cta{text-decoration:none;font-size:13px}.header-cta{padding:11px 14px;border:1px solid var(--line)}.mobile-menu{display:none}.hero{background:var(--paper);padding:clamp(72px,9vw,120px) 0 clamp(72px,8vw,108px)}.hero-grid{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(360px,.95fr);gap:clamp(50px,8vw,105px);align-items:center}.hero-copy .lead{max-width:690px;margin:30px 0 0}.hero-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:32px}.trustline{display:flex;gap:18px;flex-wrap:wrap;margin-top:22px;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}.hero-visual{min-height:610px;border-left:1px solid var(--line);padding-left:42px;display:grid;align-content:center;position:relative}.hero-visual::before{content:"MOSEL";position:absolute;right:-8px;top:-10px;font-family:var(--serif);font-size:clamp(88px,12vw,170px);color:rgba(53,84,94,.055);writing-mode:vertical-rl;transform:rotate(180deg);letter-spacing:-.06em}.hero-map svg{width:100%;height:auto}.hero-map .contour{fill:none;stroke:#c8bdae;stroke-width:1}.hero-map .river{fill:none;stroke:var(--green);stroke-width:3;stroke-linecap:round}.hero-map .dot{fill:var(--sand)}.hero-map text{fill:#4d5751;font:11px var(--sans);letter-spacing:.12em}.hero-caption{margin-top:18px;padding-top:16px;border-top:1px solid var(--line);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}.section{padding:clamp(88px,10vw,140px) 0}.profile{background:var(--cream)}.split{display:grid;grid-template-columns:.8fr 1.2fr;gap:clamp(50px,8vw,110px)}.profile h2{max-width:10ch}.profile-copy p{font-family:var(--serif);font-size:clamp(22px,2.2vw,31px);line-height:1.55;color:#4d5751}.profile-copy p+p{font-family:var(--sans);font-size:15px;line-height:1.8;color:var(--muted);max-width:650px}.values{display:flex;gap:24px;flex-wrap:wrap;margin-top:34px;padding-top:18px;border-top:1px solid var(--line);font-size:11px;letter-spacing:.15em;text-transform:uppercase;color:var(--muted)}.services{background:var(--green);color:#fff}.services .eyebrow{color:var(--sand)}.services-head{display:grid;grid-template-columns:1fr .75fr;gap:70px;align-items:end;margin-bottom:54px}.services-head p{margin:0;color:rgba(255,255,255,.64);line-height:1.75;max-width:560px}.service-row{display:grid;grid-template-columns:90px minmax(230px,.65fr) 1fr auto;gap:28px;align-items:center;min-height:220px;border-top:1px solid rgba(255,255,255,.2);text-decoration:none}.service-row:last-child{border-bottom:1px solid rgba(255,255,255,.2)}.service-row .no{font-family:var(--serif);font-style:italic;color:var(--sand)}.service-row p{margin:0;color:rgba(255,255,255,.62);line-height:1.7}.service-row small{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--sand)}.region{background:var(--paper)}.region-grid{display:grid;grid-template-columns:.85fr 1.15fr;gap:clamp(50px,8vw,110px);align-items:center}.region-copy h2{max-width:9ch}.region-copy p{color:var(--muted);line-height:1.8;max-width:560px}.map-panel{border:1px solid var(--line);padding:32px;background:#faf9f5}.map-panel svg{width:100%;height:auto}.map-panel .contour{fill:none;stroke:#c8bdae;stroke-width:1;opacity:.55}.map-panel .river{fill:none;stroke:var(--green);stroke-width:3}.map-panel .dot{fill:var(--sand)}.map-panel text{fill:#4d5751;font:11px var(--sans);letter-spacing:.09em}.map-note{font-size:11px;color:var(--muted);margin:14px 0 0}.brand-moment{background:#d9dedb;overflow:hidden}.brand-grid{display:grid;grid-template-columns:1.2fr .8fr;gap:clamp(50px,8vw,100px);align-items:center}.brand-word{font-family:var(--serif);font-size:clamp(110px,20vw,300px);line-height:.68;letter-spacing:-.08em;color:var(--green);margin:0}.brand-copy{border-left:1px solid rgba(16,45,56,.2);padding-left:clamp(32px,5vw,70px)}.brand-copy h2{font-size:clamp(38px,4.3vw,62px)}.brand-copy p{color:#4d5751;line-height:1.8}.roland{background:var(--cream)}.roland-grid{display:grid;grid-template-columns:.8fr 1.2fr;gap:clamp(50px,8vw,110px);align-items:center}.portrait-placeholder{min-height:560px;border:1px solid var(--line);display:grid;place-items:end start;padding:24px;background:linear-gradient(145deg,#e3e9e9,#c8bdae)}.portrait-placeholder span{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#65767b}.roland-copy h2{max-width:8ch}.roland-copy .lead{max-width:690px}.fact-list{margin-top:34px;border-top:1px solid var(--line)}.fact-list div{display:grid;grid-template-columns:150px 1fr;gap:20px;padding:15px 0;border-bottom:1px solid var(--line);font-size:13px}.fact-list dt{color:var(--muted)}.fact-list dd{margin:0}.process{background:var(--paper)}.process-grid{display:grid;grid-template-columns:.72fr 1.28fr;gap:clamp(50px,8vw,110px)}.steps{border-top:1px solid var(--line)}.step{display:grid;grid-template-columns:64px 180px 1fr;gap:24px;padding:24px 0;border-bottom:1px solid var(--line);align-items:baseline}.step span{font-family:var(--serif);font-style:italic;color:#bcd63f}.step strong{font-family:var(--serif);font-size:24px;font-weight:400}.step p{margin:0;color:var(--muted);line-height:1.7}.contact{background:#12191d;color:#fff}.contact-grid{display:grid;grid-template-columns:1fr .85fr;gap:80px;align-items:end}.contact .eyebrow{color:var(--sand)}.contact h2{max-width:8ch}.contact-copy p{color:rgba(255,255,255,.64);line-height:1.8}.contact-links{display:flex;gap:12px;flex-wrap:wrap;margin-top:28px}.contact .btn.primary{background:#fff;color:var(--green);border-color:#fff}.contact .btn.secondary{border-color:rgba(255,255,255,.3);color:#fff}.contact-note{margin-top:28px;padding-top:18px;border-top:1px solid rgba(255,255,255,.16);font-size:11px;color:rgba(255,255,255,.48)}.footer{background:#12191d;color:rgba(255,255,255,.62);padding:28px 0}.footer-row{display:flex;justify-content:space-between;gap:24px;font-size:12px}.footer nav{display:flex;gap:18px}.footer a{text-decoration:none}@media(max-width:980px){.nav,.header-cta{display:none}.mobile-menu{display:block;justify-self:end}.mobile-menu summary{list-style:none}.hero-grid,.split,.services-head,.region-grid,.brand-grid,.roland-grid,.process-grid,.contact-grid{grid-template-columns:1fr}.hero-visual{border-left:0;border-top:1px solid var(--line);padding:36px 0 0;min-height:auto}.hero-visual::before{display:none}.service-row{grid-template-columns:60px 1fr}.service-row p,.service-row small{grid-column:2}.brand-copy{border-left:0;border-top:1px solid rgba(16,45,56,.2);padding:32px 0 0}.portrait-placeholder{min-height:420px}}@media(max-width:700px){.shell{width:min(calc(100% - 28px),var(--max))}.header-row{min-height:70px}.brand strong{font-size:17px}.hero{padding-top:62px}.hero-actions,.contact-links{flex-direction:column;align-items:stretch}.btn{width:100%}.service-row{min-height:0;padding:28px 0}.portrait-placeholder{min-height:340px}.step{grid-template-columns:42px 1fr}.step p{grid-column:2}.fact-list div{grid-template-columns:110px 1fr}.footer-row{flex-direction:column;align-items:flex-start}}/* Brand system 2026-09-23 · visible mineral/Mosel application */
 .site-header{
   background:rgba(243,240,233,.97);
   border-bottom-color:rgba(16,45,56,.12)
 }
 .header-cta{
-  background:#171b1e;
-  color:#f3eee6;
-  border-color:#171b1e
+  background:#12191d;
+  color:#f3f0e9;
+  border-color:#12191d
 }
 .nav a{position:relative}
 .nav a::after{
@@ -14,139 +14,139 @@
   position:absolute;
   left:0;right:100%;bottom:-8px;
   height:2px;
-  background:#b66b42;
+  background:#bcd63f;
   transition:right .2s ease
 }
 .nav a:hover::after,.nav a:focus-visible::after{right:0}
 .hero{
-  background:#171b1e;
-  color:#f3eee6
+  background:#12191d;
+  color:#f3f0e9
 }
-.hero .eyebrow{color:#b66b42}
+.hero .eyebrow{color:#bcd63f}
 .hero .lead{color:rgba(243,240,233,.78)}
 .hero .trustline{color:rgba(217,222,219,.72)}
 .hero .btn.primary{
-  background:#b66b42;
-  color:#171b1e;
-  border-color:#b66b42
+  background:#bcd63f;
+  color:#12191d;
+  border-color:#bcd63f
 }
 .hero .btn.secondary{
-  color:#f3eee6;
-  border-color:#b66b42
+  color:#f3f0e9;
+  border-color:#bcd63f
 }
 .hero-visual{border-left-color:rgba(217,222,219,.22)}
 .hero-visual::before{color:rgba(113,139,145,.12)}
 .hero-map .contour{stroke:rgba(217,222,219,.22)}
-.hero-map .river{stroke:#b66b42}
-.hero-map .dot{fill:#b66b42}
-.hero-map text{fill:#d6cabb}
+.hero-map .river{stroke:#718b91}
+.hero-map .dot{fill:#bcd63f}
+.hero-map text{fill:#d9dedb}
 .hero-caption{
   color:rgba(217,222,219,.72);
   border-top-color:rgba(217,222,219,.2)
 }
-.profile .eyebrow,.region .eyebrow,.roland .eyebrow,.process .eyebrow{color:#242d33}
-.services{background:#242d33}
+.profile .eyebrow,.region .eyebrow,.roland .eyebrow,.process .eyebrow{color:#35545e}
+.services{background:#35545e}
 .service-row:hover,.service-row:focus-visible{background:rgba(16,45,56,.12)}
-.brand-moment{background:#d6cabb}
-.contact{background:#171b1e}
+.brand-moment{background:#d9dedb}
+.contact{background:#12191d}
 @media(max-width:980px){
   .hero-visual{border-top-color:rgba(217,222,219,.22)}
 }
 
 /* Material palette: Schiefer · Kalkpapier · Weinlaub · verwittertes Holz */
-.services{background:#242d33}
-.brand-moment{background:#d6cabb}
-.contact,.footer{background:#171b1e}
+.services{background:#35545e}
+.brand-moment{background:#d9dedb}
+.contact,.footer{background:#12191d}
 .hero-map .contour,.map-panel .contour{stroke:#c8bdae}
-.hero-map .dot,.map-panel .dot{fill:#b66b42}
-.portrait-placeholder{background:linear-gradient(145deg,#e7ded1,#d8d0c3)}
+.hero-map .dot,.map-panel .dot{fill:#bcd63f}
+.portrait-placeholder{background:linear-gradient(145deg,#e3e9e9,#d8d0c3)}
 
 /* Brand authority: institution first, luxury never. */
 .site-header{background:rgba(251,248,242,.97);border-bottom:1px solid rgba(29,35,32,.14)}
-.brand strong{color:#242d33}
-.header-cta{background:#242d33;color:#fff;border-color:#242d33}
-.hero{background:#fbf8f2}
-.hero-copy h1{color:#242d33}
+.brand strong{color:#35545e}
+.header-cta{background:#35545e;color:#fff;border-color:#35545e}
+.hero{background:#faf9f5}
+.hero-copy h1{color:#35545e}
 .hero-copy .lead{color:#4d5751}
-.btn.primary{background:#242d33;color:#fff;border-color:#242d33}
-.btn.secondary{border-color:#242d33;color:#242d33}
-.services{background:#242d33}
-.services .eyebrow,.service-row .no,.service-row small{color:#d6cabb}
-.brand-moment{background:#d6cabb}
-.brand-word{color:#242d33}
-.contact,.footer{background:#171b1e}
-.contact .eyebrow{color:#d6cabb}
-.hero-map .dot,.map-panel .dot{fill:#b66b42}
-.nav a::after{background:#b66b42}
+.btn.primary{background:#35545e;color:#fff;border-color:#35545e}
+.btn.secondary{border-color:#35545e;color:#35545e}
+.services{background:#35545e}
+.services .eyebrow,.service-row .no,.service-row small{color:#d9dedb}
+.brand-moment{background:#d9dedb}
+.brand-word{color:#35545e}
+.contact,.footer{background:#12191d}
+.contact .eyebrow{color:#d9dedb}
+.hero-map .dot,.map-panel .dot{fill:#bcd63f}
+.nav a::after{background:#bcd63f}
 
 /* MOSel Authority System — not vineyard lifestyle, but market institution */
-.site-header{background:#fbf8f2;border-bottom:1px solid rgba(16,45,56,.18)}
-.brand strong{color:#242d33}
-.header-cta{background:#242d33;color:#fff;border-color:#242d33}
-.hero{background:#242d33;color:#fbf8f2}
-.hero .eyebrow{color:#d6cabb}
-.hero-copy h1{color:#fbf8f2}
+.site-header{background:#faf9f5;border-bottom:1px solid rgba(16,45,56,.18)}
+.brand strong{color:#35545e}
+.header-cta{background:#35545e;color:#fff;border-color:#35545e}
+.hero{background:#35545e;color:#faf9f5}
+.hero .eyebrow{color:#d9dedb}
+.hero-copy h1{color:#faf9f5}
 .hero-copy .lead{color:rgba(252,250,245,.78)}
-.hero .btn.primary{background:#fbf8f2;color:#242d33;border-color:#fbf8f2}
-.hero .btn.secondary{color:#fbf8f2;border-color:rgba(252,250,245,.42)}
+.hero .btn.primary{background:#faf9f5;color:#35545e;border-color:#faf9f5}
+.hero .btn.secondary{color:#faf9f5;border-color:rgba(252,250,245,.42)}
 .hero .trustline{color:rgba(252,250,245,.62)}
 .hero-visual{border-left-color:rgba(252,250,245,.2)}
 .hero-map .contour{stroke:rgba(216,196,175,.55)}
-.hero-map .river{stroke:#b66b42;stroke-width:3.4}
-.hero-map .dot{fill:#b66b42}
+.hero-map .river{stroke:#718b91;stroke-width:3.4}
+.hero-map .dot{fill:#bcd63f}
 .hero-map text{fill:rgba(252,250,245,.72)}
 .hero-caption{border-top-color:rgba(252,250,245,.2);color:rgba(252,250,245,.62)}
-.profile{background:#f3eee6}
-.profile h2{color:#242d33}
-.services{background:#171b1e;color:#fbf8f2}
-.services .eyebrow,.service-row .no,.service-row small{color:#d6cabb}
-.brand-moment{background:#d6cabb}
-.brand-word{color:#242d33}
-.contact,.footer{background:#242d33}
-.nav a::after{background:#b66b42}
+.profile{background:#f3f0e9}
+.profile h2{color:#35545e}
+.services{background:#12191d;color:#faf9f5}
+.services .eyebrow,.service-row .no,.service-row small{color:#d9dedb}
+.brand-moment{background:#d9dedb}
+.brand-word{color:#35545e}
+.contact,.footer{background:#35545e}
+.nav a::after{background:#bcd63f}
 
 /* 2026-09-23 brand reset: Schiefer / Graphit / Weinrot / oxidiertes Kupfer */
-.site-header{background:#fbf8f2;border-bottom:1px solid rgba(38,52,62,.2)}
-.brand strong{color:#242d33}
-.header-cta{background:#242d33;color:#fff;border-color:#242d33}
-.hero{background:#242d33;color:#fbf8f2}
-.hero .eyebrow{color:#d6cabb}
-.hero-copy h1{color:#fbf8f2}
+.site-header{background:#faf9f5;border-bottom:1px solid rgba(38,52,62,.2)}
+.brand strong{color:#35545e}
+.header-cta{background:#35545e;color:#fff;border-color:#35545e}
+.hero{background:#35545e;color:#faf9f5}
+.hero .eyebrow{color:#d9dedb}
+.hero-copy h1{color:#faf9f5}
 .hero-copy .lead{color:rgba(252,250,247,.78)}
-.hero .btn.primary{background:#fbf8f2;color:#242d33;border-color:#fbf8f2}
-.hero .btn.secondary{color:#fbf8f2;border-color:rgba(252,250,247,.45)}
+.hero .btn.primary{background:#faf9f5;color:#35545e;border-color:#faf9f5}
+.hero .btn.secondary{color:#faf9f5;border-color:rgba(252,250,247,.45)}
 .hero .trustline{color:rgba(252,250,247,.62)}
 .hero-visual{border-left-color:rgba(252,250,247,.2)}
 .hero-map .contour{stroke:rgba(184,173,160,.52)}
-.hero-map .river{stroke:#b66b42}
-.hero-map .dot{fill:#b66b42}
+.hero-map .river{stroke:#718b91}
+.hero-map .dot{fill:#bcd63f}
 .hero-map text{fill:rgba(252,250,247,.72)}
 .hero-caption{border-top-color:rgba(252,250,247,.2);color:rgba(252,250,247,.62)}
-.profile{background:#f3eee6}
-.profile h2{color:#242d33}
-.services{background:#171b1e}
-.services .eyebrow,.service-row .no,.service-row small{color:#d6cabb}
-.brand-moment{background:#d6cabb}
-.brand-word{color:#242d33}
-.contact,.footer{background:#171b1e}
-.nav a::after{background:#b66b42}
+.profile{background:#f3f0e9}
+.profile h2{color:#35545e}
+.services{background:#12191d}
+.services .eyebrow,.service-row .no,.service-row small{color:#d9dedb}
+.brand-moment{background:#d9dedb}
+.brand-word{color:#35545e}
+.contact,.footer{background:#12191d}
+.nav a::after{background:#bcd63f}
 
 /* 2026-09-23 MASTER BRAND SYSTEM — Wine Trade Modernism × Mosel Geography */
-.site-header{background:#fbf8f2;border-bottom:1px solid rgba(36,45,51,.18)}
-.brand strong{color:#242d33}.header-cta{background:#242d33;color:#fff;border-color:#242d33}
-.hero{position:relative;background:#242d33;color:#fbf8f2;overflow:hidden}
-.hero::after{content:"";position:absolute;inset:0;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 600 220'%3E%3Cg fill='none' stroke='%23b66b42' stroke-opacity='.17' stroke-width='1.4'%3E%3Cpath d='M-40 190C70 120 135 210 250 135S420 50 640 125'/%3E%3Cpath d='M-55 150C70 75 155 175 275 100S445 20 650 90'/%3E%3Cpath d='M-30 215C80 150 160 235 285 165S470 80 650 145'/%3E%3C/g%3E%3C/svg%3E");background-size:980px auto;background-position:68% 52%;background-repeat:no-repeat;pointer-events:none}
+.site-header{background:#faf9f5;border-bottom:1px solid rgba(36,45,51,.18)}
+.brand strong{color:#35545e}.header-cta{background:#35545e;color:#fff;border-color:#35545e}
+.hero{position:relative;background:#35545e;color:#faf9f5;overflow:hidden}
+.hero::after{content:"";position:absolute;inset:0;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 600 220'%3E%3Cg fill='none' stroke='%23718b91' stroke-opacity='.17' stroke-width='1.4'%3E%3Cpath d='M-40 190C70 120 135 210 250 135S420 50 640 125'/%3E%3Cpath d='M-55 150C70 75 155 175 275 100S445 20 650 90'/%3E%3Cpath d='M-30 215C80 150 160 235 285 165S470 80 650 145'/%3E%3C/g%3E%3C/svg%3E");background-size:980px auto;background-position:68% 52%;background-repeat:no-repeat;pointer-events:none}
 .hero-grid{position:relative;z-index:1}
-.hero .eyebrow{color:#d6cabb}.hero-copy h1{color:#fbf8f2}
+.hero .eyebrow{color:#d9dedb}.hero-copy h1{color:#faf9f5}
 .hero-copy .lead{color:rgba(251,248,242,.79)}
-.hero .btn.primary{background:#fbf8f2;color:#242d33;border-color:#fbf8f2}
-.hero .btn.secondary{color:#fbf8f2;border-color:rgba(251,248,242,.46)}
+.hero .btn.primary{background:#faf9f5;color:#35545e;border-color:#faf9f5}
+.hero .btn.secondary{color:#faf9f5;border-color:rgba(251,248,242,.46)}
 .hero .trustline{color:rgba(251,248,242,.62)}
 .hero-visual{border-left-color:rgba(251,248,242,.2)}
-.hero-map .contour{stroke:rgba(214,202,187,.42)}.hero-map .river{stroke:#b66b42}
-.hero-map .dot{fill:#fbf8f2}.hero-map text{fill:rgba(251,248,242,.72)}
+.hero-map .contour{stroke:rgba(214,202,187,.42)}.hero-map .river{stroke:#718b91}
+.hero-map .dot{fill:#bcd63f}.hero-map text{fill:rgba(251,248,242,.72)}
 .hero-caption{border-top-color:rgba(251,248,242,.2);color:rgba(251,248,242,.62)}
-.profile{background:#f3eee6}.profile h2{color:#242d33}
-.services{background:#171b1e}.services .eyebrow,.service-row .no,.service-row small{color:#d6cabb}
-.brand-moment{background:#d6cabb}.brand-word{color:#242d33}
-.contact,.footer{background:#171b1e}.nav a::after{background:#b66b42}
+.profile{background:#f3f0e9}.profile h2{color:#35545e}
+.services{background:#12191d}.services .eyebrow,.service-row .no,.service-row small{color:#d9dedb}
+.brand-moment{background:#d9dedb}.brand-word{color:#35545e}
+.contact,.footer{background:#12191d}.nav a::after{background:#bcd63f}
