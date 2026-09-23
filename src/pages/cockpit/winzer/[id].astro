@@ -68,7 +68,7 @@ const profileStatusClass =
           </div>
         </div>
         <div class="profile-actions">
-          <span class:list={['profile-state', profileStatusClass]}>{profileStatus}</span>
+          <span class:list={['profile-state', profileStatusClass]} data-profile-state>{profileStatus}</span>
           <a class="primary-button" href={`${base}winzer/?grower=${grower.growerId}`}>Winzeransicht testen</a>
           <a class="quiet-button profile-invite-link" href={`${base}winzer/registrieren/?invite=${grower.growerId}`}>Zugang einladen</a>
           <button class="quiet-button" type="button" data-contact>Rückfrage anlegen</button>
@@ -80,8 +80,8 @@ const profileStatusClass =
       <section class="profile-command" aria-label="Winzer auf einen Blick">
         <div class="command-primary">
           <span class="overline">Heute relevant</span>
-          <strong>{tasks.length + exceptions.length === 0 ? 'Kein Eingriff nötig' : `${tasks.length + exceptions.length} Punkt(e) offen`}</strong>
-          <small>{tasks[0]?.task || exceptions[0]?.detail || 'Der Vorgang kann automatisch weiterlaufen.'}</small>
+          <strong data-command-title>{tasks.length + exceptions.length === 0 ? 'Kein Eingriff nötig' : `${tasks.length + exceptions.length} Punkt(e) offen`}</strong>
+          <small data-command-copy>{tasks[0]?.task || exceptions[0]?.detail || 'Der Vorgang kann automatisch weiterlaufen.'}</small>
         </div>
         <div class="command-stat">
           <span>Verfügbar</span>
@@ -121,6 +121,11 @@ const profileStatusClass =
             <div><strong data-response-title>Winzer-Rückmeldung eingegangen</strong><small data-response-copy></small></div>
             <em>Portal</em>
           </article>
+          <article class="attention-item clear" data-all-clear hidden>
+            <span class="attention-icon">✓</span>
+            <div><strong>Keine offene Winzer-Rückmeldung</strong><small>Die zuletzt angeforderten Angaben wurden verarbeitet.</small></div>
+            <em>erledigt</em>
+          </article>
           {tasks.length === 0 && exceptions.length === 0 ? (
             <article class="attention-item clear">
               <span class="attention-icon">✓</span>
@@ -130,7 +135,7 @@ const profileStatusClass =
           ) : (
             <>
               {tasks.map((task) => (
-                <article class="attention-item waiting">
+                <article class="attention-item waiting" data-task-item data-lot={task.lotId}>
                   <span class="attention-icon">↻</span>
                   <div><strong>{task.task}</strong><small>{task.lotId} · beim Winzer anzufragen bzw. zu bestätigen</small></div>
                   <em>Winzer</em>
@@ -362,12 +367,29 @@ const profileStatusClass =
     const responses = growerId ? getGrowerResponses(growerId) : [];
     if (responses.length) {
       const latest = responses[0];
+      const respondedLots = new Set(responses.map(item => item.lotId));
+      document.querySelectorAll('[data-task-item]').forEach(item => {
+        if (respondedLots.has(item.dataset.lot)) item.hidden = true;
+      });
+
       const summary = document.querySelector('[data-demo-response-summary]');
       summary.hidden = false;
       document.querySelector('[data-response-title]').textContent =
         latest.type === 'loading' ? 'Verladedaten vom Winzer bestätigt' : 'Partiedaten vom Winzer bestätigt';
       document.querySelector('[data-response-copy]').textContent =
         latest.lotId + ' · ' + new Date(latest.confirmedAt).toLocaleString('de-DE');
+
+      const visibleTasks = [...document.querySelectorAll('[data-task-item]')].filter(item => !item.hidden);
+      const visibleExceptions = [...document.querySelectorAll('.attention-item.exception')].filter(item => !item.hidden);
+      if (visibleTasks.length === 0 && visibleExceptions.length === 0) {
+        document.querySelector('[data-all-clear]').hidden = false;
+        document.querySelector('[data-command-title]').textContent = 'Kein Eingriff nötig';
+        document.querySelector('[data-command-copy]').textContent = 'Die Winzer-Rückmeldung wurde verarbeitet.';
+        const state = document.querySelector('[data-profile-state]');
+        state.textContent = 'Rückmeldung verarbeitet';
+        state.classList.remove('waiting','exception');
+        state.classList.add('ready');
+      }
     }
   </script>
 </BaseLayout>
