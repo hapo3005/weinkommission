@@ -1,0 +1,365 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import '../../styles/registrieren.css';
+
+const base = import.meta.env.BASE_URL;
+---
+
+<BaseLayout
+  title="Winzerzugang · Weinkommission Porn"
+  description="Demo für Einladung, Registrierung und Kooperationsanfrage im Winzerportal."
+  canonicalPath="/weinkommission/winzer/registrieren/"
+>
+  <div class="onboarding-app">
+    <header class="onboarding-header">
+      <a class="onboarding-brand" href={`${base}winzer/`}>
+        <span class="brand-mark">WP</span>
+        <span><strong>WEINKOMMISSION PORN</strong><small>Winzerzugang · Demo</small></span>
+      </a>
+      <span class="demo-label">Demo · keine Nachrichten werden versendet</span>
+    </header>
+
+    <main class="onboarding-main">
+      <section class="onboarding-intro" data-landing>
+        <p class="eyebrow">Digital zusammenarbeiten</p>
+        <h1>Ihr Zugang zur<br />Weinkommission.</h1>
+        <p>Bestehende Partner aktivieren ihren Zugang über eine persönliche Einladung. Neue Betriebe können eine Zusammenarbeit anfragen.</p>
+
+        <div class="entry-options">
+          <button class="entry-card invited" type="button" data-start-invite>
+            <span class="entry-kicker">Bereits Partner?</span>
+            <strong>Einladung verwenden</strong>
+            <p>Bestehende Betriebsakte verbinden, Daten prüfen und Zugang aktivieren.</p>
+            <em>Weiter →</em>
+          </button>
+          <button class="entry-card new" type="button" data-start-request>
+            <span class="entry-kicker">Noch kein Partner?</span>
+            <strong>Zusammenarbeit anfragen</strong>
+            <p>Nur die wichtigsten Angaben senden. Nadine oder Roland prüfen die Anfrage.</p>
+            <em>Anfrage starten →</em>
+          </button>
+        </div>
+
+        <div class="demo-shortcut">
+          <div>
+            <strong>Demo-Einladung testen</strong>
+            <small>Öffnet einen bereits bekannten Testbetrieb.</small>
+          </div>
+          <a href={`${base}winzer/registrieren/?invite=TEST-001`}>TEST-001 öffnen →</a>
+        </div>
+      </section>
+
+      <section class="flow-shell" data-invite-flow hidden>
+        <div class="flow-top">
+          <button class="back-link" type="button" data-flow-home>← Zur Auswahl</button>
+          <span class="flow-type">Einladung · bestehender Partner</span>
+        </div>
+
+        <div class="progress" aria-label="Fortschritt">
+          <span class="active" data-progress="1">1</span><i></i>
+          <span data-progress="2">2</span><i></i>
+          <span data-progress="3">3</span><i></i>
+          <span data-progress="4">4</span>
+        </div>
+
+        <article class="flow-step" data-invite-step="1">
+          <p class="eyebrow">Schritt 1 · Einladung</p>
+          <h2>Betrieb gefunden.</h2>
+          <p class="step-copy">Die Einladung verweist auf eine bereits vorhandene interne Betriebsakte. Es wird kein zweiter Winzerdatensatz angelegt.</p>
+
+          <div class="matched-business">
+            <span class="match-check">✓</span>
+            <div>
+              <strong data-invite-name>Testweingut 001</strong>
+              <small><span data-invite-place>Bernkastel-Kues</span> · <span data-invite-id>TEST-001</span></small>
+            </div>
+            <em data-invite-group>Blaues Band · Testzuordnung</em>
+          </div>
+
+          <label class="field">
+            <span>Einladungscode oder Link</span>
+            <input data-invite-code value="TEST-001" autocomplete="off" />
+            <small>In der Live-Version ist der Link signiert, zeitlich begrenzt und nur einmal verwendbar.</small>
+          </label>
+
+          <button class="primary-action" type="button" data-invite-next="2">Betrieb bestätigen →</button>
+        </article>
+
+        <article class="flow-step" data-invite-step="2" hidden>
+          <p class="eyebrow">Schritt 2 · Identität</p>
+          <h2>Wie sollen wir Sie bestätigen?</h2>
+          <p class="step-copy">Für die Demo wird keine echte SMS oder E-Mail verschickt. Im Live-System dient dieser Schritt der Identitätsbestätigung.</p>
+
+          <div class="contact-choice">
+            <label>
+              <input type="radio" name="verify-channel" value="email" checked />
+              <span><strong>E-Mail</strong><small>Magic Link oder Einmalcode</small></span>
+            </label>
+            <label>
+              <input type="radio" name="verify-channel" value="mobile" />
+              <span><strong>Mobilnummer</strong><small>Einmalcode per SMS</small></span>
+            </label>
+          </div>
+
+          <label class="field">
+            <span>E-Mail oder Mobilnummer</span>
+            <input data-identity-contact placeholder="z. B. name@weingut.de" autocomplete="email" />
+          </label>
+
+          <div class="demo-code">
+            <div><span>Demo-Code</span><strong>642731</strong></div>
+            <button type="button" data-use-code>Code übernehmen</button>
+          </div>
+
+          <label class="field">
+            <span>Bestätigungscode</span>
+            <input data-verification-code inputmode="numeric" maxlength="6" placeholder="6-stelliger Code" />
+          </label>
+
+          <p class="form-error" data-verify-error hidden>Für die Demo bitte Kontakt angeben und den Code 642731 verwenden.</p>
+          <button class="primary-action" type="button" data-verify>Identität bestätigen →</button>
+        </article>
+
+        <article class="flow-step" data-invite-step="3" hidden>
+          <p class="eyebrow">Schritt 3 · Betriebsdaten</p>
+          <h2>Einmal prüfen.</h2>
+          <p class="step-copy">Bekannte Daten werden übernommen. Der Winzer bestätigt oder korrigiert nur, was tatsächlich geändert werden muss.</p>
+
+          <div class="review-grid">
+            <label class="field"><span>Betrieb</span><input data-review-name /></label>
+            <label class="field"><span>Ort</span><input data-review-place /></label>
+            <label class="field"><span>Betriebsnummer</span><input data-review-number placeholder="noch nicht importiert" /></label>
+            <label class="field"><span>Ansprechpartner</span><input data-review-contact placeholder="Ansprechpartner ergänzen" /></label>
+          </div>
+
+          <label class="membership-claim">
+            <input type="checkbox" data-blueband-claim />
+            <span><strong>Unser Betrieb gehört zum Blauen Band.</strong><small>Diese Angabe wird im Cockpit als „vom Winzer angegeben“ gespeichert und von Nadine/Roland bestätigt.</small></span>
+          </label>
+
+          <label class="confirm-line">
+            <input type="checkbox" data-review-confirm />
+            <span>Ich bestätige, dass die Angaben für unseren Betrieb korrekt sind.</span>
+          </label>
+
+          <p class="form-error" data-review-error hidden>Bitte die Betriebsdaten bestätigen.</p>
+          <button class="primary-action" type="button" data-activate>Zugang aktivieren →</button>
+        </article>
+
+        <article class="flow-step success-step" data-invite-step="4" hidden>
+          <span class="success-mark">✓</span>
+          <p class="eyebrow">Demo erfolgreich</p>
+          <h2>Zugang aktiviert.</h2>
+          <p>Der Portalzugang ist jetzt mit der vorhandenen Betriebsakte <strong data-success-business></strong> verknüpft. Im Live-System würde ab hier eine echte Auth-Session entstehen.</p>
+
+          <div class="success-summary">
+            <div><span>Status</span><strong>Aktiv</strong></div>
+            <div><span>Betriebsakte</span><strong data-success-id>TEST-001</strong></div>
+            <div><span>Zugang</span><strong>mit Bestand verknüpft</strong></div>
+          </div>
+
+          <a class="primary-action link-action" href={`${base}winzer/`}>Zum Winzerportal →</a>
+          <button class="secondary-action" type="button" data-reset-demo>Demo zurücksetzen</button>
+        </article>
+      </section>
+
+      <section class="flow-shell" data-request-flow hidden>
+        <div class="flow-top">
+          <button class="back-link" type="button" data-flow-home>← Zur Auswahl</button>
+          <span class="flow-type">Neue Kooperationsanfrage</span>
+        </div>
+
+        <article class="request-form" data-request-form>
+          <p class="eyebrow">Neue Zusammenarbeit</p>
+          <h2>Nur das Nötigste.</h2>
+          <p class="step-copy">Der Betrieb wird zunächst als Anfrage gespeichert – nicht sofort als freigegebener Kooperationspartner.</p>
+
+          <div class="review-grid">
+            <label class="field"><span>Weingut / Betrieb *</span><input data-request-business required /></label>
+            <label class="field"><span>Ort *</span><input data-request-place required /></label>
+            <label class="field"><span>Ansprechpartner *</span><input data-request-person required /></label>
+            <label class="field"><span>E-Mail oder Mobilnummer *</span><input data-request-contact required /></label>
+            <label class="field"><span>Betriebsnummer</span><input data-request-number /></label>
+          </div>
+
+          <label class="membership-claim">
+            <input type="checkbox" data-request-blueband />
+            <span><strong>Wir gehören zum Blauen Band.</strong><small>Die Zugehörigkeit wird erst nach interner Bestätigung als verifiziert geführt.</small></span>
+          </label>
+
+          <label class="confirm-line">
+            <input type="checkbox" data-request-consent />
+            <span>Ich bestätige, dass die Angaben korrekt sind und die Weinkommission mich dazu kontaktieren darf.</span>
+          </label>
+
+          <p class="form-error" data-request-error hidden>Bitte die Pflichtfelder ausfüllen und die Angaben bestätigen.</p>
+          <button class="primary-action" type="button" data-submit-request>Anfrage senden →</button>
+        </article>
+
+        <article class="success-step request-success" data-request-success hidden>
+          <span class="success-mark">✓</span>
+          <p class="eyebrow">Anfrage eingegangen</p>
+          <h2>Jetzt prüft die Weinkommission.</h2>
+          <p>Der Betrieb wurde im Demo-Workflow mit Status <strong>„Prüfung erforderlich“</strong> angelegt. Es besteht noch kein aktiver Zugang.</p>
+
+          <div class="success-summary">
+            <div><span>Status</span><strong>Prüfung erforderlich</strong></div>
+            <div><span>Blaues Band</span><strong data-request-membership>nicht angegeben</strong></div>
+            <div><span>Nächster Schritt</span><strong>Nadine/Roland prüfen</strong></div>
+          </div>
+
+          <button class="secondary-action" type="button" data-reset-demo>Neue Demo starten</button>
+        </article>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    import { demoGrowers } from '../../data/procurement-demo.js';
+
+    const landing = document.querySelector('[data-landing]');
+    const inviteFlow = document.querySelector('[data-invite-flow]');
+    const requestFlow = document.querySelector('[data-request-flow]');
+    let currentGrower = null;
+
+    function showLanding() {
+      landing.hidden = false;
+      inviteFlow.hidden = true;
+      requestFlow.hidden = true;
+      history.replaceState({}, '', location.pathname);
+    }
+
+    function setInviteStep(step) {
+      document.querySelectorAll('[data-invite-step]').forEach(el => {
+        el.hidden = el.dataset.inviteStep !== String(step);
+      });
+      document.querySelectorAll('[data-progress]').forEach(el => {
+        el.classList.toggle('active', Number(el.dataset.progress) <= step);
+      });
+    }
+
+    function loadInvite(id) {
+      currentGrower = demoGrowers.find(g => g.growerId === id) || demoGrowers[0];
+      landing.hidden = true;
+      requestFlow.hidden = true;
+      inviteFlow.hidden = false;
+
+      document.querySelector('[data-invite-name]').textContent = currentGrower.growerName;
+      document.querySelector('[data-invite-place]').textContent = currentGrower.place;
+      document.querySelector('[data-invite-id]').textContent = currentGrower.growerId;
+      document.querySelector('[data-invite-code]').value = currentGrower.growerId;
+      document.querySelector('[data-invite-group]').textContent = currentGrower.supplierGroups.includes('Blaues Band')
+        ? 'Blaues Band · Testzuordnung'
+        : 'Sonstiger Partner · Testzuordnung';
+      document.querySelector('[data-review-name]').value = currentGrower.growerName;
+      document.querySelector('[data-review-place]').value = currentGrower.place;
+      document.querySelector('[data-blueband-claim]').checked = currentGrower.supplierGroups.includes('Blaues Band');
+      setInviteStep(1);
+    }
+
+    function startRequest() {
+      landing.hidden = true;
+      inviteFlow.hidden = true;
+      requestFlow.hidden = false;
+      document.querySelector('[data-request-form]').hidden = false;
+      document.querySelector('[data-request-success]').hidden = true;
+    }
+
+    document.querySelector('[data-start-invite]').addEventListener('click', () => loadInvite('TEST-001'));
+    document.querySelector('[data-start-request]').addEventListener('click', startRequest);
+    document.querySelectorAll('[data-flow-home]').forEach(button => button.addEventListener('click', showLanding));
+
+    document.querySelector('[data-invite-next]').addEventListener('click', () => {
+      const code = document.querySelector('[data-invite-code]').value.trim();
+      const found = demoGrowers.find(g => g.growerId === code);
+      if (found) loadInvite(found.growerId);
+      setInviteStep(2);
+    });
+
+    document.querySelector('[data-use-code]').addEventListener('click', () => {
+      document.querySelector('[data-verification-code]').value = '642731';
+    });
+
+    document.querySelector('[data-verify]').addEventListener('click', () => {
+      const contact = document.querySelector('[data-identity-contact]').value.trim();
+      const code = document.querySelector('[data-verification-code]').value.trim();
+      const error = document.querySelector('[data-verify-error]');
+      if (!contact || code !== '642731') {
+        error.hidden = false;
+        return;
+      }
+      error.hidden = true;
+      setInviteStep(3);
+    });
+
+    document.querySelector('[data-activate]').addEventListener('click', () => {
+      const confirmed = document.querySelector('[data-review-confirm]').checked;
+      const error = document.querySelector('[data-review-error]');
+      if (!confirmed) {
+        error.hidden = false;
+        return;
+      }
+      error.hidden = true;
+
+      const account = {
+        growerId: currentGrower.growerId,
+        businessName: document.querySelector('[data-review-name]').value.trim(),
+        place: document.querySelector('[data-review-place]').value.trim(),
+        businessNumber: document.querySelector('[data-review-number]').value.trim(),
+        contactPerson: document.querySelector('[data-review-contact]').value.trim(),
+        blueBandClaimed: document.querySelector('[data-blueband-claim]').checked,
+        status: 'active',
+        linkedExistingRecord: true,
+        demo: true
+      };
+      localStorage.setItem('wp-demo-grower-account', JSON.stringify(account));
+      document.querySelector('[data-success-business]').textContent = account.businessName;
+      document.querySelector('[data-success-id]').textContent = account.growerId;
+      setInviteStep(4);
+    });
+
+    document.querySelector('[data-submit-request]').addEventListener('click', () => {
+      const values = {
+        businessName: document.querySelector('[data-request-business]').value.trim(),
+        place: document.querySelector('[data-request-place]').value.trim(),
+        person: document.querySelector('[data-request-person]').value.trim(),
+        contact: document.querySelector('[data-request-contact]').value.trim(),
+        businessNumber: document.querySelector('[data-request-number]').value.trim(),
+        blueBandClaimed: document.querySelector('[data-request-blueband]').checked,
+        consent: document.querySelector('[data-request-consent]').checked
+      };
+      const error = document.querySelector('[data-request-error]');
+      if (!values.businessName || !values.place || !values.person || !values.contact || !values.consent) {
+        error.hidden = false;
+        return;
+      }
+      error.hidden = true;
+
+      const request = {
+        id: 'REQ-' + Date.now(),
+        ...values,
+        status: 'review_required',
+        createdAt: new Date().toISOString(),
+        demo: true
+      };
+      const requests = JSON.parse(localStorage.getItem('wp-demo-registration-requests') || '[]');
+      requests.unshift(request);
+      localStorage.setItem('wp-demo-registration-requests', JSON.stringify(requests.slice(0, 10)));
+
+      document.querySelector('[data-request-form]').hidden = true;
+      document.querySelector('[data-request-success]').hidden = false;
+      document.querySelector('[data-request-membership]').textContent = values.blueBandClaimed
+        ? 'angegeben · unbestätigt'
+        : 'nicht angegeben';
+    });
+
+    document.querySelectorAll('[data-reset-demo]').forEach(button => button.addEventListener('click', () => {
+      localStorage.removeItem('wp-demo-grower-account');
+      showLanding();
+      location.reload();
+    }));
+
+    const inviteId = new URLSearchParams(location.search).get('invite');
+    if (inviteId) loadInvite(inviteId);
+  </script>
+</BaseLayout>
