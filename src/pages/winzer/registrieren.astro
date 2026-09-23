@@ -299,7 +299,7 @@ const base = import.meta.env.BASE_URL;
 
   <script>
     import { demoGrowers } from '../../data/procurement-demo.js';
-    import { setActiveGrowerId } from '../../lib/demoSession.js';
+    import { setActiveGrowerId, getApprovedGrowers } from '../../lib/demoSession.js';
 
     const landing = document.querySelector('[data-landing]');
     const inviteFlow = document.querySelector('[data-invite-flow]');
@@ -323,7 +323,8 @@ const base = import.meta.env.BASE_URL;
     }
 
     function loadInvite(id) {
-      currentGrower = demoGrowers.find(g => g.growerId === id) || null;
+      const approvedGrowers = getApprovedGrowers();
+      currentGrower = demoGrowers.find(g => g.growerId === id) || approvedGrowers[id] || null;
       if (!currentGrower) return false;
       setActiveGrowerId(currentGrower.growerId);
       landing.hidden = true;
@@ -365,7 +366,7 @@ const base = import.meta.env.BASE_URL;
 
     document.querySelector('[data-invite-next]').addEventListener('click', () => {
       const code = document.querySelector('[data-invite-code]').value.trim();
-      const found = demoGrowers.find(g => g.growerId === code);
+      const found = demoGrowers.find(g => g.growerId === code) || getApprovedGrowers()[code];
       const error = document.querySelector('[data-invite-code-error]');
       if (!found) {
         error.hidden = false;
