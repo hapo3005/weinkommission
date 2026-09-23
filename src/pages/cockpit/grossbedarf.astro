@@ -204,7 +204,7 @@ const coveragePercent = (model.coverage * 100).toFixed(1).replace('.', ',');
           <span><strong data-task-count>{model.tasks.length}</strong> offene Auto-Aufgaben</span>
         </div>
 
-        <div class="allocation-table" role="table" aria-label="Winzerzuteilungen">
+        <div class="allocation-table" data-allocation-table role="table" aria-label="Winzerzuteilungen">
           <div class="allocation-row allocation-head-row" role="row">
             <span>Winzer</span><span>Partie</span><span>Angeboten</span><span>Zugeordnet</span><span>Status</span><span>Hinweis</span>
           </div>
@@ -282,11 +282,46 @@ const coveragePercent = (model.coverage * 100).toFixed(1).replace('.', ',');
   </div>
 
   <script>
-    import { demoRequirement, demoProcurementRows } from '../../data/procurement-demo.js';
+    import { demoRequirement, demoProcurementRows, demoGrowers } from '../../data/procurement-demo.js';
     import { runProcurement } from '../../lib/procurementEngine.js';
+    import { getAllGrowerResponses, getAllCustomLots, getApprovedGrowers } from '../../lib/demoSession.js';
 
-    let workingGrowers = demoProcurementRows.map(item => ({...item}));
-    const rows = [...document.querySelectorAll('[data-grower-row]')];
+    function buildWorkingRows() {
+      const approvedGrowers = getApprovedGrowers();
+      const growerLookup = new Map([
+        ...demoGrowers.map(grower => [grower.growerId, grower]),
+        ...Object.values(approvedGrowers).map(grower => [grower.growerId, grower])
+      ]);
+      const allCustomLots = getAllCustomLots();
+      const customRows = Object.entries(allCustomLots).flatMap(([growerId, lots]) => {
+        const grower = growerLookup.get(growerId);
+        if (!grower) return [];
+        return lots.map(lot => ({
+          ...lot,
+          growerName: grower.growerName,
+          place: grower.place,
+          supplierGroups: grower.supplierGroups || [],
+          cooperationStatus: grower.cooperationStatus || 'active',
+          businessProfile: grower.profile
+        }));
+      });
+
+      const responses = getAllGrowerResponses();
+      return [...demoProcurementRows, ...customRows].map(row => {
+        const response = (responses[row.growerId] || []).find(item => item.lotId === row.lotId);
+        if (!response) return {...row};
+        return {
+          ...row,
+          analysisConfirmed: response.type === 'confirmation' ? true : row.analysisConfirmed,
+          treatmentsConfirmed: response.type === 'confirmation' ? true : row.treatmentsConfirmed,
+          currentVolumeConfirmed: response.type === 'confirmation' ? true : row.currentVolumeConfirmed,
+          transportDataComplete: response.type === 'loading' ? true : row.transportDataComplete
+        };
+      });
+    }
+
+    let workingGrowers = buildWorkingRows();
+    let rows = [...document.querySelectorAll('[data-grower-row]')];
     const statusFilter = document.querySelector('[data-status-filter]');
     const search = document.querySelector('[data-search]');
     const visibleCount = document.querySelector('[data-visible-count]');
@@ -298,6 +333,37 @@ const coveragePercent = (model.coverage * 100).toFixed(1).replace('.', ',');
     let mobileExpanded = false;
 
     const formatLiters = value => new Intl.NumberFormat('de-DE').format(Math.round(value)) + ' l';
+
+    function escapeHtml(value = '') {
+      return String(value).replace(/[&<>"']/g, char => ({
+        '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'
+      })[char]);
+    }
+
+    function renderAllocationRows(model) {
+      const table = document.querySelector('[data-allocation-table]');
+      const head = table.querySelector('.allocation-head-row')?.outerHTML || '';
+      const html = model.allocationRows.map(g => `
+        <a
+          href="${import.meta.env.BASE_URL}cockpit/winzer/${encodeURIComponent(g.growerId)}/"
+          class="allocation-row allocation-data-row"
+          data-grower-row
+          data-status="${escapeHtml(g.status)}"
+          data-search-text="${escapeHtml((g.growerName + ' ' + g.place + ' ' + g.lotId + ' ' + g.grape + ' ' + g.vintage).toLowerCase())}"
+          role="row"
+        >
+          <span class="grower-name" data-label="Winzer"><strong>${escapeHtml(g.growerName)}</strong><small>${escapeHtml(g.place)}</small></span>
+          <span data-label="Partie"><strong>${escapeHtml(g.lotId)}</strong><small>${escapeHtml(g.grape)} · ${escapeHtml(g.vintage)}</small></span>
+          <span data-label="Angeboten">${formatLiters(g.availableVolume)}</span>
+          <span data-label="Zugeordnet">${formatLiters(g.allocatedVolume)}</span>
+          <span data-label="Status"><em class="row-status ${escapeHtml(g.status)}">${escapeHtml(g.label)}</em></span>
+          <span class="issue-text" data-label="Hinweis">${escapeHtml(g.issue || '—')}</span>
+        </a>
+      `).join('');
+      table.innerHTML = head + html;
+      rows = [...table.querySelectorAll('[data-grower-row]')];
+      visibleCount.textContent = String(rows.length);
+    }
 
     function applyFilters() {
       const status = statusFilter.value;
@@ -340,6 +406,10 @@ const coveragePercent = (model.coverage * 100).toFixed(1).replace('.', ',');
       if (mobileRemaining) mobileRemaining.textContent = formatLiters(model.remainingVolume) + ' offen';
       if (mobileTasks) mobileTasks.textContent = model.tasks.length;
     }
+
+    const initialLiveModel = runProcurement(demoRequirement, workingGrowers);
+    renderAllocationRows(initialLiveModel);
+    updateHeadline(initialLiveModel);
 
     statusFilter.addEventListener('change', () => { mobileExpanded = false; applyFilters(); });
     search.addEventListener('input', () => { mobileExpanded = false; applyFilters(); });
@@ -388,7 +458,9 @@ const coveragePercent = (model.coverage * 100).toFixed(1).replace('.', ',');
 
       const model = runProcurement(demoRequirement, workingGrowers);
       window.setTimeout(() => {
+        renderAllocationRows(model);
         updateHeadline(model);
+        applyFilters();
         button.textContent = '3 Rückmeldungen verarbeitet ✓';
         toast.textContent = 'Engine neu berechnet: Rückmeldungen geprüft, Matching und Zuteilungen aktualisiert.';
         toast.classList.add('show');
