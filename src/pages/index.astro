@@ -39,37 +39,79 @@ import '../styles/final-home.css';
 
   <main id="main">
     <section class="hero" id="top" aria-labelledby="hero-title">
-      <div class="shell hero-grid">
+      <div class="shell hero-stage">
         <div class="hero-copy">
           <p class="eyebrow">Weinkommission Porn · Mosel</p>
-          <h1 id="hero-title">Wein braucht die richtigen Verbindungen.</h1>
-          <p class="lead">Weinkommission Porn verbindet Erzeuger an der Mosel mit professionellen Abnehmern in Deutschland und internationalen Märkten – persönlich, diskret und marktnah.</p>
+          <h1 id="hero-title">Zwischen Wein und Markt.</h1>
+          <p class="lead">Persönliche Weinvermittlung zwischen Erzeugern an der Mosel und professionellen Abnehmern – mit Marktkenntnis, gewachsenen Beziehungen und direkter Verantwortung.</p>
+
           <div class="hero-actions">
             <a class="btn primary" href="#kontakt">Wein anbieten</a>
             <a class="btn secondary" href="#kontakt">Wein suchen</a>
           </div>
-          <div class="trustline"><span>Mosel</span><span>Deutschland</span><span>Internationale Märkte</span></div>
+
+          <dl class="hero-ledger" aria-label="Profil der Weinkommission">
+            <div><dt>Arbeitsraum</dt><dd>Deutsche Mosel</dd></div>
+            <div><dt>Markt</dt><dd>Deutschland · Europa · international</dd></div>
+            <div><dt>Arbeitsweise</dt><dd>Persönlich · diskret · verlässlich</dd></div>
+          </dl>
         </div>
 
-        <figure class="hero-visual">
-          <div class="hero-photo">
-            <img
-              src="https://commons.wikimedia.org/wiki/Special:Redirect/file/Aerial_image_of_the_Moselle_in_Bernkastel-Kues_(view_from_the_southeast).jpg?width=2200"
-              alt="Luftaufnahme der Mosel bei Bernkastel-Kues mit Fluss, Weinbergen und Siedlungsraum"
-              loading="eager"
-              fetchpriority="high"
-              decoding="async"
-            />
+        <div class="hero-instrument" aria-label="Kartografische Darstellung der Mosel als Arbeitsraum">
+          <div class="instrument-head">
+            <span>Arbeitsraum / Deutsche Mosel</span>
+            <span>Trier — Koblenz</span>
           </div>
-          <div class="hero-geography" aria-label="Arbeitsraum der Weinkommission entlang der deutschen Mosel">
-            <span>Trier</span><i></i><span>Bernkastel-Kues</span><i></i><span>Zell</span><i></i><span>Cochem</span><i></i><span>Koblenz</span>
+
+          <svg class="instrument-map" viewBox="0 0 760 620" role="img" aria-labelledby="instrument-title instrument-desc">
+            <title id="instrument-title">Deutsche Mosel zwischen Trier und Koblenz</title>
+            <desc id="instrument-desc">Reduzierte kartografische Interpretation des Moselverlaufs mit ausgewählten Marktorten.</desc>
+
+            <g class="instrument-grid" aria-hidden="true">
+              <path d="M0 112H760M0 236H760M0 360H760M0 484H760" />
+              <path d="M126 0V620M252 0V620M378 0V620M504 0V620M630 0V620" />
+            </g>
+
+            <g class="instrument-contours" aria-hidden="true">
+              <path d="M-36 566C98 494 182 585 319 498S565 392 806 476" />
+              <path d="M-44 472C92 399 202 503 344 412S589 296 812 383" />
+              <path d="M-30 372C121 296 215 411 366 314S603 201 806 286" />
+              <path d="M-8 269C139 196 242 305 392 211S621 103 806 171" />
+              <path d="M24 165C159 99 278 198 423 113S643 28 795 77" />
+            </g>
+
+            <path class="instrument-river" d="M84 566C169 532 140 474 226 440C309 407 236 350 329 315C414 283 355 231 444 198C518 170 491 119 568 94C626 75 635 40 694 28" />
+
+            <g class="instrument-stations">
+              <g transform="translate(145 518)"><circle r="5"/><text x="14" y="4">TRIER</text></g>
+              <g transform="translate(329 315)"><circle r="5"/><text x="14" y="4">BERNKASTEL-KUES</text></g>
+              <g transform="translate(444 198)"><circle r="5"/><text x="14" y="4">ZELL</text></g>
+              <g transform="translate(568 94)"><circle r="5"/><text x="14" y="4">COCHEM</text></g>
+              <g transform="translate(694 28)"><circle r="5"/><text x="-14" y="-13" text-anchor="end">KOBLENZ</text></g>
+            </g>
+
+            <g class="instrument-notes" aria-hidden="true">
+              <text x="38" y="42">HERKUNFT / NETZWERK</text>
+              <text x="38" y="60">MOSEL · RHEINLAND-PFALZ</text>
+              <text x="604" y="556">MARKTZUGANG</text>
+              <path d="M604 572H716" />
+              <path d="M706 564L716 572L706 580" />
+            </g>
+          </svg>
+
+          <div class="instrument-reach">
+            <span class="reach-label">Marktreichweite</span>
+            <div class="reach-track" aria-label="Mosel, Deutschland, Europa, international">
+              <span>Mosel</span><i></i><span>DE</span><i></i><span>EU</span><i></i><span>International</span>
+            </div>
           </div>
-          <figcaption class="hero-caption">
-            <span>Arbeitsraum: deutsche Mosel</span>
-            <span>Markt: Deutschland · Europa · international</span>
-            <a href="https://commons.wikimedia.org/wiki/File:Aerial_image_of_the_Moselle_in_Bernkastel-Kues_(view_from_the_southeast).jpg" target="_blank" rel="noreferrer">Foto: Carsten Steger · CC BY-SA 4.0</a>
-          </figcaption>
-        </figure>
+        </div>
+      </div>
+
+      <div class="shell hero-index" aria-hidden="true">
+        <span>01 · Herkunft</span>
+        <span>02 · Vermittlung</span>
+        <span>03 · Markt</span>
       </div>
     </section>
 
