@@ -187,6 +187,7 @@ const openCount = partners.filter(p => p.status === 'waiting' || p.status === 'e
                 data-partner-row
                 data-grower-id={partner.growerId}
                 data-open-count={model.tasks.filter(task => task.growerId === partner.growerId).length}
+                data-open-lots={model.tasks.filter(task => task.growerId === partner.growerId).map(task => task.lotId).join(',')}
                 data-allocated={allocated > 0 ? 'true' : 'false'}
                 data-group={partner.inBlueBand ? 'blueband' : 'other'}
                 data-state={state}
@@ -393,8 +394,10 @@ const openCount = partners.filter(p => p.status === 'waiting' || p.status === 'e
       rows.forEach(row => {
         const openCount = Number(row.dataset.openCount || 0);
         if (openCount <= 0) return;
+        const openLots = (row.dataset.openLots || '').split(',').filter(Boolean);
         const resolvedLots = new Set((responses[row.dataset.growerId] || []).map(item => item.lotId));
-        if (resolvedLots.size < openCount) return;
+        const allOpenLotsResolved = openLots.length === openCount && openLots.every(lotId => resolvedLots.has(lotId));
+        if (!allOpenLotsResolved) return;
 
         row.dataset.state = row.dataset.allocated === 'true' ? 'allocated' : 'idle';
         const statusText = row.querySelector('.process-heading em');
