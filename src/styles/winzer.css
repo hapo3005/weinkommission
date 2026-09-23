@@ -189,3 +189,22 @@ h2{font-size:clamp(31px,5vw,45px);line-height:1.02}
 .portal-demo-note span{color:var(--muted)}
 .portal-demo-note a{margin-left:auto;color:var(--green);text-decoration:none;font-size:9px}
 @media(max-width:640px){.grower-header-actions{width:100%;justify-content:space-between}.access-link{flex:1;text-align:center}.portal-demo-note{align-items:flex-start;flex-direction:column}.portal-demo-note a{margin-left:0}}
+
+
+.business-profile-card{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) 230px;
+  gap:24px;
+  align-items:center;
+  margin-bottom:18px;
+  padding:18px;
+  background:#eef0ea;
+  border:1px solid rgba(24,34,30,.14)
+}
+.business-profile-card h2{margin:0;font-family:var(--serif);font-size:24px;font-weight:400}
+.business-profile-card p:not(.eyebrow){margin:7px 0 0;color:var(--muted);font-size:9px;line-height:1.55}
+.profile-card-progress span{display:block;font-family:var(--serif);font-size:24px}
+.profile-card-progress>div{height:5px;margin:8px 0 10px;background:rgba(24,34,30,.1)}
+.profile-card-progress i{display:block;height:100%;width:0;background:var(--green);transition:width .2s}
+.profile-card-progress a{font-size:9px;color:var(--green);text-decoration:none}
+@media(max-width:640px){.business-profile-card{grid-template-columns:1fr}}
