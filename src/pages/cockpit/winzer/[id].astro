@@ -20,6 +20,8 @@ const tasks = model.tasks.filter((task) => task.growerId === grower.growerId);
 const exceptions = model.exceptions.filter((item) => item.growerName === grower.growerName && item.lotId === grower.lotId);
 const transports = model.transports.filter((item) => item.growerId === grower.growerId);
 const allocatedVolume = allocation?.allocatedVolume ?? 0;
+const inBlueBand = Array.isArray(grower.supplierGroups) && grower.supplierGroups.includes('Blaues Band');
+const cooperationLabel = inBlueBand ? 'Blaues Band' : 'Sonstiger Kooperationspartner';
 
 const transportState = transports[0]?.state;
 const transportLabel =
@@ -49,13 +51,13 @@ const profileStatusClass =
   <div class="profile-app">
     <header class="profile-header">
       <div class="profile-header-inner">
-        <a class="profile-back" href={`${base}cockpit/grossbedarf/`}>← Großbedarf</a>
+        <a class="profile-back" href={`${base}cockpit/winzer/`}>← Winzerübersicht</a>
         <div class="profile-title">
           <p class="overline">Interne Betriebsakte · synthetischer Testdatensatz</p>
           <h1>{grower.growerName}</h1>
           <div class="profile-meta">
             <span>{grower.place}</span>
-            <span>Verbundzuordnung noch nicht importiert</span>
+            <span>{cooperationLabel} · Testzuordnung</span>
             <span>{grower.growerId}</span>
           </div>
         </div>
@@ -220,7 +222,7 @@ const profileStatusClass =
         <div class="master-data">
           <div><span>Betrieb</span><strong>{grower.growerName}</strong></div>
           <div><span>Ort</span><strong>{grower.place}</strong></div>
-          <div class="missing"><span>Verbundzuordnung</span><strong>noch nicht importiert</strong></div>
+          <div><span>Kooperation</span><strong>{cooperationLabel} · Testzuordnung</strong></div>
           <div class="missing"><span>Betriebsnummer</span><strong>noch nicht importiert</strong></div>
           <div class="missing"><span>Ansprechpartner</span><strong>noch nicht importiert</strong></div>
           <div class="missing"><span>Telefon</span><strong>noch nicht importiert</strong></div>
@@ -245,7 +247,7 @@ const profileStatusClass =
 
       <section class="profile-footnote">
         <strong>Synthetische Test-Betriebsakte</strong>
-        <p>Dieser Betrieb ist kein recherchiertes Mitglied des Blauen Bandes. Name, Mengen und Status stammen ausschließlich aus dem Testbestand. Reale Betriebe werden später aus Rolands/Nadines Datenbestand importiert und ersetzen diese Datensätze vollständig.</p>
+        <p>Name, Mengen, Status und die derzeitige Zuordnung „${cooperationLabel}“ stammen ausschließlich aus dem Testbestand. Beim Import wird diese Testakte vollständig durch den realen Partnerdatensatz einschließlich tatsächlicher Blaues-Band-Zugehörigkeit ersetzt.</p>
       </section>
 
       <dialog class="profile-dialog" data-contact-dialog>
