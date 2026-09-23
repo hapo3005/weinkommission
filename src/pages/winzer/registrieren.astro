@@ -432,15 +432,15 @@ const base = import.meta.env.BASE_URL;
     }
 
     document.querySelector('[data-fill-request-demo]').addEventListener('click', () => {
-      document.querySelector('[data-request-business]').value = 'Weingut Demo';
-      document.querySelector('[data-request-person]').value = 'Max Mustermann';
-      document.querySelector('[data-request-street]').value = 'Moselstraße 12';
+      document.querySelector('[data-request-business]').value = 'Weingut Rabenlay';
+      document.querySelector('[data-request-person]').value = 'Anna Keller';
+      document.querySelector('[data-request-street]').value = 'Moselhang 18';
       document.querySelector('[data-request-postcode]').value = '54470';
       document.querySelector('[data-request-place]').value = 'Bernkastel-Kues';
-      document.querySelector('[data-request-email]').value = 'demo@weingut.de';
-      document.querySelector('[data-request-phone]').value = '06531 123456';
-      document.querySelector('[data-request-number]').value = 'DEMO-12345';
-      document.querySelector('[data-request-website]').value = 'https://example.com';
+      document.querySelector('[data-request-email]').value = 'kontakt@rabenlay.example';
+      document.querySelector('[data-request-phone]').value = '06531 418726';
+      document.querySelector('[data-request-number]').value = 'DEMO-RP-90817';
+      document.querySelector('[data-request-website]').value = 'https://www.rabenlay.example';
     });
 
     document.querySelector('[data-fill-profile-demo]').addEventListener('click', () => {
@@ -454,7 +454,7 @@ const base = import.meta.env.BASE_URL;
       const fasswein = [...document.querySelectorAll('[data-request-offer]')].find(el => el.value === 'Fasswein');
       if (riesling) riesling.checked = true;
       if (fasswein) fasswein.checked = true;
-      document.querySelector('[data-request-note]').value = 'Demo-Profil für die Präsentation.';
+      document.querySelector('[data-request-note]').value = 'Riesling-Schwerpunkt, regelmäßige freie Fassweinmengen und flexible Verladung nach Abstimmung.';
       document.querySelector('[data-request-consent]').checked = true;
     });
 
