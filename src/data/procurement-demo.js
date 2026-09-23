@@ -80,7 +80,7 @@ export const demoGrowers = Array.from({ length: 230 }, (_, index) => {
     postcode: location.postcode,
     street: streetNames[index % streetNames.length] + ' ' + (2 + ((n * 7) % 48)),
     contactPerson: 'Familie ' + family,
-    email: 'kontakt@' + slug + '-demo.de',
+    email: 'kontakt+' + String(n).padStart(3,'0') + '@' + slug + '-demo.de',
     phone: '06531 ' + String(410000 + n),
     businessNumber: 'DEMO-RP-' + String(n).padStart(5,'0'),
     website: 'https://www.' + slug + '-demo.de',
