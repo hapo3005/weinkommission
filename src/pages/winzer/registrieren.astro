@@ -170,30 +170,103 @@ const base = import.meta.env.BASE_URL;
         </div>
 
         <article class="request-form" data-request-form>
-          <p class="eyebrow">Neue Zusammenarbeit</p>
-          <h2>Nur das Nötigste.</h2>
-          <p class="step-copy">Der Betrieb wird zunächst als Anfrage gespeichert – nicht sofort als freigegebener Kooperationspartner.</p>
-
-          <div class="review-grid">
-            <label class="field"><span>Weingut / Betrieb *</span><input data-request-business required /></label>
-            <label class="field"><span>Ort *</span><input data-request-place required /></label>
-            <label class="field"><span>Ansprechpartner *</span><input data-request-person required /></label>
-            <label class="field"><span>E-Mail oder Mobilnummer *</span><input data-request-contact required /></label>
-            <label class="field"><span>Betriebsnummer</span><input data-request-number /></label>
+          <div class="request-progress">
+            <span class="active" data-request-progress="1">1 · Betrieb & Kontakt</span>
+            <span data-request-progress="2">2 · Weinbauprofil</span>
           </div>
 
-          <label class="membership-claim">
-            <input type="checkbox" data-request-blueband />
-            <span><strong>Wir gehören zum Blauen Band.</strong><small>Die Zugehörigkeit wird erst nach interner Bestätigung als verifiziert geführt.</small></span>
-          </label>
+          <div data-request-step="1">
+            <p class="eyebrow">Neue Zusammenarbeit · Schritt 1</p>
+            <h2>Wer sind Sie?</h2>
+            <p class="step-copy">Damit Nadine oder Roland den Betrieb eindeutig zuordnen und Rückfragen direkt an die richtige Person richten können.</p>
 
-          <label class="confirm-line">
-            <input type="checkbox" data-request-consent />
-            <span>Ich bestätige, dass die Angaben korrekt sind und die Weinkommission mich dazu kontaktieren darf.</span>
-          </label>
+            <div class="review-grid">
+              <label class="field"><span>Weingut / Betrieb *</span><input data-request-business required autocomplete="organization" /></label>
+              <label class="field"><span>Ansprechpartner *</span><input data-request-person required autocomplete="name" /></label>
+              <label class="field field-wide"><span>Straße & Hausnummer *</span><input data-request-street required autocomplete="street-address" /></label>
+              <label class="field"><span>PLZ *</span><input data-request-postcode required inputmode="numeric" autocomplete="postal-code" /></label>
+              <label class="field"><span>Ort *</span><input data-request-place required autocomplete="address-level2" /></label>
+              <label class="field"><span>E-Mail *</span><input type="email" data-request-email required autocomplete="email" /></label>
+              <label class="field"><span>Telefon / Mobil *</span><input type="tel" data-request-phone required autocomplete="tel" /></label>
+              <label class="field"><span>Weinbau-Betriebsnummer</span><input data-request-number placeholder="falls vorhanden / bekannt" /></label>
+              <label class="field"><span>Website</span><input type="url" data-request-website placeholder="https://…" /></label>
+            </div>
 
-          <p class="form-error" data-request-error hidden>Bitte die Pflichtfelder ausfüllen und die Angaben bestätigen.</p>
-          <button class="primary-action" type="button" data-submit-request>Anfrage senden →</button>
+            <p class="form-error" data-request-step1-error hidden>Bitte die mit * markierten Angaben vollständig ausfüllen.</p>
+            <button class="primary-action" type="button" data-request-next>Weiter zum Weinbauprofil →</button>
+          </div>
+
+          <div data-request-step="2" hidden>
+            <button class="back-button request-back" type="button" data-request-back>← Betrieb & Kontakt</button>
+            <p class="eyebrow">Neue Zusammenarbeit · Schritt 2</p>
+            <h2>Was können Sie anbieten?</h2>
+            <p class="step-copy">Noch keine vollständige Partiemeldung – nur ein Profil, mit dem die Weinkommission den Betrieb sinnvoll einordnen und später passende Bedarfe zuordnen kann.</p>
+
+            <div class="review-grid">
+              <label class="field">
+                <span>Anbaugebiet *</span>
+                <select data-request-region>
+                  <option value="Mosel" selected>Mosel</option>
+                  <option value="Saar">Saar</option>
+                  <option value="Ruwer">Ruwer</option>
+                  <option value="Ahr">Ahr</option>
+                  <option value="Nahe">Nahe</option>
+                  <option value="Rheinhessen">Rheinhessen</option>
+                  <option value="Pfalz">Pfalz</option>
+                  <option value="Sonstiges">Sonstiges</option>
+                </select>
+              </label>
+              <label class="field"><span>Rebfläche ungefähr</span><input data-request-hectares inputmode="decimal" placeholder="z. B. 12,5 ha" /></label>
+              <label class="field"><span>Typische verfügbare Menge / Jahr</span><input data-request-volume inputmode="numeric" placeholder="z. B. 120.000 l" /></label>
+              <label class="field"><span>Bevorzugter Kontaktweg</span>
+                <select data-request-preferred-contact>
+                  <option value="email">E-Mail</option>
+                  <option value="phone">Telefon</option>
+                  <option value="mobile">Mobil / Messenger</option>
+                </select>
+              </label>
+            </div>
+
+            <fieldset class="profile-choice">
+              <legend>Wichtigste Rebsorten</legend>
+              <div class="choice-grid">
+                <label><input type="checkbox" value="Riesling" data-request-grape /><span>Riesling</span></label>
+                <label><input type="checkbox" value="Müller-Thurgau" data-request-grape /><span>Müller-Thurgau</span></label>
+                <label><input type="checkbox" value="Weißburgunder" data-request-grape /><span>Weißburgunder</span></label>
+                <label><input type="checkbox" value="Grauburgunder" data-request-grape /><span>Grauburgunder</span></label>
+                <label><input type="checkbox" value="Spätburgunder" data-request-grape /><span>Spätburgunder</span></label>
+                <label><input type="checkbox" value="Sonstige" data-request-grape /><span>Sonstige</span></label>
+              </div>
+            </fieldset>
+
+            <fieldset class="profile-choice">
+              <legend>Was möchten Sie über die Weinkommission anbieten?</legend>
+              <div class="choice-grid">
+                <label><input type="checkbox" value="Fasswein" data-request-offer /><span>Fasswein</span></label>
+                <label><input type="checkbox" value="Most" data-request-offer /><span>Most</span></label>
+                <label><input type="checkbox" value="Trauben" data-request-offer /><span>Trauben</span></label>
+                <label><input type="checkbox" value="Sonstiges" data-request-offer /><span>Sonstiges</span></label>
+              </div>
+            </fieldset>
+
+            <label class="field">
+              <span>Kurze Ergänzung / Besonderheiten</span>
+              <textarea data-request-note rows="4" placeholder="z. B. verfügbare Jahrgänge, besondere Mengen, Bio-Zertifizierung, aktuelle Partien …"></textarea>
+            </label>
+
+            <label class="membership-claim">
+              <input type="checkbox" data-request-blueband />
+              <span><strong>Wir gehören zum Blauen Band.</strong><small>Die Zugehörigkeit wird erst nach interner Bestätigung als verifiziert geführt.</small></span>
+            </label>
+
+            <label class="confirm-line">
+              <input type="checkbox" data-request-consent />
+              <span>Ich bestätige, dass die Angaben korrekt sind und die Weinkommission mich dazu kontaktieren darf.</span>
+            </label>
+
+            <p class="form-error" data-request-error hidden>Bitte mindestens eine Rebsorte oder Angebotsart auswählen und die Angaben bestätigen.</p>
+            <button class="primary-action" type="button" data-submit-request>Anfrage senden →</button>
+          </div>
         </article>
 
         <article class="success-step request-success" data-request-success hidden>
@@ -263,6 +336,7 @@ const base = import.meta.env.BASE_URL;
       requestFlow.hidden = false;
       document.querySelector('[data-request-form]').hidden = false;
       document.querySelector('[data-request-success]').hidden = true;
+      if (typeof setRequestStep === 'function') setRequestStep(1);
     }
 
     document.querySelector('[data-start-invite]').addEventListener('click', () => loadInvite('TEST-001'));
@@ -318,18 +392,66 @@ const base = import.meta.env.BASE_URL;
       setInviteStep(4);
     });
 
+    const requestStep1 = document.querySelector('[data-request-step="1"]');
+    const requestStep2 = document.querySelector('[data-request-step="2"]');
+
+    function setRequestStep(step) {
+      requestStep1.hidden = step !== 1;
+      requestStep2.hidden = step !== 2;
+      document.querySelectorAll('[data-request-progress]').forEach(el => {
+        el.classList.toggle('active', Number(el.dataset.requestProgress) <= step);
+      });
+    }
+
+    document.querySelector('[data-request-next]').addEventListener('click', () => {
+      const required = [
+        document.querySelector('[data-request-business]').value.trim(),
+        document.querySelector('[data-request-person]').value.trim(),
+        document.querySelector('[data-request-street]').value.trim(),
+        document.querySelector('[data-request-postcode]').value.trim(),
+        document.querySelector('[data-request-place]').value.trim(),
+        document.querySelector('[data-request-email]').value.trim(),
+        document.querySelector('[data-request-phone]').value.trim()
+      ];
+      const error = document.querySelector('[data-request-step1-error]');
+      if (required.some(value => !value)) {
+        error.hidden = false;
+        return;
+      }
+      error.hidden = true;
+      setRequestStep(2);
+    });
+
+    document.querySelector('[data-request-back]').addEventListener('click', () => setRequestStep(1));
+
     document.querySelector('[data-submit-request]').addEventListener('click', () => {
+      const grapes = [...document.querySelectorAll('[data-request-grape]:checked')].map(el => el.value);
+      const offers = [...document.querySelectorAll('[data-request-offer]:checked')].map(el => el.value);
+
       const values = {
         businessName: document.querySelector('[data-request-business]').value.trim(),
-        place: document.querySelector('[data-request-place]').value.trim(),
         person: document.querySelector('[data-request-person]').value.trim(),
-        contact: document.querySelector('[data-request-contact]').value.trim(),
+        street: document.querySelector('[data-request-street]').value.trim(),
+        postcode: document.querySelector('[data-request-postcode]').value.trim(),
+        place: document.querySelector('[data-request-place]').value.trim(),
+        email: document.querySelector('[data-request-email]').value.trim(),
+        phone: document.querySelector('[data-request-phone]').value.trim(),
+        contact: document.querySelector('[data-request-email]').value.trim() || document.querySelector('[data-request-phone]').value.trim(),
         businessNumber: document.querySelector('[data-request-number]').value.trim(),
+        website: document.querySelector('[data-request-website]').value.trim(),
+        region: document.querySelector('[data-request-region]').value,
+        hectares: document.querySelector('[data-request-hectares]').value.trim(),
+        typicalAnnualVolume: document.querySelector('[data-request-volume]').value.trim(),
+        preferredContact: document.querySelector('[data-request-preferred-contact]').value,
+        grapes,
+        offers,
+        note: document.querySelector('[data-request-note]').value.trim(),
         blueBandClaimed: document.querySelector('[data-request-blueband]').checked,
         consent: document.querySelector('[data-request-consent]').checked
       };
+
       const error = document.querySelector('[data-request-error]');
-      if (!values.businessName || !values.place || !values.person || !values.contact || !values.consent) {
+      if ((grapes.length === 0 && offers.length === 0) || !values.consent) {
         error.hidden = false;
         return;
       }
