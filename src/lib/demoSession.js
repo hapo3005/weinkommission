@@ -47,8 +47,12 @@ export function saveGrowerProfile(profile) {
   localStorage.setItem(LEGACY_PROFILE_KEY, JSON.stringify(profile));
 }
 
+export function getAllGrowerResponses() {
+  return readJson(RESPONSES_KEY, {});
+}
+
 export function getGrowerResponses(growerId) {
-  const all = readJson(RESPONSES_KEY, {});
+  const all = getAllGrowerResponses();
   return all[growerId] || [];
 }
 
