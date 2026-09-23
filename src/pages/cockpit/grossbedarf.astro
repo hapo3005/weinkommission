@@ -48,7 +48,7 @@ const coveragePercent = (model.coverage * 100).toFixed(1).replace('.', ',');
       <header class="procurement-header" id="auftrag">
         <div>
           <p class="overline">Beschaffungsvorgang · Prozessmodell mit synthetischen Testdaten</p>
-          <h1>Peter Mertes × Blaues Band</h1>
+          <h1 data-requirement-title>Peter Mertes × Blaues Band</h1>
           <p class="procurement-lead">Ein Bedarf, viele Winzer. Die reale Blaues-Band-Mitgliederliste ist noch nicht importiert; Matching und Zuteilung laufen hier bewusst auf synthetischen Testbetrieben.</p>
         </div>
         <div class="header-controls">
@@ -75,17 +75,17 @@ const coveragePercent = (model.coverage * 100).toFixed(1).replace('.', ',');
 
       <section class="master-order">
         <div class="order-identity">
-          <span class="order-code">{demoRequirement.id}</span>
+          <span class="order-code" data-requirement-id>{demoRequirement.id}</span>
           <div>
             <p class="overline">Gesamtbedarf</p>
-            <h2>{demoRequirement.grape} · {demoRequirement.origin} · Jahrgang {demoRequirement.vintage}</h2>
+            <h2 data-requirement-wine>{demoRequirement.grape} · {demoRequirement.origin} · Jahrgang {demoRequirement.vintage}</h2>
           </div>
         </div>
 
         <div class="order-spec" data-order-spec>
-          <div><span>Zielmenge</span><strong>{formatLiters(demoRequirement.targetVolume)}</strong></div>
-          <div><span>Abnehmer</span><strong>{demoRequirement.buyer}</strong></div>
-          <div><span>Lieferfenster</span><strong>{demoRequirement.deliveryWindow}</strong></div>
+          <div><span>Zielmenge</span><strong data-requirement-target>{formatLiters(demoRequirement.targetVolume)}</strong></div>
+          <div><span>Abnehmer</span><strong data-requirement-buyer>{demoRequirement.buyer}</strong></div>
+          <div><span>Lieferfenster</span><strong data-requirement-window>{demoRequirement.deliveryWindow}</strong></div>
           <div><span>Winzerverbund</span><strong>{demoRequirement.supplierGroup} · {model.stats.growersTotal} Testbetriebe im Scope</strong></div>
         </div>
 
@@ -95,7 +95,7 @@ const coveragePercent = (model.coverage * 100).toFixed(1).replace('.', ',');
             <span data-coverage-percent>{coveragePercent} %</span>
           </div>
           <div class="coverage-track"><span data-coverage-bar style={`width:${model.coverage * 100}%`}></span></div>
-          <div class="coverage-scale"><span>0 l</span><span data-remaining>noch {formatLiters(model.remainingVolume)} offen</span><span>{formatLiters(demoRequirement.targetVolume)}</span></div>
+          <div class="coverage-scale"><span>0 l</span><span data-remaining>noch {formatLiters(model.remainingVolume)} offen</span><span data-requirement-scale-target>{formatLiters(demoRequirement.targetVolume)}</span></div>
         </div>
       </section>
 
@@ -264,15 +264,15 @@ const coveragePercent = (model.coverage * 100).toFixed(1).replace('.', ',');
 
       <dialog class="spec-dialog" data-spec-dialog>
         <button class="dialog-close" type="button" data-close-spec aria-label="Schließen">×</button>
-        <p class="overline">Bedarf M-2027-RI-01 · Demo</p>
+        <p class="overline" data-spec-reference>Bedarf M-2027-RI-01 · Demo</p>
         <h2>Bedarfsspezifikation</h2>
         <dl>
-          <div><dt>Erzeugnis</dt><dd>{demoRequirement.grape} · Wein</dd></div>
-          <div><dt>Herkunft</dt><dd>{demoRequirement.origin}</dd></div>
-          <div><dt>Jahrgang</dt><dd>{demoRequirement.vintage}</dd></div>
-          <div><dt>Zielmenge</dt><dd>{formatLiters(demoRequirement.targetVolume)}</dd></div>
-          <div><dt>Lieferfenster</dt><dd>{demoRequirement.deliveryWindow}</dd></div>
-          <div><dt>Abnehmer</dt><dd>{demoRequirement.buyer}</dd></div>
+          <div><dt>Erzeugnis</dt><dd data-spec-product>{demoRequirement.grape} · Wein</dd></div>
+          <div><dt>Herkunft</dt><dd data-spec-origin>{demoRequirement.origin}</dd></div>
+          <div><dt>Jahrgang</dt><dd data-spec-vintage>{demoRequirement.vintage}</dd></div>
+          <div><dt>Zielmenge</dt><dd data-spec-target>{formatLiters(demoRequirement.targetVolume)}</dd></div>
+          <div><dt>Lieferfenster</dt><dd data-spec-window>{demoRequirement.deliveryWindow}</dd></div>
+          <div><dt>Abnehmer</dt><dd data-spec-buyer>{demoRequirement.buyer}</dd></div>
         </dl>
         <p class="dialog-note">Analytische Grenzwerte und Blaues-Band-Mitglieder sind hier bewusst nicht erfunden. In der produktiven Version werden sie aus dem realen Bedarf und dem importierten Betriebsbestand übernommen.</p>
       </dialog>
@@ -333,6 +333,52 @@ const coveragePercent = (model.coverage * 100).toFixed(1).replace('.', ',');
     let mobileExpanded = false;
 
     const formatLiters = value => new Intl.NumberFormat('de-DE').format(Math.round(value)) + ' l';
+
+    function parseVolume(value) {
+      return Number(String(value || '').replace(/\./g,'').replace(',','.').replace(/[^0-9.]/g,'')) || 0;
+    }
+
+    function getActiveRequirement() {
+      const params = new URLSearchParams(location.search);
+      const requestedId = params.get('request') || localStorage.getItem('wp-demo-active-buyer-request');
+      const requests = JSON.parse(localStorage.getItem('wp-demo-buyer-requests') || '[]');
+      const request = requests.find(item => item.id === requestedId && item.status === 'accepted');
+      if (!request) return {...demoRequirement};
+
+      localStorage.setItem('wp-demo-active-buyer-request', request.id);
+      return {
+        ...demoRequirement,
+        id: request.id,
+        buyer: request.company,
+        grape: request.grape,
+        origin: request.origin,
+        vintage: Number(request.vintage),
+        targetVolume: parseVolume(request.targetVolume),
+        deliveryWindow: request.deliveryWindow,
+        quality: request.quality,
+        note: request.note,
+        datasetStatus: 'buyer-request-demo'
+      };
+    }
+
+    function updateRequirementUI(requirement) {
+      document.querySelector('[data-requirement-title]').textContent = requirement.buyer + ' × ' + (requirement.supplierGroup || 'Partnernetz');
+      document.querySelector('[data-requirement-id]').textContent = requirement.id;
+      document.querySelector('[data-requirement-wine]').textContent = requirement.grape + ' · ' + requirement.origin + ' · Jahrgang ' + requirement.vintage;
+      document.querySelector('[data-requirement-target]').textContent = formatLiters(requirement.targetVolume);
+      document.querySelector('[data-requirement-buyer]').textContent = requirement.buyer;
+      document.querySelector('[data-requirement-window]').textContent = requirement.deliveryWindow;
+      document.querySelector('[data-requirement-scale-target]').textContent = formatLiters(requirement.targetVolume);
+      document.querySelector('[data-spec-reference]').textContent = 'Bedarf ' + requirement.id + ' · Demo';
+      document.querySelector('[data-spec-product]').textContent = requirement.grape + ' · Wein';
+      document.querySelector('[data-spec-origin]').textContent = requirement.origin;
+      document.querySelector('[data-spec-vintage]').textContent = String(requirement.vintage);
+      document.querySelector('[data-spec-target]').textContent = formatLiters(requirement.targetVolume);
+      document.querySelector('[data-spec-window]').textContent = requirement.deliveryWindow;
+      document.querySelector('[data-spec-buyer]').textContent = requirement.buyer;
+    }
+
+    let activeRequirement = getActiveRequirement();
 
     function escapeHtml(value = '') {
       return String(value).replace(/[&<>"']/g, char => ({
@@ -407,7 +453,8 @@ const coveragePercent = (model.coverage * 100).toFixed(1).replace('.', ',');
       if (mobileTasks) mobileTasks.textContent = model.tasks.length;
     }
 
-    const initialLiveModel = runProcurement(demoRequirement, workingGrowers);
+    const initialLiveModel = runProcurement(activeRequirement, workingGrowers);
+    updateRequirementUI(activeRequirement);
     renderAllocationRows(initialLiveModel);
     updateHeadline(initialLiveModel);
 
@@ -456,7 +503,7 @@ const coveragePercent = (model.coverage * 100).toFixed(1).replace('.', ',');
         : x
       );
 
-      const model = runProcurement(demoRequirement, workingGrowers);
+      const model = runProcurement(activeRequirement, workingGrowers);
       window.setTimeout(() => {
         renderAllocationRows(model);
         updateHeadline(model);
