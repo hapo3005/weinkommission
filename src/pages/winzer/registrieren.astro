@@ -193,7 +193,10 @@ const base = import.meta.env.BASE_URL;
             </div>
 
             <p class="form-error" data-request-step1-error hidden>Bitte die mit * markierten Angaben vollständig ausfüllen.</p>
-            <button class="primary-action" type="button" data-request-next>Weiter zum Weinbauprofil →</button>
+            <div class="demo-form-actions">
+              <button class="secondary-action" type="button" data-fill-request-demo>Demo-Daten einsetzen</button>
+              <button class="primary-action" type="button" data-request-next>Weiter zum Weinbauprofil →</button>
+            </div>
           </div>
 
           <div data-request-step="2" hidden>
@@ -265,7 +268,10 @@ const base = import.meta.env.BASE_URL;
             </label>
 
             <p class="form-error" data-request-error hidden>Bitte mindestens eine Rebsorte oder Angebotsart auswählen und die Angaben bestätigen.</p>
-            <button class="primary-action" type="button" data-submit-request>Anfrage senden →</button>
+            <div class="demo-form-actions">
+              <button class="secondary-action" type="button" data-fill-profile-demo>Demo-Profil einsetzen</button>
+              <button class="primary-action" type="button" data-submit-request>Anfrage senden →</button>
+            </div>
           </div>
         </article>
 
@@ -402,6 +408,33 @@ const base = import.meta.env.BASE_URL;
         el.classList.toggle('active', Number(el.dataset.requestProgress) <= step);
       });
     }
+
+    document.querySelector('[data-fill-request-demo]').addEventListener('click', () => {
+      document.querySelector('[data-request-business]').value = 'Weingut Demo';
+      document.querySelector('[data-request-person]').value = 'Max Mustermann';
+      document.querySelector('[data-request-street]').value = 'Moselstraße 12';
+      document.querySelector('[data-request-postcode]').value = '54470';
+      document.querySelector('[data-request-place]').value = 'Bernkastel-Kues';
+      document.querySelector('[data-request-email]').value = 'demo@weingut.de';
+      document.querySelector('[data-request-phone]').value = '06531 123456';
+      document.querySelector('[data-request-number]').value = 'DEMO-12345';
+      document.querySelector('[data-request-website]').value = 'https://example.com';
+    });
+
+    document.querySelector('[data-fill-profile-demo]').addEventListener('click', () => {
+      document.querySelector('[data-request-region]').value = 'Mosel';
+      document.querySelector('[data-request-hectares]').value = '12,5 ha';
+      document.querySelector('[data-request-volume]').value = '120.000 l';
+      document.querySelector('[data-request-preferred-contact]').value = 'email';
+      document.querySelectorAll('[data-request-grape]').forEach(el => el.checked = false);
+      document.querySelectorAll('[data-request-offer]').forEach(el => el.checked = false);
+      const riesling = [...document.querySelectorAll('[data-request-grape]')].find(el => el.value === 'Riesling');
+      const fasswein = [...document.querySelectorAll('[data-request-offer]')].find(el => el.value === 'Fasswein');
+      if (riesling) riesling.checked = true;
+      if (fasswein) fasswein.checked = true;
+      document.querySelector('[data-request-note]').value = 'Demo-Profil für die Präsentation.';
+      document.querySelector('[data-request-consent]').checked = true;
+    });
 
     document.querySelector('[data-request-next]').addEventListener('click', () => {
       const required = [
