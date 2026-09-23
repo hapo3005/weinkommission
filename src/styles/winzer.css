@@ -160,3 +160,24 @@ h2{font-size:clamp(31px,5vw,45px);line-height:1.02}
   .prepared-details dd{text-align:left}
 }
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition-duration:.01ms!important}}
+
+
+.verification-box{
+  padding:16px;
+  border:1px solid var(--line);
+  background:#f6f1e8;
+  display:grid;
+  gap:10px
+}
+.verification-box>strong{
+  font-family:var(--serif);
+  font-size:18px;
+  font-weight:400
+}
+.verification-box>p{
+  margin:0;
+  color:var(--muted);
+  font-size:10px;
+  line-height:1.6
+}
+.verify-row{margin:0;background:#fff}
