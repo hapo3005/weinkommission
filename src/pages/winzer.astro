@@ -19,61 +19,64 @@ const base = import.meta.env.BASE_URL;
         <span><strong>WEINKOMMISSION PORN</strong><small>Winzerportal · Demo</small></span>
       </a>
       <div class="portal2-header-actions">
-        <a class="portal2-quiet" href={`${base}winzer/registrieren/`}>Zugang / Registrierung</a>
+        <a class="portal2-quiet" href={`${base}winzer/profil/`}>Betriebsprofil →</a>
       </div>
     </header>
 
-    <main class="portal2-main" id="main">
-      <section class="portal2-identity">
+    <main class="portal2-main" id="overview">
+      <section class="portal2-identity dashboard-identity">
         <div>
-          <p class="portal2-eyebrow">Ihr Arbeitsbereich</p>
+          <p class="portal2-eyebrow">Willkommen zurück</p>
           <h1 data-portal-business>Weingut Ahrensberg & Sohn</h1>
           <p><span data-portal-place>Bernkastel-Kues</span> · <span data-portal-id>TEST-001</span></p>
         </div>
-        <span class="portal2-demo">Demo · keine Echtdaten</span>
+        <span class="partner-active">Partnerzugang aktiv</span>
       </section>
 
-      <section class="portal2-profile-card">
-        <div>
-          <p class="portal2-eyebrow">Betriebsprofil</p>
-          <h2>Die Kommission kennt Ihren Betrieb.</h2>
-          <p data-profile-copy>Ergänzen Sie Größe, Jahresproduktion, Rebsorten und Kapazitäten, damit Bedarfe passend zugeordnet werden können.</p>
+      <section class="grower-today" data-current-task>
+        <div class="grower-today-mark" data-today-mark>!</div>
+        <div class="grower-today-copy">
+          <p class="portal2-eyebrow">Heute wichtig</p>
+          <h2 data-task-title>Ihr aktueller Vorgang wird geladen …</h2>
+          <p data-task-summary>Hier erscheint nur, was Ihre Rückmeldung benötigt.</p>
+          <span class="today-status" data-task-status>—</span>
         </div>
-        <div class="portal2-profile-meter">
-          <strong data-profile-percent>0 %</strong>
-          <div><i data-profile-bar></i></div>
-          <a href={`${base}winzer/profil/`} data-profile-link>Betriebsprofil vervollständigen →</a>
-        </div>
+        <button class="portal2-primary today-button" type="button" data-open-task>Jetzt erledigen →</button>
       </section>
 
-      <section class="portal2-overview">
+      <section class="portal2-overview dashboard-stats" aria-label="Mein Betrieb auf einen Blick">
         <article>
-          <span>Aktive Partien</span>
+          <span>Meine Partien</span>
           <strong data-lot-count>—</strong>
-          <small>im aktuellen Testbestand</small>
+          <small>aktuell hinterlegt</small>
         </article>
         <article>
-          <span>Verfügbare Menge</span>
+          <span>Verfügbar</span>
           <strong data-total-volume>—</strong>
           <small>über alle Partien</small>
         </article>
         <article>
-          <span>Aktuell zugeteilt</span>
+          <span>Zugeordnet</span>
           <strong data-allocated-volume>—</strong>
-          <small>für laufende Bedarfe</small>
+          <small>laufende Bedarfe</small>
+        </article>
+        <article>
+          <span>Betriebsprofil</span>
+          <strong data-profile-stat>—</strong>
+          <small data-profile-stat-copy>Profilstatus</small>
         </article>
       </section>
 
-      <section class="portal2-task" data-current-task>
-        <div class="portal2-task-head">
+      <section class="portal2-section current-section" id="current">
+        <div class="portal2-section-head">
           <div>
             <p class="portal2-eyebrow">Aktueller Vorgang</p>
-            <h2 data-task-title>Vorgang wird geladen …</h2>
+            <h2>Was gerade mit Ihrer Partie passiert.</h2>
           </div>
-          <span data-task-status>—</span>
+          <small>Nur der für Sie relevante Vorgang – ohne interne Kommissionsdaten.</small>
         </div>
 
-        <div class="portal2-task-grid">
+        <div class="portal2-task-grid current-grid">
           <div><span>Partie</span><strong data-task-lot>—</strong></div>
           <div><span>Wein</span><strong data-task-wine>—</strong></div>
           <div><span>Verfügbar</span><strong data-task-available>—</strong></div>
@@ -81,15 +84,13 @@ const base = import.meta.env.BASE_URL;
           <div><span>Abnehmer</span><strong>Peter Mertes</strong></div>
           <div><span>Lieferfenster</span><strong>Okt.–Dez. 2026</strong></div>
         </div>
-
-        <button class="portal2-primary" type="button" data-open-task>Vorgang prüfen →</button>
       </section>
 
-      <section class="portal2-edit" data-task-editor hidden>
-        <button class="portal2-back" type="button" data-close-task>← Zurück</button>
-        <p class="portal2-eyebrow">Nur fehlende Angaben ergänzen</p>
-        <h2>Was wurde tatsächlich verladen?</h2>
-        <p>Bekannte Betriebs- und Partiedaten werden übernommen. Sie ergänzen nur die Angaben, die erst bei der Verladung feststehen.</p>
+      <section class="portal2-edit task-editor" data-task-editor hidden>
+        <button class="portal2-back" type="button" data-close-task>← Zur Übersicht</button>
+        <p class="portal2-eyebrow" data-editor-kicker>Rückmeldung</p>
+        <h2 data-editor-title>Angaben bestätigen</h2>
+        <p data-editor-copy>Bitte prüfen Sie die vorbereiteten Angaben. Sie müssen nichts erneut vollständig eingeben.</p>
 
         <div class="portal2-prepared">
           <div><span>Betrieb</span><strong data-edit-business>—</strong></div>
@@ -98,39 +99,46 @@ const base = import.meta.env.BASE_URL;
           <div><span>Herkunft</span><strong data-edit-origin>—</strong></div>
         </div>
 
-        <div class="portal2-form-grid">
+        <div class="portal2-form-grid" data-loading-fields hidden>
           <label><span>Tatsächlich verladen (Liter)</span><input data-loaded-volume inputmode="decimal" placeholder="z. B. 18.450" /></label>
           <label><span>Kennzeichen Tankwagen</span><input data-plate placeholder="z. B. WIL-AB 123" /></label>
         </div>
 
         <label class="portal2-confirm">
           <input type="checkbox" data-task-confirm />
-          <span>Die Angaben stimmen und können für Transport und Begleitdokument verwendet werden.</span>
+          <span data-confirm-copy>Die aktuell hinterlegten Angaben sind korrekt.</span>
         </label>
-        <p class="portal2-error" data-task-error hidden>Bitte Literzahl, Kennzeichen und Bestätigung ergänzen.</p>
-        <button class="portal2-primary" type="button" data-save-task>Angaben bestätigen →</button>
+        <p class="portal2-error" data-task-error hidden>Bitte die erforderlichen Angaben ergänzen und bestätigen.</p>
+        <button class="portal2-primary" type="button" data-save-task>Rückmeldung senden →</button>
       </section>
 
-      <section class="portal2-section">
+      <section class="portal2-section" id="lots">
         <div class="portal2-section-head">
-          <div><p class="portal2-eyebrow">Meine Partien</p><h2>Was aktuell hinterlegt ist.</h2></div>
-          <small>Partien und Betriebsprofil sind getrennt. Eine Partie beschreibt einen konkreten Wein.</small>
+          <div><p class="portal2-eyebrow">Meine Partien</p><h2>Aktuell bei der Kommission hinterlegt.</h2></div>
+          <small>Eine Partie beschreibt einen konkreten Wein. Ihr Betriebsprofil bleibt davon getrennt.</small>
         </div>
         <div class="portal2-lots" data-portal-lots></div>
       </section>
 
-      <section class="portal2-section">
-        <div class="portal2-section-head">
-          <div><p class="portal2-eyebrow">Zusammenarbeit</p><h2>Nur das, was Sie betrifft.</h2></div>
+      <section class="portal2-profile-card dashboard-profile" id="profile">
+        <div>
+          <p class="portal2-eyebrow">Mein Betrieb</p>
+          <h2>Betriebsprofil</h2>
+          <p data-profile-copy>Ihre dauerhaften Betriebs- und Kapazitätsdaten helfen der Kommission, passende Bedarfe zuzuordnen.</p>
         </div>
-        <div class="portal2-help-grid">
-          <a href={`${base}winzer/profil/`}><strong>Betriebsprofil</strong><small>Dauerhafte Betriebs- und Kapazitätsdaten pflegen</small><span>→</span></a>
-          <a href={`${base}winzer/registrieren/`}><strong>Zugang</strong><small>Einladung oder Registrierungsdemo öffnen</small><span>→</span></a>
+        <div class="portal2-profile-meter">
+          <strong data-profile-percent>0 %</strong>
+          <div><i data-profile-bar></i></div>
+          <a href={\`\${base}winzer/profil/\`} data-profile-link>Betriebsprofil öffnen →</a>
         </div>
       </section>
     </main>
-  </div>
 
+    <nav class="grower-bottom-nav" aria-label="Winzerportal Navigation">
+      <a href="#overview" class="active"><span>⌂</span><small>Übersicht</small></a>
+      <a href="#lots"><span>◫</span><small>Partien</small></a>
+      <a href={\`\${base}winzer/profil/\`}><span>○</span><small>Profil</small></a>
+    </nav>
   <script>
     import { demoGrowers, demoLots, demoRequirement, demoProcurementRows } from '../data/procurement-demo.js';
     import { runProcurement } from '../lib/procurementEngine.js';
