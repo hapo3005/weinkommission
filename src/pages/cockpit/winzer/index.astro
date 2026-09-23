@@ -1,6 +1,6 @@
 ---
 import BaseLayout from '../../../layouts/BaseLayout.astro';
-import DemoRoleSwitch from '../../../components/DemoRoleSwitch.astro';
+import RoleContextBar from '../../../components/RoleContextBar.astro';
 import '../../../styles/cockpit.css';
 import '../../../styles/winzerliste.css';
 import { demoRequirement, demoGrowers, demoProcurementRows, getLotsForGrower } from '../../../data/procurement-demo.js';
@@ -60,6 +60,7 @@ const openCount = partners.filter(p => p.status === 'waiting' || p.status === 'e
   description="Interne Übersicht der kooperierenden Winzer der Weinkommission Porn."
   canonicalPath="/weinkommission/cockpit/winzer/"
 >
+  <RoleContextBar role="internal" />
   <div class="cockpit-app partner-app">
     <aside class="sidebar" aria-label="Cockpit Navigation">
       <a class="cockpit-brand" href={base}>
@@ -91,7 +92,6 @@ const openCount = partners.filter(p => p.status === 'waiting' || p.status === 'e
           <p class="partner-lead">Alle Betriebe, mit denen die Weinkommission zusammenarbeitet. Verbundzugehörigkeiten wie „Blaues Band“ sind Eigenschaften des Winzers und können gezielt gefiltert werden.</p>
         </div>
         <div class="partner-head-actions">
-          <DemoRoleSwitch active="nadine" />
           <span class="scenario-badge">synthetische Testdaten</span>
           <button class="primary-button" type="button" data-import>Reale Liste importieren</button>
         </div>
