@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../../../layouts/BaseLayout.astro';
+import DemoRoleSwitch from '../../../components/DemoRoleSwitch.astro';
 import '../../../styles/cockpit.css';
 import '../../../styles/winzerprofil.css';
 import { demoRequirement, demoGrowers, demoProcurementRows, getLotsForGrower } from '../../../data/procurement-demo.js';
@@ -66,6 +67,7 @@ const profileStatusClass =
           </div>
         </div>
         <div class="profile-actions">
+          <DemoRoleSwitch active="nadine" />
           <span class:list={['profile-state', profileStatusClass]}>{profileStatus}</span>
           <a class="primary-button profile-invite-link" href={`${base}winzer/registrieren/?invite=${grower.growerId}`}>Zugang einladen</a>
           <button class="quiet-button" type="button" data-contact>Rückfrage anlegen</button>
@@ -236,53 +238,53 @@ const profileStatusClass =
           <div><span>Betrieb</span><strong>{grower.growerName}</strong></div>
           <div><span>Ort</span><strong>{grower.place}</strong></div>
           <div><span>Kooperation</span><strong>{cooperationLabel} · Testzuordnung</strong></div>
-          <div class="missing"><span>Betriebsnummer</span><strong>noch nicht importiert</strong></div>
-          <div class="missing"><span>Ansprechpartner</span><strong>noch nicht importiert</strong></div>
-          <div class="missing"><span>Telefon</span><strong>noch nicht importiert</strong></div>
-          <div class="missing"><span>E-Mail</span><strong>noch nicht importiert</strong></div>
-          <div class="missing"><span>Verladeadresse</span><strong>noch nicht importiert</strong></div>
+          <div><span>Betriebsnummer</span><strong>{grower.businessNumber}</strong></div>
+          <div><span>Ansprechpartner</span><strong>{grower.contactPerson}</strong></div>
+          <div><span>Telefon</span><strong>{grower.phone}</strong></div>
+          <div><span>E-Mail</span><strong>{grower.email}</strong></div>
+          <div class="missing"><span>Verladeadresse</span><strong>im Testbestand nicht separat gepflegt</strong></div>
         </div>
       </section>
 
-      <section class="profile-section portal-profile-section" id="portalprofil" data-portal-profile data-grower-id={grower.growerId} hidden>
+      <section class="profile-section portal-profile-section" id="portalprofil" data-portal-profile data-grower-id={grower.growerId}>
         <div class="section-heading profile-section-heading">
           <div><p class="overline">Vom Winzer gepflegt</p><h2>Betriebsprofil</h2></div>
           <p>Diese dauerhaften Angaben stammen aus dem Winzerportal und helfen bei Matching, Mengenplanung und Logistik.</p>
         </div>
 
         <div class="portal-profile-summary">
-          <div><span>Profilstatus</span><strong data-internal-completeness>—</strong></div>
-          <div><span>Rebfläche</span><strong data-internal-hectares>—</strong></div>
-          <div><span>Jahresproduktion</span><strong data-internal-production>—</strong></div>
-          <div><span>Frei vermarktbar</span><strong data-internal-market-volume>—</strong></div>
-          <div><span>Tank-/Lagerkapazität</span><strong data-internal-storage>—</strong></div>
-          <div><span>Größter Tank</span><strong data-internal-largest-tank>—</strong></div>
+          <div><span>Profilstatus</span><strong data-internal-completeness>{grower.profile.completeness} %</strong></div>
+          <div><span>Rebfläche</span><strong data-internal-hectares>{grower.profile.hectares} ha</strong></div>
+          <div><span>Jahresproduktion</span><strong data-internal-production>{formatLiters(grower.profile.annualProduction)}</strong></div>
+          <div><span>Frei vermarktbar</span><strong data-internal-market-volume>{formatLiters(grower.profile.typicalMarketVolume)}</strong></div>
+          <div><span>Tank-/Lagerkapazität</span><strong data-internal-storage>{formatLiters(grower.profile.storageCapacity)}</strong></div>
+          <div><span>Größter Tank</span><strong data-internal-largest-tank>{formatLiters(grower.profile.largestTank)}</strong></div>
         </div>
 
         <div class="portal-profile-detail">
           <article>
             <span>Rebsorten</span>
-            <strong data-internal-grapes>—</strong>
+            <strong data-internal-grapes>{grower.profile.grapes.join(', ')}</strong>
           </article>
           <article>
             <span>Vermarktung</span>
-            <strong data-internal-offers>—</strong>
+            <strong data-internal-offers>{grower.profile.offers.join(', ')}</strong>
           </article>
           <article>
             <span>Qualitätsstufen</span>
-            <strong data-internal-qualities>—</strong>
+            <strong data-internal-qualities>Qualitätswein · Demo</strong>
           </article>
           <article>
             <span>Zertifizierungen</span>
-            <strong data-internal-certifications>—</strong>
+            <strong data-internal-certifications>nicht hinterlegt</strong>
           </article>
           <article>
             <span>Typische Verladung</span>
-            <strong data-internal-loading>—</strong>
+            <strong data-internal-loading>{formatLiters(grower.profile.maxLoadingVolume)}</strong>
           </article>
           <article>
             <span>Kontaktweg</span>
-            <strong data-internal-contact>—</strong>
+            <strong data-internal-contact>E-Mail</strong>
           </article>
         </div>
       </section>
