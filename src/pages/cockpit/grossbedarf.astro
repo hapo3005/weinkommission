@@ -1,6 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import DemoRoleSwitch from '../../components/DemoRoleSwitch.astro';
+import RoleContextBar from '../../components/RoleContextBar.astro';
 import '../../styles/cockpit.css';
 import '../../styles/grossbedarf.css';
 import { demoRequirement, demoProcurementRows } from '../../data/procurement-demo.js';
@@ -19,6 +19,7 @@ const coveragePercent = (model.coverage * 100).toFixed(1).replace('.', ',');
   description="Orchestrierung eines gebündelten Weinbedarfs über viele Winzer, Partien, Transporte und Begleitdokumente."
   canonicalPath="/weinkommission/cockpit/grossbedarf/"
 >
+  <RoleContextBar role="internal" />
   <div class="cockpit-app procurement-app">
     <aside class="sidebar" aria-label="Cockpit Navigation">
       <a class="cockpit-brand" href={base}>
@@ -51,7 +52,6 @@ const coveragePercent = (model.coverage * 100).toFixed(1).replace('.', ',');
           <p class="procurement-lead">Ein Bedarf, viele Winzer. Die reale Blaues-Band-Mitgliederliste ist noch nicht importiert; Matching und Zuteilung laufen hier bewusst auf synthetischen Testbetrieben.</p>
         </div>
         <div class="header-controls">
-          <DemoRoleSwitch active="nadine" />
           <span class="scenario-badge">Testdaten · keine Mitgliederliste</span>
           <button class="quiet-button" type="button" data-open-spec>Bedarf ansehen</button>
           <button class="primary-button" type="button" data-run-auto>3 Winzer-Rückmeldungen simulieren</button>
