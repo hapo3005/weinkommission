@@ -38,3 +38,319 @@
 @media(max-width:1200px){.flow-strip{grid-template-columns:1fr}.flow-arrow{transform:rotate(90deg);height:24px}.order-spec{grid-template-columns:repeat(2,1fr)}.order-spec>div:nth-child(2){border-right:0}.order-spec>div:nth-child(-n+2){border-bottom:1px solid var(--line)}.allocation-row{grid-template-columns:1.3fr .8fr .55fr .55fr .75fr}.allocation-row>*:last-child{grid-column:1/-1}.allocation-head-row>*:last-child{display:none}}
 @media(max-width:900px){.procurement-header,.exception-command,.automation-engine,.transport-wave{grid-template-columns:1fr}.header-controls{justify-self:start}.scenario-badge{justify-self:start}.allocation-head{align-items:flex-start;flex-direction:column}.allocation-tools{width:100%}.search-field{flex:1}.search-field input{width:100%;min-width:0}.engine-copy h2{max-width:none}}
 @media(max-width:700px){.master-order{padding:18px}.order-identity{align-items:flex-start;flex-direction:column}.order-spec{grid-template-columns:1fr}.order-spec>div{padding:13px 0;border-right:0!important;border-bottom:1px solid var(--line)}.coverage-head{align-items:flex-start;flex-direction:column}.coverage-scale span:nth-child(2){text-align:center}.exception-command{padding:22px 18px}.exception-list button{grid-template-columns:1fr}.exception-list button>span:last-child{justify-self:start}.allocation-tools{flex-direction:column}.allocation-tools select,.search-field{width:100%}.allocation-head-row{display:none}.allocation-table{background:transparent;border:0}.allocation-data-row{grid-template-columns:1fr 1fr;margin-bottom:9px;background:var(--paper);border:1px solid var(--line);padding:14px}.allocation-data-row>*:first-child{grid-column:1/-1}.allocation-data-row>*:last-child{grid-column:1/-1}.engine-steps{grid-template-columns:1fr}.engine-steps article:nth-child(odd){border-right:0}.wave-list>div{grid-template-columns:52px 1fr}.wave-list small,.wave-list em{grid-column:2}.spec-dialog dl div{grid-template-columns:1fr;gap:3px}}
+
+
+/* Mobile command center */
+.mobile-command{display:none}
+.mobile-section-toggle,.mobile-more{display:none}
+
+@media(max-width:700px){
+  .procurement-main{
+    display:flex;
+    flex-direction:column;
+    padding-top:18px
+  }
+
+  .procurement-header{order:1;padding-bottom:18px}
+  .mobile-command{order:2}
+  .master-order{order:3}
+  .exception-command{order:4}
+  .grower-allocation{order:5}
+  .transport-wave{order:6}
+  .orchestration{order:7}
+  .automation-engine{order:8}
+
+  .procurement-header{
+    gap:16px
+  }
+  .procurement-header h1{
+    font-size:clamp(34px,11vw,46px);
+    line-height:.98;
+    max-width:12ch
+  }
+  .procurement-lead{
+    display:none
+  }
+  .header-controls{
+    grid-template-columns:1fr;
+    width:100%
+  }
+  .header-controls .scenario-badge{justify-self:start}
+  .header-controls button{width:100%}
+
+  .mobile-command{
+    display:block;
+    margin-top:14px;
+    background:var(--green);
+    color:#fff;
+    border:1px solid rgba(255,255,255,.08)
+  }
+  .mobile-command-top{
+    display:flex;
+    align-items:flex-end;
+    justify-content:space-between;
+    gap:16px;
+    padding:18px 16px;
+    border-bottom:1px solid rgba(255,255,255,.12)
+  }
+  .mobile-command .overline{color:#cbb893}
+  .mobile-command-top strong{
+    display:block;
+    font-family:var(--serif);
+    font-size:28px;
+    font-weight:400
+  }
+  .mobile-command-top>span{
+    font-size:10px;
+    color:rgba(255,255,255,.68);
+    text-align:right
+  }
+  .mobile-metrics{
+    display:grid;
+    grid-template-columns:repeat(3,1fr)
+  }
+  .mobile-metrics a{
+    display:grid;
+    gap:6px;
+    padding:13px 10px;
+    color:#fff;
+    text-decoration:none;
+    border-right:1px solid rgba(255,255,255,.12)
+  }
+  .mobile-metrics a:last-child{border-right:0}
+  .mobile-metrics span{
+    font-size:8px;
+    line-height:1.2;
+    color:rgba(255,255,255,.55)
+  }
+  .mobile-metrics strong{
+    font-family:var(--serif);
+    font-size:22px;
+    font-weight:400
+  }
+
+  .master-order{
+    margin-top:12px;
+    padding:16px
+  }
+  .order-identity{
+    gap:10px;
+    padding-bottom:14px
+  }
+  .order-code{
+    width:auto;
+    height:auto;
+    padding:7px 9px;
+    font-size:10px
+  }
+  .order-identity h2{
+    font-size:24px;
+    line-height:1.05
+  }
+  .order-spec{
+    display:none
+  }
+  .coverage{
+    padding-top:15px
+  }
+  .coverage-head strong{
+    font-size:20px
+  }
+  .coverage-head>span{
+    font-size:20px
+  }
+  .coverage-scale{
+    font-size:7px
+  }
+
+  .exception-command{
+    margin-top:20px;
+    padding:20px 16px;
+    gap:18px
+  }
+  .exception-copy h2{
+    font-size:30px
+  }
+  .exception-copy p:not(.overline){
+    margin-bottom:0
+  }
+  .exception-list button{
+    padding:14px 0
+  }
+
+  .grower-allocation{
+    padding-top:34px
+  }
+  .allocation-head h2{
+    font-size:30px
+  }
+  .allocation-tools{
+    position:sticky;
+    top:0;
+    z-index:20;
+    background:#ece8df;
+    padding:8px 0;
+    margin:0 -2px
+  }
+  .allocation-summary{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:7px 12px;
+    margin:8px 0 13px
+  }
+  .allocation-summary span{
+    padding:8px 9px;
+    background:rgba(255,255,255,.55);
+    border:1px solid var(--line)
+  }
+
+  .allocation-data-row{
+    grid-template-columns:1fr 1fr;
+    gap:12px 14px;
+    margin-bottom:10px;
+    padding:15px;
+    border-radius:0;
+    box-shadow:0 8px 24px rgba(32,38,35,.035)
+  }
+  .allocation-data-row>*{
+    display:grid;
+    gap:3px
+  }
+  .allocation-data-row>*::before{
+    content:attr(data-label);
+    font-size:7px;
+    line-height:1;
+    text-transform:uppercase;
+    letter-spacing:.09em;
+    color:var(--muted)
+  }
+  .allocation-data-row>*:first-child{
+    grid-column:1/-1;
+    padding-bottom:10px;
+    border-bottom:1px solid var(--line)
+  }
+  .allocation-data-row>*:first-child::before{display:none}
+  .allocation-data-row .grower-name strong{
+    font-size:18px
+  }
+  .allocation-data-row .issue-text{
+    grid-column:1/-1;
+    padding-top:10px;
+    border-top:1px solid var(--line)
+  }
+  .allocation-data-row .issue-text:empty{display:none}
+  .row-status{
+    justify-self:start
+  }
+  .mobile-more{
+    display:block;
+    width:100%;
+    min-height:46px;
+    margin-top:4px;
+    border:1px solid var(--line);
+    background:var(--paper);
+    color:var(--green);
+    font-size:10px
+  }
+
+  .transport-wave{
+    margin-top:36px;
+    padding-top:28px;
+    gap:18px
+  }
+  .transport-wave h2{font-size:29px}
+  .wave-list>div{
+    padding:13px 0
+  }
+
+  .orchestration{
+    padding-top:36px
+  }
+  .orchestration .section-heading{
+    margin-bottom:10px
+  }
+  .orchestration .section-heading>p{
+    display:none
+  }
+  .orchestration h2{
+    font-size:28px
+  }
+  .mobile-section-toggle{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    width:100%;
+    min-height:46px;
+    padding:0 12px;
+    border:1px solid var(--line);
+    background:var(--paper);
+    color:var(--green);
+    font-size:10px
+  }
+  .mobile-section-toggle span{
+    font-family:var(--serif);
+    font-size:21px
+  }
+  .flow-strip{
+    display:none;
+    margin-top:8px
+  }
+  .flow-strip.mobile-open{
+    display:grid
+  }
+  .flow-node{
+    min-height:0;
+    padding:13px 14px
+  }
+  .flow-node strong{
+    margin-top:5px
+  }
+  .flow-node small{
+    margin-top:4px
+  }
+
+  .automation-engine{
+    padding-top:30px;
+    gap:12px
+  }
+  .automation-engine .engine-copy h2{
+    font-size:28px
+  }
+  .engine-steps{
+    display:none;
+    margin-top:8px
+  }
+  .engine-steps.mobile-open{
+    display:grid
+  }
+  .engine-steps article{
+    padding:14px 8px
+  }
+
+  .spec-dialog{
+    padding:24px 18px
+  }
+}
+
+@media(max-width:390px){
+  .mobile-command-top{
+    align-items:flex-start;
+    flex-direction:column
+  }
+  .mobile-command-top>span{
+    text-align:left
+  }
+  .mobile-metrics{
+    grid-template-columns:1fr
+  }
+  .mobile-metrics a{
+    grid-template-columns:1fr auto;
+    align-items:center;
+    border-right:0;
+    border-bottom:1px solid rgba(255,255,255,.12)
+  }
+  .mobile-metrics a:last-child{border-bottom:0}
+  .allocation-summary{
+    grid-template-columns:1fr
+  }
+}
