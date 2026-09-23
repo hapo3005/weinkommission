@@ -146,10 +146,28 @@ const base = import.meta.env.BASE_URL;
     import { runProcurement } from '../lib/procurementEngine.js';
 
     const formatLiters = value => new Intl.NumberFormat('de-DE').format(Math.round(value || 0)) + ' l';
-    const account = JSON.parse(localStorage.getItem('wp-demo-grower-account') || 'null');
+    const rawAccount = JSON.parse(localStorage.getItem('wp-demo-grower-account') || 'null');
     const savedProfile = JSON.parse(localStorage.getItem('wp-demo-grower-profile') || 'null');
-    const selectedId = account?.growerId || 'TEST-001';
-    const grower = demoGrowers.find(item => item.growerId === selectedId) || demoGrowers[0];
+    const SHOWCASE_GROWER_ID = 'TEST-062';
+    const legacyGenericAccount = Boolean(rawAccount && /^Testweingut(?:\\s+\\d+)?/i.test(rawAccount.businessName || ''));
+    const selectedId = legacyGenericAccount ? SHOWCASE_GROWER_ID : (rawAccount?.growerId || SHOWCASE_GROWER_ID);
+    const grower = demoGrowers.find(item => item.growerId === selectedId)
+      || demoGrowers.find(item => item.growerId === SHOWCASE_GROWER_ID)
+      || demoGrowers[0];
+    const account = legacyGenericAccount
+      ? {
+          ...rawAccount,
+          growerId: grower.growerId,
+          businessName: grower.growerName,
+          place: grower.place,
+          contactPerson: grower.contactPerson,
+          businessNumber: grower.businessNumber
+        }
+      : rawAccount;
+
+    if (legacyGenericAccount) {
+      localStorage.setItem('wp-demo-grower-account', JSON.stringify(account));
+    }
     const lots = demoLots.filter(lot => lot.growerId === grower.growerId);
     const model = runProcurement(demoRequirement, demoProcurementRows);
     const growerRows = model.allocationRows.filter(row => row.growerId === grower.growerId);
@@ -166,8 +184,8 @@ const base = import.meta.env.BASE_URL;
       if (el) el.textContent = value;
     };
 
-    setText('[data-portal-business]', account?.businessName || grower.growerName);
-    setText('[data-portal-place]', account?.place || grower.place);
+    setText('[data-portal-business]', grower.growerName);
+    setText('[data-portal-place]', grower.place);
     setText('[data-portal-id]', grower.growerId);
     setText('[data-lot-count]', String(lots.length));
     setText('[data-total-volume]', formatLiters(totalVolume));
@@ -201,7 +219,7 @@ const base = import.meta.env.BASE_URL;
       setText('[data-task-wine]', currentRow.vintage + ' ' + currentRow.grape);
       setText('[data-task-available]', formatLiters(currentRow.availableVolume));
       setText('[data-task-allocated]', currentRow.allocatedVolume > 0 ? formatLiters(currentRow.allocatedVolume) : '—');
-      setText('[data-edit-business]', account?.businessName || grower.growerName);
+      setText('[data-edit-business]', grower.growerName);
       setText('[data-edit-lot]', currentRow.lotId);
       setText('[data-edit-wine]', currentRow.vintage + ' ' + currentRow.grape);
       setText('[data-edit-origin]', currentRow.origin);
