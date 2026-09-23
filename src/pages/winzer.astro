@@ -111,12 +111,60 @@ const base = import.meta.env.BASE_URL;
       </section>
 
       <section class="portal2-section" id="lots">
-        <div class="portal2-section-head">
+        <div class="portal2-section-head lot-section-head">
           <div><p class="portal2-eyebrow">Meine Partien</p><h2>Aktuell bei der Kommission hinterlegt.</h2></div>
-          <small>Eine Partie beschreibt einen konkreten Wein. Ihr Betriebsprofil bleibt davon getrennt.</small>
+          <div class="lot-section-actions">
+            <small>Eine Partie beschreibt einen konkreten Wein. Ihr Betriebsprofil bleibt davon getrennt.</small>
+            <button type="button" class="portal2-secondary" data-open-lot>Neue Partie melden +</button>
+          </div>
         </div>
         <div class="portal2-lots" data-portal-lots></div>
       </section>
+
+      <dialog class="portal2-lot-dialog" data-lot-dialog>
+        <button class="lot-dialog-close" type="button" data-close-lot aria-label="Schließen">×</button>
+        <p class="portal2-eyebrow">Neue Partie</p>
+        <h2>Weinpartie melden.</h2>
+        <p>Nur konkrete Partiedaten. Dauerhafte Betriebsdaten bleiben im Betriebsprofil.</p>
+
+        <div class="lot-form-grid">
+          <label>
+            <span>Rebsorte *</span>
+            <select data-new-lot-grape>
+              <option>Riesling</option>
+              <option>Weißburgunder</option>
+              <option>Grauburgunder</option>
+              <option>Müller-Thurgau</option>
+              <option>Spätburgunder</option>
+            </select>
+          </label>
+          <label>
+            <span>Jahrgang *</span>
+            <input data-new-lot-vintage value="2025" inputmode="numeric" />
+          </label>
+          <label>
+            <span>Herkunft *</span>
+            <select data-new-lot-origin>
+              <option>Mosel</option>
+              <option>Saar</option>
+              <option>Ruwer</option>
+            </select>
+          </label>
+          <label>
+            <span>Verfügbare Menge *</span>
+            <input data-new-lot-volume placeholder="z. B. 18.500 l" inputmode="numeric" />
+          </label>
+        </div>
+
+        <div class="lot-confirm-grid">
+          <label><input type="checkbox" data-new-lot-analysis checked /><span>Analytik liegt vor</span></label>
+          <label><input type="checkbox" data-new-lot-treatments checked /><span>Behandlungen vollständig angegeben</span></label>
+          <label><input type="checkbox" data-new-lot-volume-confirmed checked /><span>Menge aktuell bestätigt</span></label>
+        </div>
+
+        <p class="portal2-error" data-new-lot-error hidden>Bitte Jahrgang und verfügbare Menge vollständig angeben.</p>
+        <button class="portal2-primary" type="button" data-save-lot>Partie melden →</button>
+      </dialog>
 
       <section class="portal2-profile-card dashboard-profile" id="profile">
         <div>
@@ -142,16 +190,25 @@ const base = import.meta.env.BASE_URL;
   <script>
     import { demoGrowers, demoLots, demoRequirement, demoProcurementRows } from '../data/procurement-demo.js';
     import { runProcurement } from '../lib/procurementEngine.js';
-    import { resolveActiveGrower, getGrowerProfile, getGrowerResponses, addGrowerResponse } from '../lib/demoSession.js';
+    import { resolveActiveGrower, getGrowerProfile, getGrowerResponses, addGrowerResponse, getCustomLots, addCustomLot } from '../lib/demoSession.js';
 
     const formatLiters = value => new Intl.NumberFormat('de-DE').format(Math.round(value || 0)) + ' l';
     const account = JSON.parse(localStorage.getItem('wp-demo-grower-account') || 'null');
     const grower = resolveActiveGrower(demoGrowers, window.location.search, 'TEST-001');
     const savedProfile = getGrowerProfile(grower.growerId);
-    const lots = demoLots.filter(lot => lot.growerId === grower.growerId);
+    const customLots = getCustomLots(grower.growerId);
+    const lots = [...demoLots.filter(lot => lot.growerId === grower.growerId), ...customLots];
     const responses = getGrowerResponses(grower.growerId);
     const responseByLot = new Map(responses.map(response => [response.lotId, response]));
-    const workingRows = demoProcurementRows.map(row => {
+    const customRows = customLots.map(lot => ({
+      ...lot,
+      growerName: grower.growerName,
+      place: grower.place,
+      supplierGroups: grower.supplierGroups || [],
+      cooperationStatus: grower.cooperationStatus || 'active',
+      businessProfile: grower.profile
+    }));
+    const workingRows = [...demoProcurementRows, ...customRows].map(row => {
       const response = row.growerId === grower.growerId ? responseByLot.get(row.lotId) : null;
       if (!response) return row;
       return {
@@ -343,6 +400,49 @@ const base = import.meta.env.BASE_URL;
       setText('[data-task-summary]', 'Die Weinkommission hat Ihre Bestätigung im Demo-Workflow erhalten.');
       setText('[data-task-status]', 'Erledigt');
       todayButton.hidden = true;
+    });
+
+    const lotDialog = document.querySelector('[data-lot-dialog]');
+    document.querySelector('[data-open-lot]').addEventListener('click', () => {
+      document.querySelector('[data-new-lot-error]').hidden = true;
+      lotDialog.showModal();
+    });
+    document.querySelector('[data-close-lot]').addEventListener('click', () => lotDialog.close());
+
+    document.querySelector('[data-save-lot]').addEventListener('click', () => {
+      const vintage = document.querySelector('[data-new-lot-vintage]').value.trim();
+      const volumeRaw = document.querySelector('[data-new-lot-volume]').value.trim();
+      const parsedVolume = Number(volumeRaw.replace(/\./g,'').replace(',','.').replace(/[^0-9.]/g,''));
+      const error = document.querySelector('[data-new-lot-error]');
+
+      if (!vintage || !parsedVolume || parsedVolume <= 0) {
+        error.hidden = false;
+        return;
+      }
+      error.hidden = true;
+
+      const suffix = String(Date.now()).slice(-5);
+      const lot = {
+        lotId: 'N' + String(vintage).slice(-2) + '-' + grower.growerId.replace(/\D/g,'').padStart(3,'0') + '-' + suffix,
+        growerId: grower.growerId,
+        productType: 'wine',
+        grape: document.querySelector('[data-new-lot-grape]').value,
+        origin: document.querySelector('[data-new-lot-origin]').value,
+        vintage: Number(vintage),
+        availableVolume: Math.round(parsedVolume),
+        analysisConfirmed: document.querySelector('[data-new-lot-analysis]').checked,
+        treatmentsConfirmed: document.querySelector('[data-new-lot-treatments]').checked,
+        currentVolumeConfirmed: document.querySelector('[data-new-lot-volume-confirmed]').checked,
+        transportDataComplete: false,
+        documentReady: false,
+        source: 'grower-portal',
+        createdAt: new Date().toISOString(),
+        demo: true
+      };
+
+      addCustomLot(lot);
+      lotDialog.close();
+      location.reload();
     });
   </script>
 </BaseLayout>
