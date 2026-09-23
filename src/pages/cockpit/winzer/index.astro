@@ -163,6 +163,13 @@ const openCount = partners.filter(p => p.status === 'waiting' || p.status === 'e
               partner.status === 'waiting' || partner.status === 'exception' ? 'attention' :
               allocated > 0 ? 'allocated' : 'idle';
 
+            const processStatus =
+              state === 'attention' ? 'Rückmeldung erforderlich' :
+              partner.status === 'document' ? 'Begleitdokument vorbereitet' :
+              partner.status === 'transport' ? 'Transportdaten fehlen' :
+              allocated > 0 ? 'Für diesen Bedarf vorbereitet' :
+              'Aktuell keine Zuteilung';
+
             return (
               <a
                 class="partner-row"
@@ -172,34 +179,50 @@ const openCount = partners.filter(p => p.status === 'waiting' || p.status === 'e
                 data-state={state}
                 data-search={`${partner.growerName} ${partner.place} ${partner.growerId}`.toLowerCase()}
               >
-                <span class="partner-name">
+                <span class="partner-identity">
+                  <small class="card-label">Betrieb</small>
                   <strong>{partner.growerName}</strong>
                   <small>{partner.place} · {partner.growerId}</small>
                 </span>
 
-                <span class="partner-group">
+                <span class="partner-cooperation">
+                  <small class="card-label">Kooperation</small>
                   <em class:list={{blueband: partner.inBlueBand, other: !partner.inBlueBand}}>
                     {partner.inBlueBand ? 'Blaues Band' : 'Sonstiger Partner'}
                   </em>
                   <small>Testzuordnung</small>
                 </span>
 
-                <span class="partner-lot">
-                  <strong>{partner.lotId}</strong>
-                  <small>{partner.vintage} {partner.grape}</small>
+                <span class:list={['current-process', state]}>
+                  <span class="process-heading">
+                    <small class="card-label">Aktueller Vorgang · Peter Mertes</small>
+                    <em>{processStatus}</em>
+                  </span>
+
+                  {allocated > 0 || state === 'attention' ? (
+                    <span class="process-grid">
+                      <span>
+                        <small>Partie</small>
+                        <strong>{partner.lotId}</strong>
+                        <em>{partner.vintage} {partner.grape}</em>
+                      </span>
+                      <span>
+                        <small>Verfügbar</small>
+                        <strong>{formatLiters(partner.availableVolume)}</strong>
+                        <em>laut aktueller Partie</em>
+                      </span>
+                      <span>
+                        <small>Für Mertes zugeteilt</small>
+                        <strong>{allocated > 0 ? formatLiters(allocated) : '—'}</strong>
+                        <em>{partner.attention || (allocated > 0 ? 'für aktuellen Großbedarf' : 'noch nicht zugeteilt')}</em>
+                      </span>
+                    </span>
+                  ) : (
+                    <span class="process-empty">Dieser Betrieb ist derzeit keinem laufenden Mertes-Großbedarf zugeteilt.</span>
+                  )}
                 </span>
 
-                <span class="partner-volume">
-                  <strong>{formatLiters(partner.availableVolume)}</strong>
-                  <small>{allocated > 0 ? `${formatLiters(allocated)} zugeteilt` : 'nicht zugeteilt'}</small>
-                </span>
-
-                <span class="partner-status">
-                  <em class:list={['row-status', partner.status]}>{partner.statusLabel}</em>
-                  <small>{partner.attention || 'keine offene Aktion'}</small>
-                </span>
-
-                <span class="partner-open">Profil →</span>
+                <span class="partner-open">Betriebsakte öffnen →</span>
               </a>
             );
           })}
