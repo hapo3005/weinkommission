@@ -43,17 +43,17 @@ const first = assignments[0];
       <section class="ext-kpis">
         <div>
           <span>Zugewiesene Transporte</span>
-          <strong>{assignments.length}</strong>
+          <strong data-driver-count>{assignments.length}</strong>
           <small>im Demo-Ausschnitt</small>
         </div>
         <div>
           <span>Gesamtmenge</span>
-          <strong>{formatLiters(assignments.reduce((sum,item)=>sum+item.volume,0))}</strong>
+          <strong data-driver-total>{formatLiters(assignments.reduce((sum,item)=>sum+item.volume,0))}</strong>
           <small>über diese Touren</small>
         </div>
         <div>
           <span>Dokument vorbereitet</span>
-          <strong>{assignments.filter(item => item.state === 'document-ready').length}</strong>
+          <strong data-driver-docs>{assignments.filter(item => item.state === 'document-ready').length}</strong>
           <small>weitere entstehen aus den Transportdaten</small>
         </div>
       </section>
@@ -67,7 +67,7 @@ const first = assignments[0];
           <p>Öffne eine Tour, ergänze nur die tatsächlichen Verladedaten und bestätige die Abholung.</p>
         </div>
 
-        <div class="ext-list">
+        <div class="ext-list" data-driver-assignments>
           {assignments.map((transport, index) => (
             <article class="transport-card">
               <div>
@@ -96,8 +96,8 @@ const first = assignments[0];
 
         <div class="transport-detail">
           <div><span>Sollmenge</span><strong data-dialog-volume>{formatLiters(first?.volume || 0)}</strong></div>
-          <div><span>Abnehmer</span><strong>{demoRequirement.buyer}</strong></div>
-          <div><span>Lieferfenster</span><strong>{demoRequirement.deliveryWindow}</strong></div>
+          <div><span>Abnehmer</span><strong data-dialog-buyer>{demoRequirement.buyer}</strong></div>
+          <div><span>Lieferfenster</span><strong data-dialog-window>{demoRequirement.deliveryWindow}</strong></div>
         </div>
 
         <div class="ext-grid">
@@ -148,53 +148,109 @@ const first = assignments[0];
   </div>
 
   <script>
+    import { demoRequirement, demoProcurementRows, demoGrowers } from '../data/procurement-demo.js';
+    import { runProcurement } from '../lib/procurementEngine.js';
+    import {
+      resolveActiveRequirement,
+      buildDemoWorkingRows,
+      getDriverConfirmations,
+      saveDriverConfirmation
+    } from '../lib/demoSession.js';
+
     const dialog = document.querySelector('[data-driver-dialog]');
+    const assignmentList = document.querySelector('[data-driver-assignments]');
     const history = document.querySelector('[data-driver-history]');
     const empty = document.querySelector('[data-driver-empty]');
     const error = document.querySelector('[data-driver-error]');
     let active = null;
+    let activeRequirement = resolveActiveRequirement(demoRequirement);
+    let assignments = [];
 
     const escapeHtml = (value = '') => String(value).replace(/[&<>"']/g, char => ({
       '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'
     })[char]);
-
     const formatLiters = value => new Intl.NumberFormat('de-DE').format(Math.round(Number(value) || 0)) + ' l';
 
-    function appendConfirmation(item) {
-      const article = document.createElement('article');
-      article.className = 'ext-row';
-      article.innerHTML = `
-        <div>
-          <strong>${escapeHtml(item.growerName)} · ${escapeHtml(item.lotId)}</strong>
-          <small>${escapeHtml(item.transportId)} · ${formatLiters(item.loadedVolume)} · ${escapeHtml(item.plate)}</small>
-        </div>
-        <span>Abholung bestätigt</span>
-      `;
-      history.appendChild(article);
+    function currentModel() {
+      activeRequirement = resolveActiveRequirement(demoRequirement);
+      return runProcurement(activeRequirement, buildDemoWorkingRows(demoProcurementRows, demoGrowers));
+    }
+
+    function renderAssignments() {
+      const model = currentModel();
+      assignments = model.transports.slice(0, 8);
+      const confirmations = getDriverConfirmations();
+      const confirmedIds = new Set(confirmations.map(item => item.transportId));
+
+      document.querySelector('[data-driver-count]').textContent = String(assignments.length);
+      document.querySelector('[data-driver-total]').textContent = formatLiters(assignments.reduce((sum,item)=>sum+item.volume,0));
+      document.querySelector('[data-driver-docs]').textContent = String(assignments.filter(item => item.state === 'document-ready').length);
+      document.querySelector('[data-dialog-buyer]').textContent = activeRequirement.buyer;
+      document.querySelector('[data-dialog-window]').textContent = activeRequirement.deliveryWindow;
+
+      assignmentList.innerHTML = assignments.length ? assignments.map((transport,index) => {
+        const confirmed = confirmedIds.has(transport.transportId);
+        return `
+          <article class="transport-card ${confirmed ? 'confirmed' : ''}">
+            <div>
+              <h3>${escapeHtml(transport.growerName)}</h3>
+              <p>${escapeHtml(transport.transportId)} · Partie ${escapeHtml(transport.lotId)} · ${formatLiters(transport.volume)}</p>
+            </div>
+            <button
+              class="ext-secondary"
+              type="button"
+              data-open-transport
+              data-id="${escapeHtml(transport.transportId)}"
+              data-grower="${escapeHtml(transport.growerName)}"
+              data-lot="${escapeHtml(transport.lotId)}"
+              data-volume="${transport.volume}"
+              data-sequence="${index + 1}"
+              ${confirmed ? 'disabled' : ''}
+            >${confirmed ? 'Abholung bestätigt ✓' : 'Tour öffnen →'}</button>
+          </article>`;
+      }).join('') : `
+        <div class="ext-success">
+          <strong>Für diesen Bedarf sind noch keine Transporte bereit.</strong>
+          <small>Sobald Partien zugeteilt und transportfähig sind, erscheinen sie automatisch hier.</small>
+        </div>`;
     }
 
     function renderHistory() {
-      const confirmations = JSON.parse(localStorage.getItem('wp-demo-driver-confirmations') || '[]');
-      if (confirmations.length) empty.hidden = true;
-      confirmations.forEach(appendConfirmation);
+      const confirmations = getDriverConfirmations();
+      history.querySelectorAll('.ext-row').forEach(node => node.remove());
+      empty.hidden = confirmations.length > 0;
+      confirmations.forEach(item => {
+        const article = document.createElement('article');
+        article.className = 'ext-row';
+        article.innerHTML = `
+          <div>
+            <strong>${escapeHtml(item.growerName)} · ${escapeHtml(item.lotId)}</strong>
+            <small>${escapeHtml(item.transportId)} · ${formatLiters(item.loadedVolume)} · ${escapeHtml(item.plate)}</small>
+          </div>
+          <span>Abholung bestätigt</span>
+        `;
+        history.appendChild(article);
+      });
     }
 
-    document.querySelectorAll('[data-open-transport]').forEach(button => {
-      button.addEventListener('click', () => {
-        active = {
-          transportId: button.dataset.id,
-          growerName: button.dataset.grower,
-          lotId: button.dataset.lot,
-          volume: Number(button.dataset.volume || 0)
-        };
-        document.querySelector('[data-dialog-grower]').textContent = active.growerName;
-        document.querySelector('[data-dialog-id]').textContent = active.transportId;
-        document.querySelector('[data-dialog-lot]').textContent = active.lotId;
-        document.querySelector('[data-dialog-volume]').textContent = formatLiters(active.volume);
-        document.querySelector('[data-driver-volume]').value = String(active.volume);
-        error.hidden = true;
-        dialog.showModal();
-      });
+    assignmentList.addEventListener('click', event => {
+      const button = event.target.closest('[data-open-transport]');
+      if (!button || button.disabled) return;
+      active = {
+        transportId: button.dataset.id,
+        growerName: button.dataset.grower,
+        lotId: button.dataset.lot,
+        volume: Number(button.dataset.volume || 0),
+        requirementId: activeRequirement.id,
+        buyer: activeRequirement.buyer
+      };
+      document.querySelector('[data-dialog-grower]').textContent = active.growerName;
+      document.querySelector('[data-dialog-id]').textContent = active.transportId;
+      document.querySelector('[data-dialog-lot]').textContent = active.lotId;
+      document.querySelector('[data-dialog-volume]').textContent = formatLiters(active.volume);
+      document.querySelector('[data-driver-volume]').value = String(active.volume);
+      error.hidden = true;
+      dialog.showModal();
     });
 
     document.querySelector('[data-close-driver]').addEventListener('click', () => dialog.close());
@@ -211,7 +267,6 @@ const first = assignments[0];
         return;
       }
 
-      const confirmations = JSON.parse(localStorage.getItem('wp-demo-driver-confirmations') || '[]');
       const item = {
         ...active,
         loadedVolume: Number(String(loadedVolume).replace(/\./g,'').replace(',','.')) || active.volume,
@@ -223,13 +278,13 @@ const first = assignments[0];
         confirmedAt: new Date().toISOString(),
         demo: true
       };
-      confirmations.unshift(item);
-      localStorage.setItem('wp-demo-driver-confirmations', JSON.stringify(confirmations.slice(0,20)));
-      empty.hidden = true;
-      appendConfirmation(item);
+      saveDriverConfirmation(item);
       dialog.close();
+      renderAssignments();
+      renderHistory();
     });
 
+    renderAssignments();
     renderHistory();
   </script>
 </BaseLayout>
