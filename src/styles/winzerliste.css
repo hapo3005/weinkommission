@@ -107,3 +107,18 @@
 .access-item small{margin-top:3px;color:var(--muted);font-size:8px}
 .access-item em{font-style:normal;font-size:8px;color:var(--muted);text-align:right}
 @media(max-width:760px){.access-head{align-items:flex-start;flex-direction:column}.access-demo-link{width:100%;box-sizing:border-box}.access-item{grid-template-columns:1fr}.access-item .access-state{justify-self:start}.access-item em{text-align:left}}
+
+
+.access-item.approved .access-state{background:#e2eee5;color:#2f674c}
+.access-item.rejected .access-state{background:#eee1dc;color:#844e3a}
+.access-item-action{min-width:210px}
+.access-actions{display:flex;gap:6px;justify-content:flex-end}
+.access-actions button,.access-action{min-height:34px;border:0;padding:0 10px;font-size:8px;text-decoration:none;display:inline-grid;place-items:center}
+.access-actions button,.access-action.primary{background:var(--green);color:#fff}
+.access-actions button.reject{background:#e9e2d9;color:#6d5447}
+.access-decision{font-size:8px;color:var(--muted)}
+@media(max-width:760px){
+  .access-item-action{min-width:0}
+  .access-actions{display:grid;grid-template-columns:1fr}
+  .access-actions button,.access-action{width:100%}
+}
