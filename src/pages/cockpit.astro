@@ -1,6 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import DemoRoleSwitch from '../components/DemoRoleSwitch.astro';
+import RoleContextBar from '../components/RoleContextBar.astro';
 import '../styles/cockpit.css';
 import '../styles/cockpit-home.css';
 import { demoRequirement, demoGrowers, demoLots, demoProcurementRows } from '../data/procurement-demo.js';
@@ -27,6 +27,7 @@ const dateLabel = new Intl.DateTimeFormat('de-DE', {
   description="Interne Tagesübersicht der Weinkommission Porn für Winzer, Bedarfe, Transporte und Begleitdokumente."
   canonicalPath="/weinkommission/cockpit/"
 >
+  <RoleContextBar role="internal" />
   <div class="cockpit-app home-app">
     <aside class="sidebar" aria-label="Cockpit Navigation">
       <a class="cockpit-brand" href={base}>
@@ -59,7 +60,6 @@ const dateLabel = new Intl.DateTimeFormat('de-DE', {
           <p>Du siehst hier nur das, was heute eine Entscheidung, Rückmeldung oder Kontrolle braucht.</p>
         </div>
         <div class="home-header-actions">
-          <DemoRoleSwitch active="nadine" />
           <span class="demo-state">Demo · synthetische Daten</span>
         </div>
       </header>
