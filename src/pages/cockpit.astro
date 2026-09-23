@@ -87,113 +87,260 @@ const base = import.meta.env.BASE_URL;
       <section class="workbench" id="transporte" aria-labelledby="transport-title">
         <div class="workbench-head">
           <div>
-            <p class="overline">Pilotprozess · Begleitdokument</p>
-            <h2 id="transport-title">Transport T-2027-0042</h2>
+            <p class="overline">Pilotprozess · vollständiger Datensatz</p>
+            <h2 id="transport-title">Begleitdokument T-2027-0042</h2>
           </div>
-          <span class="status status-warning" data-doc-status>2 Angaben fehlen</span>
+          <span class="status status-warning" data-doc-status>Prüfung läuft</span>
         </div>
 
-        <div class="workbench-grid">
-          <div class="transport-form">
-            <section class="info-block">
-              <div class="block-head">
-                <div><span class="block-index">A</span><h3>Geschäft</h3></div>
-                <span class="complete-mark">vollständig</span>
-              </div>
-              <dl class="facts">
-                <div><dt>Verkäufer</dt><dd>Weingut Musterberg</dd></div>
-                <div><dt>Käufer</dt><dd>Mosel Kellerei GmbH</dd></div>
-                <div><dt>Partie</dt><dd>R25-017 · Riesling 2025 · Mosel</dd></div>
-                <div><dt>Vereinbart</dt><dd>18.500 Liter</dd></div>
-              </dl>
-            </section>
+        <div class="workflow-map" aria-label="Bearbeitungsstand">
+          <button type="button" class="workflow-step active" data-jump="participants"><span>01</span><strong>Beteiligte</strong><small data-step-state="participants">prüfen</small></button>
+          <button type="button" class="workflow-step" data-jump="products"><span>02</span><strong>Erzeugnisse</strong><small data-step-state="products">prüfen</small></button>
+          <button type="button" class="workflow-step" data-jump="transport"><span>03</span><strong>Transport</strong><small data-step-state="transport">offen</small></button>
+          <button type="button" class="workflow-step" data-jump="review"><span>04</span><strong>Prüfung</strong><small data-step-state="review">offen</small></button>
+        </div>
 
-            <section class="info-block">
-              <div class="block-head">
-                <div><span class="block-index">B</span><h3>Stammdaten & Weinangaben</h3></div>
-                <span class="complete-mark">automatisch übernommen</span>
-              </div>
-              <div class="compact-checks">
-                <span>✓ Absender & Betriebsnummer</span>
-                <span>✓ Empfänger & Lieferadresse</span>
-                <span>✓ Erzeugnis & Herkunft</span>
-                <span>✓ Jahrgang & Rebsorte</span>
-                <span>✓ Analysewerte</span>
-                <span>✓ Behandlungen</span>
-              </div>
-            </section>
-
-            <section class="info-block active-block" id="begleitdokument">
-              <div class="block-head">
-                <div><span class="block-index">C</span><h3>Vor der Abfahrt ergänzen</h3></div>
-                <span class="missing-mark" data-missing-counter>2 offen</span>
-              </div>
-
-              <form class="transport-fields" data-transport-form novalidate>
-                <label>
-                  <span>Tatsächlich verladen</span>
-                  <div class="field-with-unit">
-                    <input id="actualLiters" name="actualLiters" inputmode="decimal" placeholder="z. B. 18.437" autocomplete="off" />
-                    <small>Liter</small>
-                  </div>
-                  <em data-error="actualLiters"></em>
-                </label>
-
-                <label>
-                  <span>Kennzeichen</span>
-                  <input id="plate" name="plate" placeholder="z. B. WIL AB 123" autocomplete="off" />
-                  <em data-error="plate"></em>
-                </label>
-
-                <label>
-                  <span>Beförderer</span>
-                  <select id="carrier" name="carrier">
-                    <option value="Mosel Transporte GmbH">Mosel Transporte GmbH</option>
-                    <option value="Eigentransport Verkäufer">Eigentransport Verkäufer</option>
-                    <option value="Abholung Käufer">Abholung Käufer</option>
-                  </select>
-                </label>
-
-                <label>
-                  <span>Versanddatum</span>
-                  <input id="shippingDate" name="shippingDate" type="date" value="2026-09-23" />
-                </label>
-
-                <div class="form-actions">
-                  <button class="secondary-button" type="button" data-save-draft>Entwurf speichern</button>
-                  <button class="primary-button" type="submit" data-submit-doc disabled>Begleitdokument prüfen</button>
+        <form class="full-document-form" data-full-document-form novalidate>
+          <div class="workbench-grid full-grid">
+            <div class="transport-form">
+              <section class="info-block workflow-section" id="participants" data-section="participants">
+                <div class="block-head">
+                  <div><span class="block-index">A</span><h3>Beteiligte & Referenz</h3></div>
+                  <span class="section-state" data-section-state="participants">wird geprüft</span>
                 </div>
-              </form>
-            </section>
+                <p class="block-help">Stammdaten werden aus der Betriebsakte übernommen. Nadine ändert sie nur, wenn dieser Transport davon abweicht.</p>
+
+                <div class="field-grid three">
+                  <label><span>Interne Referenz</span><input name="reference" value="T-2027-0042" required /></label>
+                  <label><span>Kommissionär-Betriebsnummer</span><input name="commissionerBusinessId" value="RP-KOM-000001" required /></label>
+                  <label><span>Versanddatum</span><input name="shippingDate" type="date" value="2026-09-23" required /></label>
+                </div>
+
+                <div class="party-grid">
+                  <fieldset class="party-card">
+                    <legend>Absender / Versender</legend>
+                    <label><span>Betrieb</span><input name="senderName" value="Weingut Musterberg" required /></label>
+                    <label><span>Betriebsnummer</span><input name="senderBusinessId" value="RP-1234567" required /></label>
+                    <label><span>Straße / Hausnummer</span><input name="senderStreet" value="Weinbergstraße 12" required /></label>
+                    <div class="field-grid zip-city"><label><span>PLZ</span><input name="senderZip" value="54470" required /></label><label><span>Ort</span><input name="senderCity" value="Bernkastel-Kues" required /></label></div>
+                    <label><span>Land</span><select name="senderCountry" required><option value="DE" selected>Deutschland</option></select></label>
+                  </fieldset>
+
+                  <fieldset class="party-card">
+                    <legend>Empfänger</legend>
+                    <label><span>Betrieb</span><input name="receiverName" value="Mosel Kellerei GmbH" required /></label>
+                    <label><span>Betriebsnummer</span><input name="receiverBusinessId" value="RP-7654321" required /></label>
+                    <label><span>Straße / Hausnummer</span><input name="receiverStreet" value="Kellereistraße 8" required /></label>
+                    <div class="field-grid zip-city"><label><span>PLZ</span><input name="receiverZip" value="54516" required /></label><label><span>Ort</span><input name="receiverCity" value="Wittlich" required /></label></div>
+                    <label><span>Land</span><select name="receiverCountry" required><option value="DE" selected>Deutschland</option></select></label>
+                  </fieldset>
+                </div>
+
+                <details class="optional-panel">
+                  <summary>Abweichender Lieferort</summary>
+                  <div class="field-grid three details-fields">
+                    <label><span>Lieferort / Betrieb</span><input name="deliveryName" placeholder="nur bei Abweichung" /></label>
+                    <label><span>Straße / Hausnummer</span><input name="deliveryStreet" /></label>
+                    <label><span>PLZ / Ort</span><input name="deliveryCity" /></label>
+                  </div>
+                </details>
+              </section>
+
+              <section class="info-block workflow-section" id="products" data-section="products">
+                <div class="block-head">
+                  <div><span class="block-index">B</span><h3>Erzeugnisse / Partien</h3></div>
+                  <span class="section-state" data-section-state="products">wird geprüft</span>
+                </div>
+                <p class="block-help">Eine Sendung kann mehrere Partien enthalten. Für Rheinland-Pfalz bildet das Cockpit bis zu drei Positionen pro Begleitvorgang ab; jede Partie wird separat fachlich geprüft.</p>
+
+                <div class="product-tabs" role="tablist" aria-label="Partien">
+                  <button type="button" class="product-tab active" data-product-tab="1">Partie 1 <span data-product-tab-state="1">●</span></button>
+                  <button type="button" class="product-tab" data-product-tab="2">Partie 2 <span data-product-tab-state="2">○</span></button>
+                  <button type="button" class="product-tab" data-product-tab="3">Partie 3 <span data-product-tab-state="3">○</span></button>
+                </div>
+
+                <div class="product-panel active" data-product-panel="1">
+                  <div class="field-grid three">
+                    <label><span>Erzeugnisart</span>
+                      <select name="p1ProductType" data-product-type required>
+                        <option value="wine" selected>Wein</option>
+                        <option value="young-wine">Jungwein</option>
+                        <option value="partially-fermented">Teilweise gegorener Traubenmost</option>
+                        <option value="must">Traubenmost</option>
+                        <option value="grapes">Trauben / Maische</option>
+                        <option value="fortified-must">Mit Alkohol stummgemachter frischer Traubenmost</option>
+                        <option value="concentrated-must">Konzentrierter Traubenmost</option>
+                        <option value="rectified-must">Rektifiziertes Traubenmostkonzentrat</option>
+                        <option value="grape-juice">Konzentrierter Traubensaft</option>
+                        <option value="sparkling">Schaum-/Perlwein</option>
+                        <option value="liqueur">Likör-/Brennwein</option>
+                        <option value="marc-lees">Trester / Weintrub</option>
+                      </select>
+                    </label>
+                    <label><span>Interne Partienummer</span><input name="p1Lot" value="R25-017" required /></label>
+                    <label><span>Menge</span><div class="field-with-unit"><input name="p1Quantity" inputmode="decimal" value="18500" required data-quantity /><small>Liter</small></div></label>
+                  </div>
+
+                  <div class="field-grid four">
+                    <label><span>Herkunftsland</span><select name="p1OriginCountry" required><option value="DE" selected>Deutschland</option></select></label>
+                    <label><span>Herkunftstyp</span><select name="p1OriginType" required><option value="PDO" selected>g.U.</option><option value="PGI">g.g.A.</option><option value="none">ohne g.U./g.g.A.</option></select></label>
+                    <label><span>Geografische Angabe</span><input name="p1Geography" value="Mosel" required /></label>
+                    <label><span>Weinbauzone</span><select name="p1Zone" required><option>A</option><option selected>B</option><option>C I</option><option>C II</option><option>C III a</option><option>C III b</option></select></label>
+                  </div>
+
+                  <div class="field-grid four">
+                    <label><span>Jahrgang</span><input name="p1Vintage" inputmode="numeric" value="2025" /></label>
+                    <label><span>Rebsorte(n)</span><input name="p1Varieties" value="Riesling" /></label>
+                    <label><span>Qualitäts-/Bezeichnungstyp</span><input name="p1Quality" value="Qualitätswein" /></label>
+                    <label><span>KN-/Warencode</span><input name="p1CnCode" placeholder="falls erforderlich" /></label>
+                  </div>
+
+                  <label class="wide-label"><span>Vollständige Erzeugnisbezeichnung</span><input name="p1Description" value="2025 Riesling Mosel Qualitätswein" required /></label>
+
+                  <div class="conditional-analysis" data-analysis-block>
+                    <div class="subsection-title"><strong>Analytik</strong><small>abhängig von der Erzeugnisart</small></div>
+                    <div class="field-grid three">
+                      <label data-analysis="actualAlcohol"><span>Vorhandener Alkohol</span><div class="field-with-unit"><input name="p1ActualAlcohol" inputmode="decimal" value="11.5" data-conditional-required /><small>% vol</small></div></label>
+                      <label data-analysis="totalAlcohol" hidden><span>Gesamtalkohol</span><div class="field-with-unit"><input name="p1TotalAlcohol" inputmode="decimal" /><small>% vol</small></div></label>
+                      <label data-analysis="refractometer" hidden><span>Refraktometer / potentieller Alkohol</span><div class="field-with-unit"><input name="p1Refractometer" inputmode="decimal" /><small>% vol</small></div></label>
+                      <label data-analysis="density" hidden><span>Volumenmasse</span><div class="field-with-unit"><input name="p1Density" inputmode="decimal" /><small>g/cm³</small></div></label>
+                      <label data-analysis="sugar" hidden><span>Gesamtzucker</span><div class="field-with-unit"><input name="p1Sugar" inputmode="decimal" /><small>g/l bzw. g/kg</small></div></label>
+                    </div>
+                  </div>
+
+                  <div class="treatments">
+                    <div class="subsection-title"><strong>Durchgeführte Behandlungen</strong><small>Code 0–12</small></div>
+                    <div class="treatment-grid" data-treatment-group="1">
+                      <label><input type="checkbox" name="p1Treatment" value="0" checked /><span><b>0</b> keine</span></label>
+                      <label><input type="checkbox" name="p1Treatment" value="1" /><span><b>1</b> angereichert</span></label>
+                      <label><input type="checkbox" name="p1Treatment" value="2" /><span><b>2</b> gesäuert</span></label>
+                      <label><input type="checkbox" name="p1Treatment" value="3" /><span><b>3</b> entsäuert</span></label>
+                      <label><input type="checkbox" name="p1Treatment" value="4" /><span><b>4</b> gesüßt</span></label>
+                      <label><input type="checkbox" name="p1Treatment" value="5" /><span><b>5</b> Weinalkohol zugesetzt</span></label>
+                      <label><input type="checkbox" name="p1Treatment" value="6" /><span><b>6</b> andere geografische Einheit zugesetzt</span></label>
+                      <label><input type="checkbox" name="p1Treatment" value="7" /><span><b>7</b> andere Rebsorte zugesetzt</span></label>
+                      <label><input type="checkbox" name="p1Treatment" value="8" /><span><b>8</b> anderer Jahrgang zugesetzt</span></label>
+                      <label><input type="checkbox" name="p1Treatment" value="9" /><span><b>9</b> Eichenholzstücke</span></label>
+                      <label><input type="checkbox" name="p1Treatment" value="10" /><span><b>10</b> Versuchverfahren</span></label>
+                      <label><input type="checkbox" name="p1Treatment" value="11" /><span><b>11</b> Alkohol korrigiert</span></label>
+                      <label><input type="checkbox" name="p1Treatment" value="12" /><span><b>12</b> sonstige Behandlung</span></label>
+                    </div>
+                    <label class="wide-label treatment-note" hidden data-treatment-note="1"><span>Erläuterung zu Code 12</span><input name="p1TreatmentNote" /></label>
+                  </div>
+
+                  <details class="optional-panel">
+                    <summary>Weitere amtliche / nationale Angaben</summary>
+                    <div class="field-grid three details-fields">
+                      <label><span>AP-/Prüfnummer</span><input name="p1ApprovalNumber" /></label>
+                      <label><span>Bescheinigung / Zertifizierung</span><input name="p1Certificate" /></label>
+                      <label><span>Zusatzangabe / Hektarertrag</span><input name="p1NationalNote" /></label>
+                    </div>
+                  </details>
+                </div>
+
+                <div class="product-panel" data-product-panel="2" hidden>
+                  <div class="empty-product">
+                    <p>Noch keine zweite Partie angelegt.</p>
+                    <button type="button" class="secondary-button" data-add-product="2">Partie 2 hinzufügen</button>
+                  </div>
+                </div>
+
+                <div class="product-panel" data-product-panel="3" hidden>
+                  <div class="empty-product">
+                    <p>Noch keine dritte Partie angelegt.</p>
+                    <button type="button" class="secondary-button" data-add-product="3">Partie 3 hinzufügen</button>
+                  </div>
+                </div>
+              </section>
+
+              <section class="info-block workflow-section" id="transport" data-section="transport">
+                <div class="block-head">
+                  <div><span class="block-index">C</span><h3>Transport</h3></div>
+                  <span class="section-state" data-section-state="transport">2 Angaben offen</span>
+                </div>
+                <p class="block-help">Die endgültige Menge steht erst nach der Verladung fest. Transportdaten werden unmittelbar vor Beginn der Beförderung final geprüft.</p>
+
+                <div class="field-grid three">
+                  <label><span>Verladeort</span><input name="loadingPlace" value="Weingut Musterberg, Bernkastel-Kues" required /></label>
+                  <label><span>Art des Transportmittels</span><select name="transportType" required><option value="truck" selected>LKW / Tankwagen</option><option value="car">PKW</option><option value="rail">Eisenbahn / Kesselwagen</option><option value="ship">Schiff</option><option value="other">Sonstiges</option></select></label>
+                  <label><span>Kennzeichen / Identifikation</span><input name="plate" placeholder="z. B. WIL AB 123" required data-critical /></label>
+                </div>
+
+                <div class="field-grid three">
+                  <label><span>Beförderer</span><input name="carrierName" value="Mosel Transporte GmbH" required /></label>
+                  <label><span>Anschrift Beförderer</span><input name="carrierAddress" value="Industriestraße 4, 54516 Wittlich" required /></label>
+                  <label><span>Transportbeginn</span><input name="departureTime" type="datetime-local" value="2026-09-23T09:30" required /></label>
+                </div>
+
+                <div class="final-quantity-box">
+                  <div><span class="overline">Final nach Verladung</span><strong>Tatsächliche Gesamtmenge</strong><small>Summe aller Partien; muss mit den Positionsmengen übereinstimmen.</small></div>
+                  <div class="field-with-unit prominent"><input name="actualTotal" inputmode="decimal" placeholder="z. B. 18.437" required data-critical /><small>Liter</small></div>
+                </div>
+              </section>
+
+              <section class="info-block workflow-section" id="review" data-section="review">
+                <div class="block-head">
+                  <div><span class="block-index">D</span><h3>Abschlussprüfung</h3></div>
+                  <span class="section-state" data-section-state="review">noch nicht sendebereit</span>
+                </div>
+
+                <div class="review-groups">
+                  <div><span data-review-icon="participants">○</span><strong>Beteiligte</strong><small data-review-text="participants">wird geprüft</small></div>
+                  <div><span data-review-icon="products">○</span><strong>Erzeugnis & Herkunft</strong><small data-review-text="products">wird geprüft</small></div>
+                  <div><span data-review-icon="analytics">○</span><strong>Analytik & Behandlungen</strong><small data-review-text="analytics">wird geprüft</small></div>
+                  <div><span data-review-icon="transport">○</span><strong>Transport</strong><small data-review-text="transport">wird geprüft</small></div>
+                </div>
+
+                <label class="confirmation">
+                  <input type="checkbox" name="confirmCorrect" />
+                  <span>Die Angaben wurden anhand der Geschäfts-/Betriebsdaten geprüft und sollen für die Erstellung des Begleitdokuments verwendet werden.</span>
+                </label>
+
+                <div class="form-actions final-actions">
+                  <button class="secondary-button" type="button" data-save-draft>Entwurf speichern</button>
+                  <button class="primary-button" type="submit" data-submit-doc disabled>Vollständigkeit prüfen</button>
+                </div>
+              </section>
+            </div>
+
+            <aside class="document-panel full-summary" aria-labelledby="doc-panel-title">
+              <div class="doc-panel-head">
+                <p class="overline">Vollständigkeitsprüfung</p>
+                <h3 id="doc-panel-title">eWeinBV-Datensatz</h3>
+              </div>
+
+              <div class="readiness">
+                <div class="readiness-ring" data-readiness-ring style="--value:0"><span data-readiness-value>0%</span></div>
+                <div><strong data-readiness-text>Datensatz wird geprüft</strong><p data-readiness-subtext>Alle Pflichtfelder und abhängigen Angaben werden berücksichtigt.</p></div>
+              </div>
+
+              <div class="validation-list comprehensive">
+                <div data-check="sender">○ Absender / Betriebsnummer</div>
+                <div data-check="receiver">○ Empfänger / Betriebsnummer</div>
+                <div data-check="commissioner">○ Kommissionär</div>
+                <div data-check="product">○ Erzeugnis / Menge</div>
+                <div data-check="origin">○ Herkunft / Weinbauzone</div>
+                <div data-check="analytics">○ Erforderliche Analytik</div>
+                <div data-check="treatments">○ Behandlungen</div>
+                <div data-check="transport">○ Beförderung</div>
+                <div data-check="finalQuantity">○ Endgültige Menge</div>
+                <div data-check="confirmation">○ Richtigkeitsbestätigung</div>
+              </div>
+
+              <div class="data-reuse">
+                <span class="overline">Automationsnutzen</span>
+                <strong data-auto-count>0 Felder wiederverwendbar</strong>
+                <p>Stammdaten, Weinpartien und wiederkehrende Empfänger sollen künftig automatisch aus der Betriebsakte kommen. Neu eingegeben werden nur veränderliche Transportdaten.</p>
+              </div>
+
+              <div class="api-preview">
+                <span>Produktive Schnittstelle</span>
+                <strong data-api-label>Nicht sendebereit</strong>
+                <p>Die eigentliche eWeinBV-Übermittlung erfolgt später ausschließlich serverseitig. API-Token und Unternehmenskonto-Zugangsdaten gehören niemals in den Browser.</p>
+              </div>
+            </aside>
           </div>
-
-          <aside class="document-panel" aria-labelledby="doc-panel-title">
-            <div class="doc-panel-head">
-              <p class="overline">Live-Prüfung</p>
-              <h3 id="doc-panel-title">Begleitdokument</h3>
-            </div>
-
-            <div class="readiness">
-              <div class="readiness-ring" data-readiness-ring style="--value:84"><span data-readiness-value>84%</span></div>
-              <div><strong data-readiness-text>Noch nicht vollständig</strong><p data-readiness-subtext>Literzahl und Kennzeichen ergänzen.</p></div>
-            </div>
-
-            <div class="validation-list">
-              <div class="valid">✓ Absender vollständig</div>
-              <div class="valid">✓ Empfänger vollständig</div>
-              <div class="valid">✓ Weinangaben vollständig</div>
-              <div class="valid">✓ Analyse vollständig</div>
-              <div class="pending" data-check-liters>○ Tatsächliche Menge fehlt</div>
-              <div class="pending" data-check-plate>○ Kennzeichen fehlt</div>
-            </div>
-
-            <div class="api-preview">
-              <span>eWeinBV-Schnittstelle</span>
-              <strong data-api-label>Noch nicht sendebereit</strong>
-              <p>Im Produktivbetrieb wird aus diesen Daten der vollständige API-Datensatz erzeugt. Es werden keine Zugangsdaten im Browser gespeichert.</p>
-            </div>
-          </aside>
-        </div>
+        </form>
       </section>
 
       <section class="operations" id="geschaefte">
@@ -244,128 +391,219 @@ const base = import.meta.env.BASE_URL;
   </div>
 
   <script>
-    const form = document.querySelector('[data-transport-form]');
-    const liters = document.querySelector('#actualLiters');
-    const plate = document.querySelector('#plate');
-    const carrier = document.querySelector('#carrier');
+    const form = document.querySelector('[data-full-document-form]');
+    const toast = document.querySelector('[data-toast]');
+    const dialog = document.querySelector('[data-result-dialog]');
     const submit = document.querySelector('[data-submit-doc]');
-    const missingCounter = document.querySelector('[data-missing-counter]');
-    const docStatus = document.querySelector('[data-doc-status]');
     const readinessValue = document.querySelector('[data-readiness-value]');
     const readinessRing = document.querySelector('[data-readiness-ring]');
     const readinessText = document.querySelector('[data-readiness-text]');
     const readinessSubtext = document.querySelector('[data-readiness-subtext]');
-    const checkLiters = document.querySelector('[data-check-liters]');
-    const checkPlate = document.querySelector('[data-check-plate]');
+    const docStatus = document.querySelector('[data-doc-status]');
     const apiLabel = document.querySelector('[data-api-label]');
-    const toast = document.querySelector('[data-toast]');
-    const dialog = document.querySelector('[data-result-dialog]');
+    const autoCount = document.querySelector('[data-auto-count]');
 
-    const normalizePlate = (value) => value.trim().toUpperCase().replace(/\s+/g, ' ');
-    const normalizeLiters = (value) => value.trim().replace(/\./g, '').replace(',', '.');
-    const litersValid = () => {
-      const value = Number(normalizeLiters(liters.value));
-      return Number.isFinite(value) && value > 0 && value <= 25000;
+    const normalizeNumber = (value) => Number(String(value || '').trim().replace(/\./g, '').replace(',', '.'));
+    const hasValue = (name) => {
+      const el = form.elements.namedItem(name);
+      return !!el && String(el.value || '').trim().length > 0;
     };
-    const plateValid = () => normalizePlate(plate.value).length >= 5;
+    const allFilled = (names) => names.every(hasValue);
 
-    function setCheck(el, ok, successText, pendingText) {
+    const participantFields = ['reference','commissionerBusinessId','shippingDate','senderName','senderBusinessId','senderStreet','senderZip','senderCity','senderCountry','receiverName','receiverBusinessId','receiverStreet','receiverZip','receiverCity','receiverCountry'];
+    const productBaseFields = ['p1ProductType','p1Lot','p1Quantity','p1OriginCountry','p1OriginType','p1Geography','p1Zone','p1Description'];
+    const transportFields = ['loadingPlace','transportType','plate','carrierName','carrierAddress','departureTime','actualTotal'];
+
+    function requiredAnalytics() {
+      const type = form.elements.namedItem('p1ProductType').value;
+      if (type === 'wine' || type === 'sparkling' || type === 'liqueur') return ['p1ActualAlcohol'];
+      if (type === 'young-wine' || type === 'partially-fermented') return ['p1TotalAlcohol'];
+      if (type === 'must' || type === 'grapes') return ['p1Refractometer'];
+      if (type === 'fortified-must') return ['p1Density','p1ActualAlcohol'];
+      if (['concentrated-must','rectified-must','grape-juice'].includes(type)) return ['p1Sugar'];
+      return [];
+    }
+
+    function updateAnalysisFields() {
+      const required = new Set(requiredAnalytics());
+      const mapping = {
+        actualAlcohol:'p1ActualAlcohol',
+        totalAlcohol:'p1TotalAlcohol',
+        refractometer:'p1Refractometer',
+        density:'p1Density',
+        sugar:'p1Sugar'
+      };
+      document.querySelectorAll('[data-analysis]').forEach((label) => {
+        const name = mapping[label.dataset.analysis];
+        const visible = required.has(name);
+        label.hidden = !visible;
+        const input = label.querySelector('input');
+        if (input) input.required = visible;
+      });
+    }
+
+    function treatmentsValid() {
+      const checked = [...form.querySelectorAll('input[name="p1Treatment"]:checked')];
+      if (!checked.length) return false;
+      const values = checked.map(el => el.value);
+      if (values.includes('0') && values.length > 1) return false;
+      if (values.includes('12') && !hasValue('p1TreatmentNote')) return false;
+      return true;
+    }
+
+    function setCheck(key, ok, successText, pendingText) {
+      const el = document.querySelector('[data-check="' + key + '"]');
+      if (!el) return;
       el.classList.toggle('valid', ok);
       el.classList.toggle('pending', !ok);
-      el.textContent = ok ? '✓ ' + successText : '○ ' + pendingText;
+      el.textContent = (ok ? '✓ ' + successText : '○ ' + pendingText);
+    }
+
+    function setReview(key, ok, text) {
+      const icon = document.querySelector('[data-review-icon="' + key + '"]');
+      const copy = document.querySelector('[data-review-text="' + key + '"]');
+      if (icon) { icon.textContent = ok ? '✓' : '○'; icon.classList.toggle('ok', ok); }
+      if (copy) copy.textContent = text;
+    }
+
+    function setSection(name, ok, text) {
+      const state = document.querySelector('[data-section-state="' + name + '"]');
+      const step = document.querySelector('[data-step-state="' + name + '"]');
+      if (state) { state.textContent = text; state.classList.toggle('complete-mark', ok); }
+      if (step) step.textContent = ok ? 'vollständig' : text;
     }
 
     function updateState() {
-      const hasLiters = litersValid();
-      const hasPlate = plateValid();
-      const missing = Number(!hasLiters) + Number(!hasPlate);
-      const readiness = missing === 0 ? 100 : missing === 1 ? 92 : 84;
+      updateAnalysisFields();
+      const participants = allFilled(participantFields);
+      const product = allFilled(productBaseFields) && normalizeNumber(form.elements.namedItem('p1Quantity').value) > 0;
+      const origin = allFilled(['p1OriginCountry','p1OriginType','p1Geography','p1Zone']);
+      const analytics = allFilled(requiredAnalytics());
+      const treatments = treatmentsValid();
+      const transport = allFilled(transportFields) && String(form.elements.namedItem('plate').value).trim().length >= 5;
+      const finalQuantity = normalizeNumber(form.elements.namedItem('actualTotal').value) > 0;
+      const confirmation = form.elements.namedItem('confirmCorrect').checked;
 
-      missingCounter.textContent = missing === 0 ? 'vollständig' : missing + ' offen';
-      missingCounter.className = missing === 0 ? 'complete-mark' : 'missing-mark';
+      const checks = {participants, product, origin, analytics, treatments, transport, finalQuantity, confirmation};
+      const completed = Object.values(checks).filter(Boolean).length;
+      const readiness = Math.round((completed / Object.keys(checks).length) * 100);
+      const ready = completed === Object.keys(checks).length;
 
-      docStatus.textContent = missing === 0 ? 'Vollständig' : missing + ' Angaben fehlen';
-      docStatus.className = missing === 0 ? 'status status-ready' : 'status status-warning';
+      setCheck('sender', allFilled(['senderName','senderBusinessId','senderStreet','senderZip','senderCity']), 'Absender vollständig', 'Absender unvollständig');
+      setCheck('receiver', allFilled(['receiverName','receiverBusinessId','receiverStreet','receiverZip','receiverCity']), 'Empfänger vollständig', 'Empfänger unvollständig');
+      setCheck('commissioner', hasValue('commissionerBusinessId'), 'Kommissionär zugeordnet', 'Kommissionär fehlt');
+      setCheck('product', product, 'Erzeugnis und Menge vollständig', 'Erzeugnis / Menge prüfen');
+      setCheck('origin', origin, 'Herkunft und Weinbauzone vollständig', 'Herkunft / Weinbauzone prüfen');
+      setCheck('analytics', analytics, 'Erforderliche Analytik vollständig', 'Analytik unvollständig');
+      setCheck('treatments', treatments, 'Behandlungen plausibel', 'Behandlungen prüfen');
+      setCheck('transport', transport, 'Transportdaten vollständig', 'Transportdaten unvollständig');
+      setCheck('finalQuantity', finalQuantity, 'Endgültige Menge erfasst', 'Endgültige Menge fehlt');
+      setCheck('confirmation', confirmation, 'Richtigkeit bestätigt', 'Richtigkeitsbestätigung fehlt');
+
+      setReview('participants', participants, participants ? 'vollständig' : 'Pflichtangaben fehlen');
+      setReview('products', product && origin, product && origin ? 'vollständig' : 'Erzeugnis oder Herkunft prüfen');
+      setReview('analytics', analytics && treatments, analytics && treatments ? 'vollständig' : 'abhängige Angaben prüfen');
+      setReview('transport', transport && finalQuantity, transport && finalQuantity ? 'vollständig' : 'Angaben vor Abfahrt fehlen');
+
+      setSection('participants', participants, participants ? 'vollständig' : 'Angaben prüfen');
+      setSection('products', product && origin && analytics && treatments, product && origin && analytics && treatments ? 'vollständig' : 'Angaben prüfen');
+      setSection('transport', transport && finalQuantity, transport && finalQuantity ? 'vollständig' : 'vor Abfahrt ergänzen');
+      setSection('review', ready, ready ? 'sendebereit' : 'noch nicht sendebereit');
 
       readinessValue.textContent = readiness + '%';
       readinessRing.style.setProperty('--value', readiness);
-      readinessText.textContent = missing === 0 ? 'Sendebereit' : 'Noch nicht vollständig';
-      readinessSubtext.textContent = missing === 0 ? 'Alle erforderlichen Demo-Angaben liegen vor.' : missing === 1 ? 'Noch eine Angabe ergänzen.' : 'Literzahl und Kennzeichen ergänzen.';
-      apiLabel.textContent = missing === 0 ? 'Datensatz kann erzeugt werden' : 'Noch nicht sendebereit';
-      submit.disabled = missing !== 0;
+      readinessText.textContent = ready ? 'Vollständig geprüft' : readiness >= 75 ? 'Fast vollständig' : 'Datensatz unvollständig';
+      readinessSubtext.textContent = ready ? 'Alle im Cockpit abgebildeten Pflicht- und Bedingungsfelder sind erfüllt.' : (Object.keys(checks).length - completed) + ' Prüfgruppe(n) noch offen.';
+      docStatus.textContent = ready ? 'Sendebereit' : readiness + '% vollständig';
+      docStatus.className = ready ? 'status status-ready' : 'status status-warning';
+      apiLabel.textContent = ready ? 'Datensatz kann serverseitig erzeugt werden' : 'Nicht sendebereit';
+      submit.disabled = !ready;
 
-      setCheck(checkLiters, hasLiters, 'Tatsächliche Menge erfasst', 'Tatsächliche Menge fehlt');
-      setCheck(checkPlate, hasPlate, 'Kennzeichen erfasst', 'Kennzeichen fehlt');
+      const reusable = participantFields.filter(hasValue).length + ['p1ProductType','p1Lot','p1OriginCountry','p1OriginType','p1Geography','p1Zone','p1Vintage','p1Varieties','p1Quality','p1Description','carrierName','carrierAddress','loadingPlace'].filter(hasValue).length;
+      autoCount.textContent = reusable + ' Felder wiederverwendbar';
     }
 
-    function saveDraft(message = 'Entwurf gespeichert') {
-      const payload = {
-        actualLiters: liters.value,
-        plate: plate.value,
-        carrier: carrier.value,
-        shippingDate: document.querySelector('#shippingDate').value
-      };
-      localStorage.setItem('wp-transport-demo', JSON.stringify(payload));
+    function handleTreatmentChange(event) {
+      if (!event.target.matches('input[name="p1Treatment"]')) return;
+      const group = event.target.closest('[data-treatment-group]');
+      const zero = group.querySelector('input[value="0"]');
+      const others = [...group.querySelectorAll('input:not([value="0"])')];
+      if (event.target.value === '0' && event.target.checked) others.forEach(el => el.checked = false);
+      if (event.target.value !== '0' && event.target.checked) zero.checked = false;
+      if (![...group.querySelectorAll('input:checked')].length) zero.checked = true;
+      document.querySelector('[data-treatment-note="1"]').hidden = !group.querySelector('input[value="12"]').checked;
+      updateState();
+    }
+
+    function saveDraft(message='Entwurf gespeichert') {
+      const payload = {};
+      new FormData(form).forEach((value,key) => {
+        if (payload[key]) payload[key] = [].concat(payload[key], value);
+        else payload[key] = value;
+      });
+      payload.confirmCorrect = form.elements.namedItem('confirmCorrect').checked;
+      localStorage.setItem('wp-eweinbv-full-demo', JSON.stringify(payload));
       toast.textContent = message;
       toast.classList.add('show');
       window.setTimeout(() => toast.classList.remove('show'), 2200);
     }
 
-    function restoreDraft() {
-      const raw = localStorage.getItem('wp-transport-demo');
-      if (!raw) return;
-      try {
-        const data = JSON.parse(raw);
-        liters.value = data.actualLiters || '';
-        plate.value = data.plate || '';
-        carrier.value = data.carrier || 'Mosel Transporte GmbH';
-        if (data.shippingDate) document.querySelector('#shippingDate').value = data.shippingDate;
-      } catch {}
-    }
+    form.addEventListener('input', updateState);
+    form.addEventListener('change', updateState);
+    form.addEventListener('change', handleTreatmentChange);
 
-    liters.addEventListener('input', updateState);
-    plate.addEventListener('input', () => {
-      const pos = plate.selectionStart;
-      plate.value = normalizePlate(plate.value);
-      if (pos !== null) plate.setSelectionRange(plate.value.length, plate.value.length);
-      updateState();
-    });
+    document.querySelectorAll('[data-jump]').forEach(btn => btn.addEventListener('click', () => {
+      document.getElementById(btn.dataset.jump).scrollIntoView({behavior:'smooth',block:'start'});
+    }));
+
+    document.querySelectorAll('[data-product-tab]').forEach(btn => btn.addEventListener('click', () => {
+      const target=btn.dataset.productTab;
+      document.querySelectorAll('[data-product-tab]').forEach(x => x.classList.toggle('active', x===btn));
+      document.querySelectorAll('[data-product-panel]').forEach(panel => {
+        const active=panel.dataset.productPanel===target;
+        panel.hidden=!active;
+        panel.classList.toggle('active',active);
+      });
+    }));
+
+    document.querySelectorAll('[data-add-product]').forEach(btn => btn.addEventListener('click', () => {
+      const n=btn.dataset.addProduct;
+      const panel=document.querySelector('[data-product-panel="'+n+'"]');
+      panel.innerHTML='<div class="future-product"><strong>Partie '+n+' aktiviert</strong><p>Die Feldstruktur wird identisch zu Partie 1 geführt. In der nächsten Datenbankstufe werden Positionen dynamisch angelegt und als Array an die Schnittstelle übergeben.</p><button type="button" class="secondary-button" data-copy-product>Struktur aus Partie 1 übernehmen</button></div>';
+      const state=document.querySelector('[data-product-tab-state="'+n+'"]');
+      if(state) state.textContent='●';
+    }));
 
     document.querySelector('[data-save-draft]').addEventListener('click', () => saveDraft());
 
     form.addEventListener('submit', (event) => {
       event.preventDefault();
       updateState();
-      if (!litersValid() || !plateValid()) return;
-      saveDraft('Vorgang geprüft');
-      document.querySelector('[data-result-liters]').textContent = Number(normalizeLiters(liters.value)).toLocaleString('de-DE') + ' Liter';
-      document.querySelector('[data-result-plate]').textContent = normalizePlate(plate.value);
-      document.querySelector('[data-result-carrier]').textContent = carrier.value;
+      if (submit.disabled) return;
+      saveDraft('Vollständigkeitsprüfung bestanden');
+      document.querySelector('[data-result-liters]').textContent = normalizeNumber(form.elements.namedItem('actualTotal').value).toLocaleString('de-DE') + ' Liter';
+      document.querySelector('[data-result-plate]').textContent = String(form.elements.namedItem('plate').value).toUpperCase();
+      document.querySelector('[data-result-carrier]').textContent = form.elements.namedItem('carrierName').value;
       dialog.showModal();
     });
 
     document.querySelectorAll('[data-close-dialog]').forEach((button) => button.addEventListener('click', () => dialog.close()));
 
     document.querySelector('[data-demo-reset]').addEventListener('click', () => {
-      localStorage.removeItem('wp-transport-demo');
+      localStorage.removeItem('wp-eweinbv-full-demo');
       form.reset();
-      document.querySelector('#shippingDate').value = '2026-09-23';
+      form.elements.namedItem('shippingDate').value='2026-09-23';
+      form.elements.namedItem('departureTime').value='2026-09-23T09:30';
+      document.querySelector('[data-treatment-note="1"]').hidden=true;
       updateState();
-      toast.textContent = 'Demo zurückgesetzt';
+      toast.textContent='Demo zurückgesetzt';
       toast.classList.add('show');
-      window.setTimeout(() => toast.classList.remove('show'), 2200);
+      window.setTimeout(() => toast.classList.remove('show'),2200);
     });
 
-    document.querySelector('[data-open-transport]').addEventListener('click', () => {
-      document.querySelector('#transporte').scrollIntoView({ behavior: 'smooth' });
-      liters.focus({ preventScroll: true });
-    });
+    document.querySelector('[data-open-transport]').addEventListener('click', () => document.querySelector('#transporte').scrollIntoView({behavior:'smooth'}));
+    document.querySelector('[data-focus-transport]').addEventListener('click', () => document.querySelector('#transport').scrollIntoView({behavior:'smooth'}));
 
-    document.querySelector('[data-focus-transport]').addEventListener('click', () => {
-      document.querySelector('#transporte').scrollIntoView({ behavior: 'smooth' });
-    });
-
-    restoreDraft();
     updateState();
   </script>
 </BaseLayout>
