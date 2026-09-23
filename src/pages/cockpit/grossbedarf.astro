@@ -1,0 +1,322 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import '../../styles/cockpit.css';
+import '../../styles/grossbedarf.css';
+
+const base = import.meta.env.BASE_URL;
+
+const growers = [
+  {name:'Weingut Musterberg', place:'Bernkastel-Kues', lot:'R25-017', wine:'Riesling · 2025', offered:'18.500 l', allocated:'18.500 l', status:'ready', label:'bereit', issue:''},
+  {name:'Weingut Sonnenhang', place:'Leiwen', lot:'R25-024', wine:'Riesling · 2025', offered:'26.000 l', allocated:'24.000 l', status:'waiting', label:'wartet auf Winzer', issue:'Analyse bestätigen'},
+  {name:'Weingut Klosterblick', place:'Piesport', lot:'R25-031', wine:'Riesling · 2025', offered:'14.800 l', allocated:'14.800 l', status:'ready', label:'bereit', issue:''},
+  {name:'Weingut Moselterrassen', place:'Zeltingen-Rachtig', lot:'R25-038', wine:'Riesling · 2025', offered:'32.000 l', allocated:'0 l', status:'exception', label:'Ausnahme', issue:'Restzucker außerhalb Vorgabe'},
+  {name:'Weingut Römerhang', place:'Trittenheim', lot:'R25-041', wine:'Riesling · 2025', offered:'21.600 l', allocated:'20.000 l', status:'transport', label:'Transport geplant', issue:''},
+  {name:'Weingut Felsenhof', place:'Ürzig', lot:'R25-046', wine:'Riesling · 2025', offered:'17.400 l', allocated:'17.400 l', status:'waiting', label:'wartet auf Winzer', issue:'Behandlungscode prüfen'},
+  {name:'Weingut Goldtröpfchen', place:'Piesport', lot:'R25-052', wine:'Riesling · 2025', offered:'28.200 l', allocated:'28.200 l', status:'document', label:'Dokument bereit', issue:''},
+  {name:'Weingut Schieferblick', place:'Graach', lot:'R25-058', wine:'Riesling · 2025', offered:'12.900 l', allocated:'12.900 l', status:'ready', label:'bereit', issue:''},
+  {name:'Weingut Laurentiushof', place:'Mehring', lot:'R25-063', wine:'Riesling · 2025', offered:'19.700 l', allocated:'18.000 l', status:'exception', label:'Ausnahme', issue:'Menge abweichend'},
+  {name:'Weingut Moselbogen', place:'Wintrich', lot:'R25-069', wine:'Riesling · 2025', offered:'23.000 l', allocated:'23.000 l', status:'transport', label:'Transport geplant', issue:''},
+  {name:'Weingut Rosenberg', place:'Brauneberg', lot:'R25-071', wine:'Riesling · 2025', offered:'16.200 l', allocated:'16.200 l', status:'ready', label:'bereit', issue:''},
+  {name:'Weingut Sonnenuhr', place:'Wehlen', lot:'R25-077', wine:'Riesling · 2025', offered:'25.500 l', allocated:'25.500 l', status:'document', label:'Dokument bereit', issue:''}
+];
+---
+
+<BaseLayout
+  title="Großbedarf · Porn Cockpit"
+  description="Orchestrierung eines gebündelten Weinbedarfs über viele Winzer, Partien, Transporte und Begleitdokumente."
+  canonicalPath="/weinkommission/cockpit/grossbedarf/"
+>
+  <div class="cockpit-app procurement-app">
+    <aside class="sidebar" aria-label="Cockpit Navigation">
+      <a class="cockpit-brand" href={base}>
+        <span class="brand-mark">WP</span>
+        <span><strong>WEINKOMMISSION PORN</strong><small>Mosel · Cockpit</small></span>
+      </a>
+
+      <nav class="side-nav">
+        <a href={`${base}cockpit/`}><span class="nav-icon">⌂</span><span>Übersicht</span></a>
+        <a class="active" href="#auftrag" aria-current="page"><span class="nav-icon">◎</span><span>Großbedarf</span></a>
+        <a href="#winzer"><span class="nav-icon">○</span><span>Winzer</span></a>
+        <a href="#ausnahmen"><span class="nav-icon">!</span><span>Ausnahmen</span></a>
+        <a href="#transporte"><span class="nav-icon">↗</span><span>Transporte</span></a>
+      </nav>
+
+      <div class="sidebar-foot">
+        <div class="api-state">
+          <span class="state-dot pending"></span>
+          <div><strong>Workflow Engine</strong><small>Demo · keine Echtdaten</small></div>
+        </div>
+        <a class="back-link" href={`${base}cockpit/`}>← Cockpit</a>
+      </div>
+    </aside>
+
+    <main class="cockpit-main procurement-main" id="main">
+      <header class="procurement-header" id="auftrag">
+        <div>
+          <p class="overline">Beschaffungsvorgang · Beispieldaten</p>
+          <h1>Peter Mertes × Blaues Band</h1>
+          <p class="procurement-lead">Ein Bedarf, viele Winzer. Das System verteilt, sammelt, prüft und eskaliert nur die Fälle, bei denen ein Mensch wirklich gebraucht wird.</p>
+        </div>
+        <div class="header-controls">
+          <span class="scenario-badge">Demo-Szenario</span>
+          <button class="quiet-button" type="button" data-open-spec>Bedarf ansehen</button>
+          <button class="primary-button" type="button" data-run-auto>Auto-Zuteilung simulieren</button>
+        </div>
+      </header>
+
+      <section class="master-order">
+        <div class="order-identity">
+          <span class="order-code">M-2027-RI-01</span>
+          <div>
+            <p class="overline">Gesamtbedarf</p>
+            <h2>Riesling · Mosel · Jahrgang 2025</h2>
+          </div>
+        </div>
+
+        <div class="order-spec" data-order-spec>
+          <div><span>Zielmenge</span><strong>1.500.000 l</strong></div>
+          <div><span>Abnehmer</span><strong>Peter Mertes</strong></div>
+          <div><span>Lieferfenster</span><strong>Okt.–Dez. 2026</strong></div>
+          <div><span>Winzerverbund</span><strong>Blaues Band · ≈200 Betriebe</strong></div>
+        </div>
+
+        <div class="coverage">
+          <div class="coverage-head">
+            <div><span class="overline">Mengenabdeckung</span><strong data-coverage-label>1.287.400 l zugesagt</strong></div>
+            <span data-coverage-percent>85,8 %</span>
+          </div>
+          <div class="coverage-track"><span data-coverage-bar style="width:85.8%"></span></div>
+          <div class="coverage-scale"><span>0 l</span><span>noch 212.600 l offen</span><span>1.500.000 l</span></div>
+        </div>
+      </section>
+
+      <section class="orchestration">
+        <div class="section-heading">
+          <div>
+            <p class="overline">Orchestrierung</p>
+            <h2>Der Auftrag arbeitet sich selbst ab.</h2>
+          </div>
+          <p>Das System übernimmt Standardfälle automatisch. Nur echte Abweichungen landen bei Nadine oder Roland.</p>
+        </div>
+
+        <div class="flow-strip">
+          <div class="flow-node done">
+            <span>Bedarf</span>
+            <strong>erfasst</strong>
+            <small>Spezifikation zentral hinterlegt</small>
+          </div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-node active">
+            <span>Matching</span>
+            <strong data-flow-matching>164 Partien passend</strong>
+            <small>nach Weinart, Herkunft, Analytik, Menge</small>
+          </div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-node active">
+            <span>Zuteilung</span>
+            <strong data-flow-allocation>137 Betriebe beteiligt</strong>
+            <small>Mengen automatisch reserviert</small>
+          </div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-node">
+            <span>Transport</span>
+            <strong>laufend</strong>
+            <small>Termine + Verladedaten einsammeln</small>
+          </div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-node">
+            <span>Begleitdokument</span>
+            <strong>automatisch vorbereitet</strong>
+            <small>nur Ausnahmen manuell</small>
+          </div>
+        </div>
+      </section>
+
+      <section class="exception-command" id="ausnahmen">
+        <div class="exception-copy">
+          <p class="overline">Nadines Arbeitsliste</p>
+          <h2>Nur das, was nicht automatisch weiterläuft.</h2>
+          <p>In diesem Demo-Szenario laufen die meisten Vorgänge ohne Eingriff. Diese Fälle blockieren aktuell den Gesamtprozess.</p>
+        </div>
+
+        <div class="exception-list">
+          <button type="button" data-filter="exception">
+            <span class="exception-severity high">prüfen</span>
+            <div><strong>Weingut Moselterrassen · R25-038</strong><small>Restzucker außerhalb der Bedarfsspezifikation</small></div>
+            <span>Entscheidung nötig →</span>
+          </button>
+          <button type="button" data-filter="waiting">
+            <span class="exception-severity medium">wartet</span>
+            <div><strong>2 Winzer haben offene Angaben</strong><small>Analysebestätigung bzw. Behandlungscode fehlen</small></div>
+            <span>automatische Erinnerung aktiv →</span>
+          </button>
+          <button type="button" data-filter="exception">
+            <span class="exception-severity medium">prüfen</span>
+            <div><strong>Weingut Laurentiushof · R25-063</strong><small>Verfügbare Menge weicht von der zugesagten Menge ab</small></div>
+            <span>Zuteilung neu berechnen →</span>
+          </button>
+        </div>
+      </section>
+
+      <section class="grower-allocation" id="winzer">
+        <div class="allocation-head">
+          <div>
+            <p class="overline">Winzer & Partien</p>
+            <h2>Zuteilungen im Gesamtauftrag</h2>
+          </div>
+          <div class="allocation-tools">
+            <label class="search-field">
+              <span class="sr-only">Winzer suchen</span>
+              <input type="search" placeholder="Winzer oder Partie suchen" data-search />
+            </label>
+            <select data-status-filter aria-label="Status filtern">
+              <option value="all">Alle Status</option>
+              <option value="ready">bereit</option>
+              <option value="waiting">wartet auf Winzer</option>
+              <option value="exception">Ausnahme</option>
+              <option value="transport">Transport geplant</option>
+              <option value="document">Dokument bereit</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="allocation-summary">
+          <span><strong data-visible-count>{growers.length}</strong> Demo-Betriebe sichtbar</span>
+          <span><strong>≈200</strong> Betriebe im Verbund</span>
+          <span><strong>137</strong> im Demo-Gesamtbedarf eingeplant</span>
+        </div>
+
+        <div class="allocation-table" role="table" aria-label="Winzerzuteilungen">
+          <div class="allocation-row allocation-head-row" role="row">
+            <span>Winzer</span><span>Partie</span><span>Angeboten</span><span>Zugeordnet</span><span>Status</span><span>Hinweis</span>
+          </div>
+          {growers.map((g) => (
+            <button
+              type="button"
+              class="allocation-row allocation-data-row"
+              data-grower-row
+              data-status={g.status}
+              data-search-text={`${g.name} ${g.place} ${g.lot} ${g.wine}`.toLowerCase()}
+              role="row"
+            >
+              <span class="grower-name"><strong>{g.name}</strong><small>{g.place}</small></span>
+              <span><strong>{g.lot}</strong><small>{g.wine}</small></span>
+              <span>{g.offered}</span>
+              <span>{g.allocated}</span>
+              <span><em class:list={['row-status', g.status]}>{g.label}</em></span>
+              <span class="issue-text">{g.issue || '—'}</span>
+            </button>
+          ))}
+        </div>
+      </section>
+
+      <section class="automation-engine">
+        <div class="engine-copy">
+          <p class="overline">Automationslogik</p>
+          <h2>Was im Hintergrund automatisch passiert.</h2>
+        </div>
+        <div class="engine-steps">
+          <article><span>01</span><strong>Bedarf normalisieren</strong><p>Ein Bedarf wird in strukturierte Kriterien übersetzt: Erzeugnis, Herkunft, Analytik, Menge, Zeitraum und weitere Vorgaben.</p></article>
+          <article><span>02</span><strong>Passende Partien finden</strong><p>Nur hinterlegte und fachlich passende Partien werden vorgeschlagen. Fehlende Angaben werden gezielt beim betreffenden Winzer angefragt.</p></article>
+          <article><span>03</span><strong>Mengen verteilen</strong><p>Zuteilungen berücksichtigen verfügbare Mengen und verhindern Doppelbelegung derselben Partie.</p></article>
+          <article><span>04</span><strong>Ausnahmen eskalieren</strong><p>Abweichende Analysewerte, geänderte Mengen oder fehlende Angaben werden nicht versteckt, sondern an die richtige Person geroutet.</p></article>
+          <article><span>05</span><strong>Transport erzeugen</strong><p>Nach bestätigter Zuteilung entstehen Transportvorgänge automatisch und übernehmen sämtliche vorhandenen Stammdaten.</p></article>
+          <article><span>06</span><strong>Dokument vorbereiten</strong><p>Begleitdokumente entstehen aus dem Datenbestand. Menschen ergänzen nur die Werte, die erst bei der Verladung feststehen.</p></article>
+        </div>
+      </section>
+
+      <section class="transport-wave" id="transporte">
+        <div>
+          <p class="overline">Nächste Verladewelle · Demo</p>
+          <h2>Donnerstag · 24. September</h2>
+        </div>
+        <div class="wave-list">
+          <div><span>07:30</span><strong>Weingut Römerhang</strong><small>20.000 l · Transport vollständig vorbereitet</small><em>bereit</em></div>
+          <div><span>09:15</span><strong>Weingut Moselbogen</strong><small>23.000 l · Kennzeichen wird am Verladetag ergänzt</small><em>automatisch</em></div>
+          <div><span>11:00</span><strong>Weingut Goldtröpfchen</strong><small>28.200 l · Begleitdokument bereits vorbereitet</small><em>bereit</em></div>
+        </div>
+      </section>
+
+      <dialog class="spec-dialog" data-spec-dialog>
+        <button class="dialog-close" type="button" data-close-spec aria-label="Schließen">×</button>
+        <p class="overline">Bedarf M-2027-RI-01 · Demo</p>
+        <h2>Bedarfsspezifikation</h2>
+        <dl>
+          <div><dt>Erzeugnis</dt><dd>Riesling · Wein</dd></div>
+          <div><dt>Herkunft</dt><dd>Mosel</dd></div>
+          <div><dt>Jahrgang</dt><dd>2025</dd></div>
+          <div><dt>Zielmenge</dt><dd>1.500.000 l</dd></div>
+          <div><dt>Lieferfenster</dt><dd>Oktober bis Dezember 2026</dd></div>
+          <div><dt>Abnehmer</dt><dd>Peter Mertes</dd></div>
+        </dl>
+        <p class="dialog-note">Analytische Grenzwerte sind hier bewusst als Demo nicht erfunden. In der produktiven Version werden sie exakt aus dem realen Mertes-Bedarf übernommen.</p>
+      </dialog>
+
+      <div class="toast" role="status" aria-live="polite" data-toast></div>
+    </main>
+  </div>
+
+  <script>
+    const rows = [...document.querySelectorAll('[data-grower-row]')];
+    const statusFilter = document.querySelector('[data-status-filter]');
+    const search = document.querySelector('[data-search]');
+    const visibleCount = document.querySelector('[data-visible-count]');
+    const toast = document.querySelector('[data-toast]');
+    const specDialog = document.querySelector('[data-spec-dialog]');
+
+    function applyFilters() {
+      const status = statusFilter.value;
+      const term = search.value.trim().toLowerCase();
+      let visible = 0;
+
+      rows.forEach(row => {
+        const matchesStatus = status === 'all' || row.dataset.status === status;
+        const matchesSearch = !term || row.dataset.searchText.includes(term);
+        const show = matchesStatus && matchesSearch;
+        row.hidden = !show;
+        if (show) visible++;
+      });
+
+      visibleCount.textContent = visible;
+    }
+
+    statusFilter.addEventListener('change', applyFilters);
+    search.addEventListener('input', applyFilters);
+
+    document.querySelectorAll('[data-filter]').forEach(button => button.addEventListener('click', () => {
+      statusFilter.value = button.dataset.filter;
+      search.value = '';
+      applyFilters();
+      document.querySelector('#winzer').scrollIntoView({behavior:'smooth', block:'start'});
+    }));
+
+    document.querySelector('[data-open-spec]').addEventListener('click', () => specDialog.showModal());
+    document.querySelector('[data-close-spec]').addEventListener('click', () => specDialog.close());
+
+    document.querySelector('[data-run-auto]').addEventListener('click', (event) => {
+      const button = event.currentTarget;
+      button.disabled = true;
+      button.textContent = 'Automatik läuft …';
+
+      window.setTimeout(() => {
+        document.querySelector('[data-coverage-label]').textContent = '1.342.600 l zugesagt';
+        document.querySelector('[data-coverage-percent]').textContent = '89,5 %';
+        document.querySelector('[data-coverage-bar]').style.width = '89.5%';
+        document.querySelector('.coverage-scale span:nth-child(2)').textContent = 'noch 157.400 l offen';
+        document.querySelector('[data-flow-matching]').textContent = '171 Partien passend';
+        document.querySelector('[data-flow-allocation]').textContent = '143 Betriebe beteiligt';
+        button.textContent = 'Auto-Zuteilung aktualisiert';
+        toast.textContent = 'Demo: Zuteilungen wurden anhand neuer verfügbarer Mengen neu berechnet.';
+        toast.classList.add('show');
+        window.setTimeout(() => toast.classList.remove('show'), 2800);
+      }, 700);
+    });
+
+    rows.forEach(row => row.addEventListener('click', () => {
+      const grower = row.querySelector('.grower-name strong').textContent;
+      toast.textContent = grower + ': Detailakte würde hier geöffnet.';
+      toast.classList.add('show');
+      window.setTimeout(() => toast.classList.remove('show'), 2200);
+    }));
+  </script>
+</BaseLayout>
