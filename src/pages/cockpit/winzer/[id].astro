@@ -1,0 +1,270 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import '../../../styles/cockpit.css';
+import '../../../styles/winzerprofil.css';
+import { demoRequirement, demoGrowers } from '../../../data/procurement-demo.js';
+import { runProcurement, formatLiters } from '../../../lib/procurementEngine.js';
+
+export function getStaticPaths() {
+  return demoGrowers.map((grower) => ({
+    params: { id: grower.growerId },
+    props: { grower }
+  }));
+}
+
+const { grower } = Astro.props;
+const base = import.meta.env.BASE_URL;
+const model = runProcurement(demoRequirement, demoGrowers);
+const allocation = model.allocationRows.find((row) => row.growerId === grower.growerId);
+const tasks = model.tasks.filter((task) => task.growerId === grower.growerId);
+const exceptions = model.exceptions.filter((item) => item.growerName === grower.growerName && item.lotId === grower.lotId);
+const transports = model.transports.filter((item) => item.growerId === grower.growerId);
+const allocatedVolume = allocation?.allocatedVolume ?? 0;
+
+const transportState = transports[0]?.state;
+const transportLabel =
+  transportState === 'document-ready' ? 'Begleitdokument vorbereitet' :
+  transportState === 'prepared' ? 'Transport vorbereitet' :
+  transportState === 'waiting-for-loading-data' ? 'Verladedaten fehlen' :
+  'Noch kein Transport';
+
+const profileStatus =
+  exceptions.length > 0 ? 'Ausnahme prüfen' :
+  tasks.length > 0 ? 'Winzer-Rückmeldung offen' :
+  allocatedVolume > 0 ? 'Im Auftrag aktiv' :
+  'Reserve / nicht zugeteilt';
+
+const profileStatusClass =
+  exceptions.length > 0 ? 'exception' :
+  tasks.length > 0 ? 'waiting' :
+  allocatedVolume > 0 ? 'ready' :
+  'reserve';
+---
+
+<BaseLayout
+  title={`${grower.growerName} · Winzerprofil`}
+  description="Interne Betriebsakte im Cockpit der Weinkommission Porn."
+  canonicalPath={`/weinkommission/cockpit/winzer/${grower.growerId}/`}
+>
+  <div class="profile-app">
+    <header class="profile-header">
+      <div class="profile-header-inner">
+        <a class="profile-back" href={`${base}cockpit/grossbedarf/`}>← Großbedarf</a>
+        <div class="profile-title">
+          <p class="overline">Interne Betriebsakte · Demo-Datensatz</p>
+          <h1>{grower.growerName}</h1>
+          <div class="profile-meta">
+            <span>{grower.place}</span>
+            <span>Blaues Band</span>
+            <span>{grower.growerId}</span>
+          </div>
+        </div>
+        <div class="profile-actions">
+          <span class:list={['profile-state', profileStatusClass]}>{profileStatus}</span>
+          <button class="quiet-button" type="button" data-contact>Rückfrage anlegen</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="profile-main" id="main">
+      <section class="profile-command" aria-label="Winzer auf einen Blick">
+        <div class="command-primary">
+          <span class="overline">Heute relevant</span>
+          <strong>{tasks.length + exceptions.length === 0 ? 'Kein Eingriff nötig' : `${tasks.length + exceptions.length} Punkt(e) offen`}</strong>
+          <small>{tasks[0]?.task || exceptions[0]?.detail || 'Der Vorgang kann automatisch weiterlaufen.'}</small>
+        </div>
+        <div class="command-stat">
+          <span>Verfügbar</span>
+          <strong>{formatLiters(grower.availableVolume)}</strong>
+        </div>
+        <div class="command-stat">
+          <span>Zugeordnet</span>
+          <strong>{formatLiters(allocatedVolume)}</strong>
+        </div>
+        <div class="command-stat">
+          <span>Transport</span>
+          <strong>{transportLabel}</strong>
+        </div>
+      </section>
+
+      <nav class="profile-nav" aria-label="Betriebsakte">
+        <a href="#aufgaben">Aufgaben</a>
+        <a href="#partien">Partien</a>
+        <a href="#transporte">Transporte</a>
+        <a href="#stammdaten">Stammdaten</a>
+        <a href="#historie">Historie</a>
+      </nav>
+
+      <section class="profile-section attention-section" id="aufgaben">
+        <div class="section-heading profile-section-heading">
+          <div>
+            <p class="overline">Aufmerksamkeit</p>
+            <h2>Was braucht Nadine hier?</h2>
+          </div>
+          <p>Nur offene Informationen oder echte Abweichungen erscheinen in diesem Bereich.</p>
+        </div>
+
+        <div class="attention-list">
+          {tasks.length === 0 && exceptions.length === 0 ? (
+            <article class="attention-item clear">
+              <span class="attention-icon">✓</span>
+              <div><strong>Keine offenen Aufgaben</strong><small>Alle aktuell benötigten Angaben sind vorhanden.</small></div>
+              <em>automatisch</em>
+            </article>
+          ) : (
+            <>
+              {tasks.map((task) => (
+                <article class="attention-item waiting">
+                  <span class="attention-icon">↻</span>
+                  <div><strong>{task.task}</strong><small>{task.lotId} · beim Winzer anzufragen bzw. zu bestätigen</small></div>
+                  <em>Winzer</em>
+                </article>
+              ))}
+              {exceptions.map((item) => (
+                <article class="attention-item exception">
+                  <span class="attention-icon">!</span>
+                  <div><strong>Ausnahme prüfen</strong><small>{item.detail}</small></div>
+                  <em>Nadine</em>
+                </article>
+              ))}
+            </>
+          )}
+        </div>
+      </section>
+
+      <section class="profile-section" id="partien">
+        <div class="section-heading profile-section-heading">
+          <div><p class="overline">Partien</p><h2>Aktuell hinterlegte Weinpartie</h2></div>
+          <p>Eine Partie wird einmal sauber gepflegt und danach in Bedarfen, Zuteilungen, Transporten und Dokumenten wiederverwendet.</p>
+        </div>
+
+        <article class="lot-card">
+          <div class="lot-card-head">
+            <div>
+              <span class="lot-code">{grower.lotId}</span>
+              <h3>{grower.vintage} {grower.grape} · {grower.origin}</h3>
+            </div>
+            <span class:list={['row-status', allocation?.status || 'reserve']}>{allocation?.label || 'Reserve'}</span>
+          </div>
+
+          <div class="lot-metrics">
+            <div><span>Verfügbar</span><strong>{formatLiters(grower.availableVolume)}</strong></div>
+            <div><span>Zugeordnet</span><strong>{formatLiters(allocatedVolume)}</strong></div>
+            <div><span>Erzeugnis</span><strong>Wein</strong></div>
+            <div><span>Jahrgang</span><strong>{grower.vintage}</strong></div>
+          </div>
+
+          <div class="lot-checks">
+            <div class:list={{ok: grower.analysisConfirmed, open: !grower.analysisConfirmed}}>
+              <span>{grower.analysisConfirmed ? '✓' : '○'}</span><strong>Analytik</strong><small>{grower.analysisConfirmed ? 'bestätigt' : 'Bestätigung fehlt'}</small>
+            </div>
+            <div class:list={{ok: grower.treatmentsConfirmed, open: !grower.treatmentsConfirmed}}>
+              <span>{grower.treatmentsConfirmed ? '✓' : '○'}</span><strong>Behandlungen</strong><small>{grower.treatmentsConfirmed ? 'bestätigt' : 'Angabe fehlt'}</small>
+            </div>
+            <div class:list={{ok: grower.currentVolumeConfirmed, open: !grower.currentVolumeConfirmed}}>
+              <span>{grower.currentVolumeConfirmed ? '✓' : '○'}</span><strong>Menge</strong><small>{grower.currentVolumeConfirmed ? 'aktuell bestätigt' : 'erneut bestätigen'}</small>
+            </div>
+          </div>
+
+          <details class="lot-details">
+            <summary>Fachdaten anzeigen</summary>
+            <div class="detail-grid">
+              <div><span>Rebsorte</span><strong>{grower.grape}</strong></div>
+              <div><span>Herkunft</span><strong>{grower.origin}</strong></div>
+              <div><span>Produktart</span><strong>Wein</strong></div>
+              <div><span>Weinbauzone</span><strong>A</strong></div>
+              <div><span>Analysewerte</span><strong>{grower.analysisConfirmed ? 'im System bestätigt' : 'noch zu bestätigen'}</strong></div>
+              <div><span>Behandlungscodes</span><strong>{grower.treatmentsConfirmed ? 'im System bestätigt' : 'noch zu bestätigen'}</strong></div>
+            </div>
+          </details>
+        </article>
+      </section>
+
+      <section class="profile-section" id="transporte">
+        <div class="section-heading profile-section-heading">
+          <div><p class="overline">Transporte & Dokumente</p><h2>Aus der Zuteilung automatisch erzeugt.</h2></div>
+          <p>Transport und Begleitdokument hängen an derselben Partie und übernehmen vorhandene Daten ohne erneute Eingabe.</p>
+        </div>
+
+        {transports.length > 0 ? (
+          <div class="transport-stack">
+            {transports.map((transport) => (
+              <article class="transport-card">
+                <div>
+                  <span class="overline">Transport</span>
+                  <strong>{transport.transportId}</strong>
+                  <small>{transport.lotId} · {formatLiters(transport.volume)}</small>
+                </div>
+                <div>
+                  <span>Status</span>
+                  <strong>{transport.state === 'document-ready' ? 'Begleitdokument vorbereitet' : transport.state === 'prepared' ? 'Transport vorbereitet' : 'Verladedaten fehlen'}</strong>
+                </div>
+                <a href={`${base}cockpit/begleitdokument/`}>Vorgang öffnen →</a>
+              </article>
+            ))}
+          </div>
+        ) : (
+          <div class="empty-state">
+            <strong>Noch kein Transport erzeugt.</strong>
+            <p>Erst nach einer tatsächlichen Zuteilung wird aus der Partie automatisch ein Transportvorgang.</p>
+          </div>
+        )}
+      </section>
+
+      <section class="profile-section" id="stammdaten">
+        <div class="section-heading profile-section-heading">
+          <div><p class="overline">Stammdaten</p><h2>Einmal sauber erfassen.</h2></div>
+          <p>Diese Angaben werden später aus Rolands/Nadines realem Bestand importiert und bei jedem Vorgang wiederverwendet.</p>
+        </div>
+
+        <div class="master-data">
+          <div><span>Betrieb</span><strong>{grower.growerName}</strong></div>
+          <div><span>Ort</span><strong>{grower.place}</strong></div>
+          <div><span>Verbund</span><strong>Blaues Band · Demo-Zuordnung</strong></div>
+          <div class="missing"><span>Betriebsnummer</span><strong>noch nicht importiert</strong></div>
+          <div class="missing"><span>Ansprechpartner</span><strong>noch nicht importiert</strong></div>
+          <div class="missing"><span>Telefon</span><strong>noch nicht importiert</strong></div>
+          <div class="missing"><span>E-Mail</span><strong>noch nicht importiert</strong></div>
+          <div class="missing"><span>Verladeadresse</span><strong>noch nicht importiert</strong></div>
+        </div>
+      </section>
+
+      <section class="profile-section" id="historie">
+        <div class="section-heading profile-section-heading">
+          <div><p class="overline">Historie</p><h2>Eine nachvollziehbare Betriebsakte.</h2></div>
+          <p>Produktiv entsteht diese Historie automatisch aus Angeboten, Rückmeldungen, Zuteilungen, Transporten und Dokumenten.</p>
+        </div>
+
+        <div class="timeline">
+          <article><span>Heute</span><div><strong>Profil im Großbedarf bewertet</strong><small>Matching gegen {demoRequirement.id}</small></div></article>
+          <article><span>Heute</span><div><strong>{grower.lotId} geprüft</strong><small>{allocation?.issue || 'Keine offene fachliche Abweichung'}</small></div></article>
+          {allocatedVolume > 0 && <article><span>Heute</span><div><strong>{formatLiters(allocatedVolume)} reserviert</strong><small>für {demoRequirement.buyer}</small></div></article>}
+          <article class="future"><span>Import</span><div><strong>Altdaten ergänzen</strong><small>frühere Geschäfte und Transporte werden beim Datenimport ergänzt</small></div></article>
+        </div>
+      </section>
+
+      <section class="profile-footnote">
+        <strong>Demo-Betriebsakte</strong>
+        <p>Namen und operative Werte auf dieser Seite stammen aus unserem Testbestand. Nicht vorhandene reale Stammdaten werden bewusst nicht erfunden.</p>
+      </section>
+
+      <dialog class="profile-dialog" data-contact-dialog>
+        <button class="dialog-close" type="button" data-close-contact aria-label="Schließen">×</button>
+        <p class="overline">Rückfrage · Demo</p>
+        <h2>Aufgabe für {grower.growerName}</h2>
+        <p>Produktiv kann Nadine hier gezielt eine fehlende Information anfordern. Das System erzeugt daraus automatisch die passende Winzer-Aufgabe und verfolgt den Status.</p>
+        <div class="dialog-task">
+          <span>Vorschlag</span>
+          <strong>{tasks[0]?.task || 'Partiedaten bestätigen'}</strong>
+        </div>
+        <button class="primary-button" type="button" data-close-contact>Schließen</button>
+      </dialog>
+    </main>
+  </div>
+
+  <script>
+    const dialog = document.querySelector('[data-contact-dialog]');
+    document.querySelector('[data-contact]').addEventListener('click', () => dialog.showModal());
+    document.querySelectorAll('[data-close-contact]').forEach(button => button.addEventListener('click', () => dialog.close()));
+  </script>
+</BaseLayout>
