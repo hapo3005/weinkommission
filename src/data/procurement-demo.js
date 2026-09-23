@@ -14,7 +14,25 @@ export const demoRequirement = {
   preferredLoadingVolume: 22000
 };
 
-const places = ['Bernkastel-Kues','Piesport','Leiwen','Trittenheim','Brauneberg','Wintrich','Ürzig','Graach','Zeltingen-Rachtig','Mehring','Neumagen-Dhron','Kröv'];
+const placeRecords = [
+  { place:'Bernkastel-Kues', postcode:'54470' },
+  { place:'Piesport', postcode:'54498' },
+  { place:'Leiwen', postcode:'54340' },
+  { place:'Trittenheim', postcode:'54349' },
+  { place:'Brauneberg', postcode:'54472' },
+  { place:'Wintrich', postcode:'54487' },
+  { place:'Ürzig', postcode:'54539' },
+  { place:'Graach', postcode:'54470' },
+  { place:'Zeltingen-Rachtig', postcode:'54492' },
+  { place:'Mehring', postcode:'54346' },
+  { place:'Neumagen-Dhron', postcode:'54347' },
+  { place:'Kröv', postcode:'54536' }
+];
+
+const streetNames = [
+  'Moselstraße','Weinbergstraße','Römerstraße','Bergstraße','Im Rebenhof','Uferstraße',
+  'Kirchstraße','Schieferweg','Am Sonnenhang','Mühlenweg','Brückenstraße','Winzerweg'
+];
 
 const fictionalFamilies = [
   'Ahrensberg','Bellenau','Corten','Demerath','Elsenborn','Falkenau','Gressenich','Harenberg',
@@ -51,15 +69,21 @@ export const demoGrowers = Array.from({ length: 230 }, (_, index) => {
   const largestTank = [8000,12000,16000,20000,25000,30000,40000][n % 7];
 
   const family = fictionalFamilies[index % fictionalFamilies.length];
+  const location = placeRecords[index % placeRecords.length];
+  const slug = family.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+  const harvestVolume = Math.round((annualProduction * 1.12) / 1000) * 1000;
 
   return {
     growerId: 'TEST-' + String(n).padStart(3,'0'),
     growerName: fictionalGrowerName(index),
-    place: places[index % places.length],
+    place: location.place,
+    postcode: location.postcode,
+    street: streetNames[index % streetNames.length] + ' ' + (2 + ((n * 7) % 48)),
     contactPerson: 'Familie ' + family,
-    email: family.toLowerCase() + '@demo-weingut.de',
+    email: 'kontakt@' + slug + '-demo.de',
     phone: '06531 ' + String(410000 + n),
     businessNumber: 'DEMO-RP-' + String(n).padStart(5,'0'),
+    website: 'https://www.' + slug + '-demo.de',
     dataStatus: 'synthetic',
     cooperationStatus: 'active',
     supplierGroups: isBlueBandMember ? ['Blaues Band'] : [],
@@ -68,6 +92,7 @@ export const demoGrowers = Array.from({ length: 230 }, (_, index) => {
       completeness: n % 11 === 0 ? 72 : n % 17 === 0 ? 84 : 100,
       hectares,
       annualProduction,
+      harvestVolume,
       typicalMarketVolume: marketVolume,
       storageCapacity,
       largestTank,
