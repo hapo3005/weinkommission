@@ -42,18 +42,18 @@ const coveragePercent = Math.round(model.coverage * 100);
       <section class="ext-kpis">
         <div>
           <span>Aktiver Bedarf</span>
-          <strong>{formatLiters(demoRequirement.targetVolume)}</strong>
-          <small>{demoRequirement.vintage} {demoRequirement.grape} · {demoRequirement.origin}</small>
+          <strong data-buyer-active-target>{formatLiters(demoRequirement.targetVolume)}</strong>
+          <small data-buyer-active-wine>{demoRequirement.vintage} {demoRequirement.grape} · {demoRequirement.origin}</small>
         </div>
         <div>
           <span>Aktuell zugeteilt</span>
-          <strong>{formatLiters(model.allocatedVolume)}</strong>
-          <small>{coveragePercent} % des Bedarfs</small>
+          <strong data-buyer-active-allocated>{formatLiters(model.allocatedVolume)}</strong>
+          <small data-buyer-active-coverage-copy>{coveragePercent} % des Bedarfs</small>
         </div>
         <div>
           <span>Noch offen</span>
-          <strong>{formatLiters(model.remainingVolume)}</strong>
-          <small>Lieferfenster {demoRequirement.deliveryWindow}</small>
+          <strong data-buyer-active-remaining>{formatLiters(model.remainingVolume)}</strong>
+          <small data-buyer-active-window>Lieferfenster {demoRequirement.deliveryWindow}</small>
         </div>
       </section>
 
@@ -61,22 +61,22 @@ const coveragePercent = Math.round(model.coverage * 100);
         <div class="ext-section-head">
           <div>
             <p class="ext-eyebrow">Laufender Bedarf</p>
-            <h2>{demoRequirement.vintage} {demoRequirement.grape} · {demoRequirement.origin}</h2>
+            <h2 data-buyer-current-title>{demoRequirement.vintage} {demoRequirement.grape} · {demoRequirement.origin}</h2>
           </div>
           <p>Die Kommission bündelt geeignete Partien, stimmt Winzer ab und organisiert die weiteren Schritte.</p>
         </div>
 
         <div class="ext-progress">
           <div class="ext-progress-head">
-            <span>{formatLiters(model.allocatedVolume)} zugeteilt</span>
-            <strong>{coveragePercent} %</strong>
+            <span data-buyer-current-allocated>{formatLiters(model.allocatedVolume)} zugeteilt</span>
+            <strong data-buyer-current-coverage>{coveragePercent} %</strong>
           </div>
-          <div class="ext-track"><i style={`width:${Math.min(model.coverage * 100,100)}%`}></i></div>
+          <div class="ext-track"><i data-buyer-current-track style={`width:${Math.min(model.coverage * 100,100)}%`}></i></div>
         </div>
 
         <div class="transport-detail">
-          <div><span>Referenz</span><strong>{demoRequirement.id}</strong></div>
-          <div><span>Lieferfenster</span><strong>{demoRequirement.deliveryWindow}</strong></div>
+          <div><span>Referenz</span><strong data-buyer-current-reference>{demoRequirement.id}</strong></div>
+          <div><span>Lieferfenster</span><strong data-buyer-current-window>{demoRequirement.deliveryWindow}</strong></div>
           <div><span>Status</span><strong>Beschaffung läuft</strong></div>
         </div>
       </section>
@@ -176,6 +176,15 @@ const coveragePercent = Math.round(model.coverage * 100);
   </div>
 
   <script>
+    import { demoRequirement, demoProcurementRows, demoGrowers } from '../data/procurement-demo.js';
+    import { runProcurement } from '../lib/procurementEngine.js';
+    import {
+      getBuyerRequests,
+      saveBuyerRequests,
+      resolveActiveRequirement,
+      buildDemoWorkingRows
+    } from '../lib/demoSession.js';
+
     const form = document.querySelector('[data-buyer-form]');
     const success = document.querySelector('[data-buyer-success]');
     const history = document.querySelector('[data-buyer-history]');
@@ -184,6 +193,7 @@ const coveragePercent = Math.round(model.coverage * 100);
     const escapeHtml = (value = '') => String(value).replace(/[&<>"']/g, char => ({
       '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'
     })[char]);
+    const formatLiters = value => new Intl.NumberFormat('de-DE').format(Math.round(Number(value) || 0)) + ' l';
 
     function readValues() {
       return {
@@ -199,8 +209,38 @@ const coveragePercent = Math.round(model.coverage * 100);
       };
     }
 
+    function renderActiveRequirement() {
+      const requirement = resolveActiveRequirement(demoRequirement);
+      const rows = buildDemoWorkingRows(demoProcurementRows, demoGrowers);
+      const model = runProcurement(requirement, rows);
+      const coverage = Math.round(model.coverage * 100);
+
+      document.querySelector('[data-buyer-active-target]').textContent = formatLiters(requirement.targetVolume);
+      document.querySelector('[data-buyer-active-wine]').textContent = requirement.vintage + ' ' + requirement.grape + ' · ' + requirement.origin;
+      document.querySelector('[data-buyer-active-allocated]').textContent = formatLiters(model.allocatedVolume);
+      document.querySelector('[data-buyer-active-coverage-copy]').textContent = coverage + ' % des Bedarfs';
+      document.querySelector('[data-buyer-active-remaining]').textContent = formatLiters(model.remainingVolume);
+      document.querySelector('[data-buyer-active-window]').textContent = 'Lieferfenster ' + requirement.deliveryWindow;
+
+      document.querySelector('[data-buyer-current-title]').textContent = requirement.vintage + ' ' + requirement.grape + ' · ' + requirement.origin;
+      document.querySelector('[data-buyer-current-allocated]').textContent = formatLiters(model.allocatedVolume) + ' zugeteilt';
+      document.querySelector('[data-buyer-current-coverage]').textContent = coverage + ' %';
+      document.querySelector('[data-buyer-current-track]').style.width = Math.min(model.coverage * 100, 100) + '%';
+      document.querySelector('[data-buyer-current-reference]').textContent = requirement.id;
+      document.querySelector('[data-buyer-current-window]').textContent = requirement.deliveryWindow;
+    }
+
     function renderHistory() {
-      const requests = JSON.parse(localStorage.getItem('wp-demo-buyer-requests') || '[]');
+      const requests = getBuyerRequests();
+      history.innerHTML = `
+        <article class="ext-row">
+          <div>
+            <strong>${escapeHtml(demoRequirement.vintage)} ${escapeHtml(demoRequirement.grape)} · ${formatLiters(demoRequirement.targetVolume)}</strong>
+            <small>${escapeHtml(demoRequirement.origin)} · ${escapeHtml(demoRequirement.deliveryWindow)} · ${escapeHtml(demoRequirement.id)}</small>
+          </div>
+          <span>Beschaffung läuft</span>
+        </article>`;
+
       requests.forEach(request => {
         const article = document.createElement('article');
         article.className = 'ext-row';
@@ -231,7 +271,7 @@ const coveragePercent = Math.round(model.coverage * 100);
       }
       error.hidden = true;
 
-      const requests = JSON.parse(localStorage.getItem('wp-demo-buyer-requests') || '[]');
+      const requests = getBuyerRequests();
       const request = {
         id: 'BED-' + Date.now(),
         ...values,
@@ -240,21 +280,12 @@ const coveragePercent = Math.round(model.coverage * 100);
         demo: true
       };
       requests.unshift(request);
-      localStorage.setItem('wp-demo-buyer-requests', JSON.stringify(requests.slice(0,10)));
+      saveBuyerRequests(requests);
       success.hidden = false;
-
-      const article = document.createElement('article');
-      article.className = 'ext-row';
-      article.innerHTML = `
-        <div>
-          <strong>${escapeHtml(request.vintage)} ${escapeHtml(request.grape)} · ${escapeHtml(request.targetVolume)}</strong>
-          <small>${escapeHtml(request.origin)} · ${escapeHtml(request.deliveryWindow)} · ${escapeHtml(request.id)}</small>
-        </div>
-        <span>Neu · Prüfung durch Kommission</span>
-      `;
-      history.appendChild(article);
+      renderHistory();
     });
 
+    renderActiveRequirement();
     renderHistory();
   </script>
 </BaseLayout>
