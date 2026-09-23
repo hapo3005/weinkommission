@@ -14,7 +14,7 @@ export const demoRequirement = {
 
 const places = ['Bernkastel-Kues','Piesport','Leiwen','Trittenheim','Brauneberg','Wintrich','Ürzig','Graach','Zeltingen-Rachtig','Mehring','Neumagen-Dhron','Kröv'];
 
-export const demoGrowers = Array.from({ length: 200 }, (_, index) => {
+export const demoGrowers = Array.from({ length: 230 }, (_, index) => {
   const n = index + 1;
   const grape = n % 9 === 0 ? 'Weißburgunder' : 'Riesling';
   const origin = n % 17 === 0 ? 'Saar' : 'Mosel';
@@ -23,13 +23,16 @@ export const demoGrowers = Array.from({ length: 200 }, (_, index) => {
   const analysisConfirmed = n % 14 !== 0;
   const treatmentsConfirmed = n % 19 !== 0;
   const currentVolumeConfirmed = n % 23 !== 0;
+  const isBlueBandMember = n <= 200;
 
   return {
     growerId: 'TEST-' + String(n).padStart(3,'0'),
     growerName: 'Testweingut ' + String(n).padStart(3,'0'),
     place: places[index % places.length],
     dataStatus: 'synthetic',
-    supplierGroupMembership: 'not-imported',
+    cooperationStatus: 'active',
+    supplierGroups: isBlueBandMember ? ['Blaues Band'] : [],
+    membershipDataStatus: 'synthetic',
     lotId: 'R25-' + String(10+n).padStart(3,'0'),
     productType: 'wine',
     grape,
