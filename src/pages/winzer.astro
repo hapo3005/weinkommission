@@ -251,6 +251,7 @@ const base = import.meta.env.BASE_URL;
         <article>
           <div><strong>${lot.lotId}</strong><small>${lot.vintage} ${lot.grape} · ${lot.origin}</small></div>
           <div><span>Verfügbar</span><strong>${formatLiters(lot.availableVolume)}</strong></div>
+          <div><span>Zugeordnet</span><strong>${row?.allocatedVolume > 0 ? formatLiters(row.allocatedVolume) : '—'}</strong></div>
           <em>${status}</em>
         </article>
       `;
