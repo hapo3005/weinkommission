@@ -159,7 +159,7 @@ const base = import.meta.env.BASE_URL;
                   <button type="button" class="product-tab" data-product-tab="3">Partie 3 <span data-product-tab-state="3">○</span></button>
                 </div>
 
-                <div class="product-panel active" data-product-panel="1">
+                <div class="product-panel active" data-product-panel="1" data-product-active="true">
                   <div class="field-grid three">
                     <label><span>Erzeugnisart</span>
                       <select name="p1ProductType" data-product-type required>
@@ -404,51 +404,82 @@ const base = import.meta.env.BASE_URL;
     const autoCount = document.querySelector('[data-auto-count]');
 
     const normalizeNumber = (value) => Number(String(value || '').trim().replace(/\./g, '').replace(',', '.'));
+    const get = (name) => form.elements.namedItem(name);
     const hasValue = (name) => {
-      const el = form.elements.namedItem(name);
+      const el = get(name);
       return !!el && String(el.value || '').trim().length > 0;
     };
     const allFilled = (names) => names.every(hasValue);
 
     const participantFields = ['reference','commissionerBusinessId','shippingDate','senderName','senderBusinessId','senderStreet','senderZip','senderCity','senderCountry','receiverName','receiverBusinessId','receiverStreet','receiverZip','receiverCity','receiverCountry'];
-    const productBaseFields = ['p1ProductType','p1Lot','p1Quantity','p1OriginCountry','p1OriginType','p1Geography','p1Zone','p1Description'];
     const transportFields = ['loadingPlace','transportType','plate','carrierName','carrierAddress','departureTime','actualTotal'];
 
-    function requiredAnalytics() {
-      const type = form.elements.namedItem('p1ProductType').value;
-      if (type === 'wine' || type === 'sparkling' || type === 'liqueur') return ['p1ActualAlcohol'];
-      if (type === 'young-wine' || type === 'partially-fermented') return ['p1TotalAlcohol'];
-      if (type === 'must' || type === 'grapes') return ['p1Refractometer'];
-      if (type === 'fortified-must') return ['p1Density','p1ActualAlcohol'];
-      if (['concentrated-must','rectified-must','grape-juice'].includes(type)) return ['p1Sugar'];
+    function productPrefix(panel) {
+      return 'p' + panel.dataset.productPanel;
+    }
+
+    function requiredAnalyticsFor(panel) {
+      const p = productPrefix(panel);
+      const typeEl = get(p + 'ProductType');
+      const type = typeEl ? typeEl.value : '';
+      if (type === 'wine' || type === 'sparkling' || type === 'liqueur') return [p + 'ActualAlcohol'];
+      if (type === 'young-wine' || type === 'partially-fermented') return [p + 'TotalAlcohol'];
+      if (type === 'must' || type === 'grapes') return [p + 'Refractometer'];
+      if (type === 'fortified-must') return [p + 'Density', p + 'ActualAlcohol'];
+      if (['concentrated-must','rectified-must','grape-juice'].includes(type)) return [p + 'Sugar'];
       return [];
     }
 
     function updateAnalysisFields() {
-      const required = new Set(requiredAnalytics());
-      const mapping = {
-        actualAlcohol:'p1ActualAlcohol',
-        totalAlcohol:'p1TotalAlcohol',
-        refractometer:'p1Refractometer',
-        density:'p1Density',
-        sugar:'p1Sugar'
-      };
-      document.querySelectorAll('[data-analysis]').forEach((label) => {
-        const name = mapping[label.dataset.analysis];
-        const visible = required.has(name);
-        label.hidden = !visible;
-        const input = label.querySelector('input');
-        if (input) input.required = visible;
+      document.querySelectorAll('[data-product-active="true"]').forEach(panel => {
+        const required = new Set(requiredAnalyticsFor(panel));
+        const p = productPrefix(panel);
+        const mapping = {
+          actualAlcohol:p + 'ActualAlcohol',
+          totalAlcohol:p + 'TotalAlcohol',
+          refractometer:p + 'Refractometer',
+          density:p + 'Density',
+          sugar:p + 'Sugar'
+        };
+        panel.querySelectorAll('[data-analysis]').forEach(label => {
+          const name = mapping[label.dataset.analysis];
+          const visible = required.has(name);
+          label.hidden = !visible;
+          const input = label.querySelector('input');
+          if (input) input.required = visible;
+        });
       });
     }
 
-    function treatmentsValid() {
-      const checked = [...form.querySelectorAll('input[name="p1Treatment"]:checked')];
+    function treatmentsValid(panel) {
+      const checked = [...panel.querySelectorAll('input[type="checkbox"][name$="Treatment"]:checked')];
       if (!checked.length) return false;
       const values = checked.map(el => el.value);
       if (values.includes('0') && values.length > 1) return false;
-      if (values.includes('12') && !hasValue('p1TreatmentNote')) return false;
+      if (values.includes('12')) {
+        const note = panel.querySelector('input[name$="TreatmentNote"]');
+        if (!note || !note.value.trim()) return false;
+      }
       return true;
+    }
+
+    function productValid(panel) {
+      const p = productPrefix(panel);
+      const base = [p+'ProductType',p+'Lot',p+'Quantity',p+'OriginCountry',p+'OriginType',p+'Geography',p+'Zone',p+'Description'];
+      return allFilled(base) && normalizeNumber(get(p+'Quantity').value) > 0;
+    }
+
+    function originValid(panel) {
+      const p = productPrefix(panel);
+      return allFilled([p+'OriginCountry',p+'OriginType',p+'Geography',p+'Zone']);
+    }
+
+    function analyticsValid(panel) {
+      return allFilled(requiredAnalyticsFor(panel));
+    }
+
+    function activeProducts() {
+      return [...document.querySelectorAll('[data-product-active="true"]')];
     }
 
     function setCheck(key, ok, successText, pendingText) {
@@ -456,7 +487,7 @@ const base = import.meta.env.BASE_URL;
       if (!el) return;
       el.classList.toggle('valid', ok);
       el.classList.toggle('pending', !ok);
-      el.textContent = (ok ? '✓ ' + successText : '○ ' + pendingText);
+      el.textContent = ok ? '✓ ' + successText : '○ ' + pendingText;
     }
 
     function setReview(key, ok, text) {
@@ -475,14 +506,15 @@ const base = import.meta.env.BASE_URL;
 
     function updateState() {
       updateAnalysisFields();
+      const panels = activeProducts();
       const participants = allFilled(participantFields);
-      const product = allFilled(productBaseFields) && normalizeNumber(form.elements.namedItem('p1Quantity').value) > 0;
-      const origin = allFilled(['p1OriginCountry','p1OriginType','p1Geography','p1Zone']);
-      const analytics = allFilled(requiredAnalytics());
-      const treatments = treatmentsValid();
-      const transport = allFilled(transportFields) && String(form.elements.namedItem('plate').value).trim().length >= 5;
-      const finalQuantity = normalizeNumber(form.elements.namedItem('actualTotal').value) > 0;
-      const confirmation = form.elements.namedItem('confirmCorrect').checked;
+      const product = panels.length > 0 && panels.every(productValid);
+      const origin = panels.length > 0 && panels.every(originValid);
+      const analytics = panels.length > 0 && panels.every(analyticsValid);
+      const treatments = panels.length > 0 && panels.every(treatmentsValid);
+      const transport = allFilled(transportFields) && String(get('plate').value).trim().length >= 5;
+      const finalQuantity = normalizeNumber(get('actualTotal').value) > 0;
+      const confirmation = get('confirmCorrect').checked;
 
       const checks = {participants, product, origin, analytics, treatments, transport, finalQuantity, confirmation};
       const completed = Object.values(checks).filter(Boolean).length;
@@ -492,7 +524,7 @@ const base = import.meta.env.BASE_URL;
       setCheck('sender', allFilled(['senderName','senderBusinessId','senderStreet','senderZip','senderCity']), 'Absender vollständig', 'Absender unvollständig');
       setCheck('receiver', allFilled(['receiverName','receiverBusinessId','receiverStreet','receiverZip','receiverCity']), 'Empfänger vollständig', 'Empfänger unvollständig');
       setCheck('commissioner', hasValue('commissionerBusinessId'), 'Kommissionär zugeordnet', 'Kommissionär fehlt');
-      setCheck('product', product, 'Erzeugnis und Menge vollständig', 'Erzeugnis / Menge prüfen');
+      setCheck('product', product, panels.length + ' Partie(n) vollständig', 'Erzeugnis / Menge prüfen');
       setCheck('origin', origin, 'Herkunft und Weinbauzone vollständig', 'Herkunft / Weinbauzone prüfen');
       setCheck('analytics', analytics, 'Erforderliche Analytik vollständig', 'Analytik unvollständig');
       setCheck('treatments', treatments, 'Behandlungen plausibel', 'Behandlungen prüfen');
@@ -501,7 +533,7 @@ const base = import.meta.env.BASE_URL;
       setCheck('confirmation', confirmation, 'Richtigkeit bestätigt', 'Richtigkeitsbestätigung fehlt');
 
       setReview('participants', participants, participants ? 'vollständig' : 'Pflichtangaben fehlen');
-      setReview('products', product && origin, product && origin ? 'vollständig' : 'Erzeugnis oder Herkunft prüfen');
+      setReview('products', product && origin, product && origin ? panels.length + ' Partie(n) vollständig' : 'Erzeugnis oder Herkunft prüfen');
       setReview('analytics', analytics && treatments, analytics && treatments ? 'vollständig' : 'abhängige Angaben prüfen');
       setReview('transport', transport && finalQuantity, transport && finalQuantity ? 'vollständig' : 'Angaben vor Abfahrt fehlen');
 
@@ -519,19 +551,56 @@ const base = import.meta.env.BASE_URL;
       apiLabel.textContent = ready ? 'Datensatz kann serverseitig erzeugt werden' : 'Nicht sendebereit';
       submit.disabled = !ready;
 
-      const reusable = participantFields.filter(hasValue).length + ['p1ProductType','p1Lot','p1OriginCountry','p1OriginType','p1Geography','p1Zone','p1Vintage','p1Varieties','p1Quality','p1Description','carrierName','carrierAddress','loadingPlace'].filter(hasValue).length;
+      const reusable = participantFields.filter(hasValue).length + panels.reduce((sum,panel) => {
+        const p = productPrefix(panel);
+        return sum + [p+'ProductType',p+'Lot',p+'OriginCountry',p+'OriginType',p+'Geography',p+'Zone',p+'Vintage',p+'Varieties',p+'Quality',p+'Description'].filter(hasValue).length;
+      },0) + ['carrierName','carrierAddress','loadingPlace'].filter(hasValue).length;
       autoCount.textContent = reusable + ' Felder wiederverwendbar';
     }
 
     function handleTreatmentChange(event) {
-      if (!event.target.matches('input[name="p1Treatment"]')) return;
+      if (!event.target.matches('input[type="checkbox"][name$="Treatment"]')) return;
+      const panel = event.target.closest('[data-product-panel]');
       const group = event.target.closest('[data-treatment-group]');
       const zero = group.querySelector('input[value="0"]');
       const others = [...group.querySelectorAll('input:not([value="0"])')];
       if (event.target.value === '0' && event.target.checked) others.forEach(el => el.checked = false);
       if (event.target.value !== '0' && event.target.checked) zero.checked = false;
       if (![...group.querySelectorAll('input:checked')].length) zero.checked = true;
-      document.querySelector('[data-treatment-note="1"]').hidden = !group.querySelector('input[value="12"]').checked;
+      const note = panel.querySelector('[data-treatment-note]');
+      if (note) note.hidden = !group.querySelector('input[value="12"]').checked;
+      updateState();
+    }
+
+    function cloneProductStructure(n) {
+      const source = document.querySelector('[data-product-panel="1"]');
+      const target = document.querySelector('[data-product-panel="' + n + '"]');
+      const clone = source.cloneNode(true);
+      clone.dataset.productPanel = n;
+      clone.dataset.productActive = 'true';
+      clone.hidden = false;
+      clone.classList.remove('active');
+
+      clone.querySelectorAll('[name]').forEach(el => {
+        el.name = el.name.replace(/^p1/, 'p' + n);
+        if (el.matches('input[type="checkbox"]')) {
+          el.checked = el.value === '0';
+        } else if (el.matches('select')) {
+          if (el.name.endsWith('ProductType')) el.value='wine';
+          else if (el.name.endsWith('OriginCountry')) el.value='DE';
+          else if (el.name.endsWith('OriginType')) el.value='PDO';
+          else if (el.name.endsWith('Zone')) el.value='B';
+          else el.selectedIndex=0;
+        } else {
+          el.value='';
+        }
+      });
+      clone.querySelectorAll('[data-treatment-group]').forEach(el => el.dataset.treatmentGroup=n);
+      clone.querySelectorAll('[data-treatment-note]').forEach(el => {el.dataset.treatmentNote=n; el.hidden=true;});
+      target.replaceWith(clone);
+
+      const tabState=document.querySelector('[data-product-tab-state="'+n+'"]');
+      if(tabState) tabState.textContent='●';
       updateState();
     }
 
@@ -541,7 +610,7 @@ const base = import.meta.env.BASE_URL;
         if (payload[key]) payload[key] = [].concat(payload[key], value);
         else payload[key] = value;
       });
-      payload.confirmCorrect = form.elements.namedItem('confirmCorrect').checked;
+      payload.confirmCorrect = get('confirmCorrect').checked;
       localStorage.setItem('wp-eweinbv-full-demo', JSON.stringify(payload));
       toast.textContent = message;
       toast.classList.add('show');
@@ -566,13 +635,13 @@ const base = import.meta.env.BASE_URL;
       });
     }));
 
-    document.querySelectorAll('[data-add-product]').forEach(btn => btn.addEventListener('click', () => {
-      const n=btn.dataset.addProduct;
-      const panel=document.querySelector('[data-product-panel="'+n+'"]');
-      panel.innerHTML='<div class="future-product"><strong>Partie '+n+' aktiviert</strong><p>Die Feldstruktur wird identisch zu Partie 1 geführt. In der nächsten Datenbankstufe werden Positionen dynamisch angelegt und als Array an die Schnittstelle übergeben.</p><button type="button" class="secondary-button" data-copy-product>Struktur aus Partie 1 übernehmen</button></div>';
-      const state=document.querySelector('[data-product-tab-state="'+n+'"]');
-      if(state) state.textContent='●';
-    }));
+    document.addEventListener('click', event => {
+      const btn = event.target.closest('[data-add-product]');
+      if (!btn) return;
+      cloneProductStructure(btn.dataset.addProduct);
+      const tab=document.querySelector('[data-product-tab="'+btn.dataset.addProduct+'"]');
+      if(tab) tab.click();
+    });
 
     document.querySelector('[data-save-draft]').addEventListener('click', () => saveDraft());
 
@@ -581,9 +650,9 @@ const base = import.meta.env.BASE_URL;
       updateState();
       if (submit.disabled) return;
       saveDraft('Vollständigkeitsprüfung bestanden');
-      document.querySelector('[data-result-liters]').textContent = normalizeNumber(form.elements.namedItem('actualTotal').value).toLocaleString('de-DE') + ' Liter';
-      document.querySelector('[data-result-plate]').textContent = String(form.elements.namedItem('plate').value).toUpperCase();
-      document.querySelector('[data-result-carrier]').textContent = form.elements.namedItem('carrierName').value;
+      document.querySelector('[data-result-liters]').textContent = normalizeNumber(get('actualTotal').value).toLocaleString('de-DE') + ' Liter';
+      document.querySelector('[data-result-plate]').textContent = String(get('plate').value).toUpperCase();
+      document.querySelector('[data-result-carrier]').textContent = get('carrierName').value;
       dialog.showModal();
     });
 
@@ -591,14 +660,7 @@ const base = import.meta.env.BASE_URL;
 
     document.querySelector('[data-demo-reset]').addEventListener('click', () => {
       localStorage.removeItem('wp-eweinbv-full-demo');
-      form.reset();
-      form.elements.namedItem('shippingDate').value='2026-09-23';
-      form.elements.namedItem('departureTime').value='2026-09-23T09:30';
-      document.querySelector('[data-treatment-note="1"]').hidden=true;
-      updateState();
-      toast.textContent='Demo zurückgesetzt';
-      toast.classList.add('show');
-      window.setTimeout(() => toast.classList.remove('show'),2200);
+      window.location.reload();
     });
 
     document.querySelector('[data-open-transport]').addEventListener('click', () => document.querySelector('#transporte').scrollIntoView({behavior:'smooth'}));
