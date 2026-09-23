@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import DemoRoleSwitch from '../../components/DemoRoleSwitch.astro';
 import '../../styles/betriebsprofil.css';
 
 const base = import.meta.env.BASE_URL;
@@ -16,7 +17,10 @@ const base = import.meta.env.BASE_URL;
         <span class="brand-mark">WP</span>
         <span><strong>WEINKOMMISSION PORN</strong><small>Winzerportal · Betriebsprofil</small></span>
       </a>
-      <span class="demo-label">Demo · lokal gespeichert</span>
+      <div class="profile-edit-actions">
+        <DemoRoleSwitch active="winzer" />
+        <span class="demo-label">Demo · lokal gespeichert</span>
+      </div>
     </header>
 
     <main class="profile-edit-main" id="main">
@@ -219,10 +223,13 @@ const base = import.meta.env.BASE_URL;
   </div>
 
   <script>
+    import { demoGrowers } from '../../data/procurement-demo.js';
+
     const form = document.querySelector('[data-profile-form]');
     const dialog = document.querySelector('[data-complete-dialog]');
     const account = JSON.parse(localStorage.getItem('wp-demo-grower-account') || 'null');
     const stored = JSON.parse(localStorage.getItem('wp-demo-grower-profile') || 'null');
+    const grower = demoGrowers.find(item => item.growerId === (account?.growerId || 'TEST-001')) || demoGrowers[0];
 
     const fields = {
       businessName: document.querySelector('[data-profile-business]'),
@@ -286,15 +293,27 @@ const base = import.meta.env.BASE_URL;
       document.querySelector('[data-profile-blueband]').checked = Boolean(profile.blueBandClaimed);
     }
 
-    if (stored) hydrate(stored);
-    else if (account) {
-      fields.businessName.value = account.businessName || '';
-      fields.person.value = account.contactPerson || '';
-      fields.businessNumber.value = account.businessNumber || '';
-      document.querySelector('[data-profile-blueband]').checked = Boolean(account.blueBandClaimed);
+    if (stored && stored.growerId === grower.growerId) {
+      hydrate(stored);
     } else {
-      fields.businessName.value = 'Weingut Ahrensberg & Sohn';
+      fields.businessName.value = account?.businessName || grower.growerName;
+      fields.person.value = account?.contactPerson || grower.contactPerson;
       fields.region.value = 'Mosel';
+      fields.businessNumber.value = account?.businessNumber || grower.businessNumber;
+      fields.preferredContact.value = 'email';
+      fields.hectares.value = grower.profile.hectares + ' ha';
+      fields.annualProduction.value = new Intl.NumberFormat('de-DE').format(grower.profile.annualProduction) + ' l';
+      fields.marketVolume.value = new Intl.NumberFormat('de-DE').format(grower.profile.typicalMarketVolume) + ' l';
+      fields.storage.value = new Intl.NumberFormat('de-DE').format(grower.profile.storageCapacity) + ' l';
+      fields.largestTank.value = new Intl.NumberFormat('de-DE').format(grower.profile.largestTank) + ' l';
+      fields.loadingVolume.value = new Intl.NumberFormat('de-DE').format(grower.profile.maxLoadingVolume) + ' l';
+      fields.loadingMethod.value = grower.profile.loadingMethod;
+      setChecked('[data-profile-grape]', grower.profile.grapes);
+      setChecked('[data-profile-offer]', grower.profile.offers);
+      setChecked('[data-profile-quality]', ['Qualitätswein']);
+      document.querySelector('[data-profile-structure][value="estate"]').checked = true;
+      document.querySelector('[data-profile-flexible]').checked = Boolean(grower.profile.flexibleRequests);
+      document.querySelector('[data-profile-blueband]').checked = grower.supplierGroups.includes('Blaues Band');
     }
 
     document.querySelector('[data-fill-profile]').addEventListener('click', () => {
@@ -330,7 +349,7 @@ const base = import.meta.env.BASE_URL;
       event.preventDefault();
 
       const profile = {
-        growerId: account?.growerId || 'TEST-001',
+        growerId: grower.growerId,
         businessName: fields.businessName.value.trim(),
         person: fields.person.value.trim(),
         region: fields.region.value,
