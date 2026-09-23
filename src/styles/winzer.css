@@ -181,3 +181,11 @@ h2{font-size:clamp(31px,5vw,45px);line-height:1.02}
   line-height:1.6
 }
 .verify-row{margin:0;background:#fff}
+
+.grower-header-actions{display:flex;align-items:center;gap:8px}
+.access-link{font-size:9px;color:var(--ink,#18221e);text-decoration:none;padding:9px 10px;border:1px solid rgba(24,34,30,.15);background:rgba(255,255,255,.45)}
+.portal-demo-note{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:10px 12px;margin-bottom:16px;background:#eee5d5;border:1px solid rgba(24,34,30,.13);font-size:8px}
+.portal-demo-note strong{font-family:var(--serif);font-size:13px;font-weight:400}
+.portal-demo-note span{color:var(--muted)}
+.portal-demo-note a{margin-left:auto;color:var(--green);text-decoration:none;font-size:9px}
+@media(max-width:640px){.grower-header-actions{width:100%;justify-content:space-between}.access-link{flex:1;text-align:center}.portal-demo-note{align-items:flex-start;flex-direction:column}.portal-demo-note a{margin-left:0}}
