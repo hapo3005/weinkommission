@@ -1,6 +1,6 @@
 # Design Brief · Weinkommission Porn · Mosel
 
-Stand: 13.09.2026
+Stand: 23.09.2026
 
 ## Designziel
 
@@ -133,17 +133,25 @@ Erster technischer Kandidat, noch nicht final:
 - Instrument Sans
 - Source Serif 4
 
-## Farbrichtung
+## Farbsystem · finalisiert
 
-Arbeitsfarben, noch nicht final:
+Das Farbsystem leitet sich nicht aus klassischen Wein-Codes wie Bordeaux, Flaschengrün oder Gold ab. Die Herkunft wird primär durch Bildwelt, Mosel-Geografie und Materialität erzählt; das Interface vermittelt Kompetenz, Ruhe und Eigenständigkeit.
 
-- Schiefer: tiefes mineralisches Grau
-- Kalk / Naturpapier: warmer heller Grund
-- Moselgrün: dunkles gedecktes Grün
-- Stein: warmes Grau
-- Weiß: funktionaler Kontrast
+- Ink · `#12191D` — Haupttext, dunkle Flächen, maximale Autorität
+- Deep Mosel Slate · `#35545E` — zentrale Markenfarbe; Schiefer, Wasser, Kompetenz
+- River Mineral · `#718B91` — sekundäre Information, Karten, Linien, ruhige Akzente
+- Chalk · `#F3F0E9` — warmer Grund statt sterilem Reinweiß
+- Mist · `#D9DEDB` — differenzierende Flächen und zurückhaltende UI-Zonen
+- Verjus · `#BCD63F` — bewusster Mikro-Akzent für Interaktion und Wiedererkennbarkeit
 
-Die Website soll überwiegend hell und ruhig bleiben.
+Regeln:
+
+- Verjus bleibt auf ungefähr 2–3 % der sichtbaren Fläche begrenzt.
+- Verjus nie als längere Textfarbe auf hellem Grund; bevorzugt auf dunklen Flächen oder als nichttextlicher Akzent.
+- Keine klassischen Bordeaux-/Gold-/Flaschengrün-Kombinationen als Markenästhetik.
+- Statusfarben für Erfolg, Warten und Ausnahme bleiben funktional und sind vom Markensystem getrennt.
+- Textkontraste müssen WCAG 2.2 AA erfüllen.
+- Die Website bleibt überwiegend hell, mineralisch und ruhig; dunkle Ink-/Slate-Flächen markieren strategische Momente.
 
 ## Wortmarkenrichtung
 
