@@ -2,6 +2,8 @@ export const demoRequirement = {
   id: 'M-2027-RI-01',
   buyer: 'Peter Mertes',
   supplierGroup: 'Blaues Band',
+  supplierMembershipImported: false,
+  datasetStatus: 'synthetic',
   targetVolume: 1500000,
   productType: 'wine',
   grape: 'Riesling',
@@ -23,13 +25,11 @@ export const demoGrowers = Array.from({ length: 200 }, (_, index) => {
   const currentVolumeConfirmed = n % 23 !== 0;
 
   return {
-    growerId: 'BB-' + String(n).padStart(3,'0'),
-    growerName: n <= 12 ? [
-      'Weingut Musterberg','Weingut Sonnenhang','Weingut Klosterblick','Weingut Moselterrassen',
-      'Weingut Römerhang','Weingut Felsenhof','Weingut Goldtröpfchen','Weingut Schieferblick',
-      'Weingut Laurentiushof','Weingut Moselbogen','Weingut Rosenberg','Weingut Sonnenuhr'
-    ][n-1] : 'Blaues-Band-Betrieb ' + String(n).padStart(3,'0'),
+    growerId: 'TEST-' + String(n).padStart(3,'0'),
+    growerName: 'Testweingut ' + String(n).padStart(3,'0'),
     place: places[index % places.length],
+    dataStatus: 'synthetic',
+    supplierGroupMembership: 'not-imported',
     lotId: 'R25-' + String(10+n).padStart(3,'0'),
     productType: 'wine',
     grape,
