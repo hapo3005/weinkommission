@@ -241,3 +241,26 @@ html,body{margin:0;max-width:100%;overflow-x:hidden;background:var(--cream)}*,*:
     padding:5px 7px
   }
 }
+/* Brand system 2026-09-23 · grower portal */
+.portal2-mark{
+  background:#12191d;
+  color:#bcd63f
+}
+.portal2-header{border-bottom-color:rgba(53,84,94,.22)}
+.portal2-eyebrow{color:#718b91}
+.partner-active{
+  background:#e8efd1;
+  color:#35545e;
+  border-left:3px solid #bcd63f
+}
+.portal2-primary{
+  background:#35545e;
+  color:#fff
+}
+.portal2-primary:hover,.portal2-primary:focus-visible{background:#496a73}
+.portal2-profile-meter i{background:#35545e}
+.portal2-quiet{background:#f3f0e9}
+@media(max-width:720px){
+  .grower-bottom-nav{background:#12191d}
+  .grower-bottom-nav a.active{color:#bcd63f}
+}
