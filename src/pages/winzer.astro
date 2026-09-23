@@ -29,6 +29,19 @@ const base = import.meta.env.BASE_URL;
         <a href={`${base}winzer/registrieren/`}>Registrierung & Einladung testen →</a>
       </section>
 
+      <section class="business-profile-card" data-business-profile-card>
+        <div>
+          <p class="eyebrow">Betriebsprofil</p>
+          <h2>Ihre Betriebsdaten</h2>
+          <p data-profile-copy>Ergänzen Sie Größe, Jahresproduktion, Rebsorten und Kapazitäten, damit die Weinkommission passende Bedarfe zuordnen kann.</p>
+        </div>
+        <div class="profile-card-progress">
+          <span data-profile-percent>0 %</span>
+          <div><i data-profile-bar></i></div>
+          <a href={`${base}winzer/profil/`} data-profile-link>Betriebsprofil vervollständigen →</a>
+        </div>
+      </section>
+
       <section class="welcome" aria-labelledby="welcome-title">
         <p class="eyebrow">Ihr Vorgang für heute</p>
         <h1 id="welcome-title">Guten Morgen,<br />Herr Musterberg.</h1>
@@ -326,5 +339,19 @@ const base = import.meta.env.BASE_URL;
     document.querySelectorAll('[data-help-close]').forEach(button => button.addEventListener('click', () => helpDialog.close()));
 
     restore();
+    const savedBusinessProfile = JSON.parse(localStorage.getItem('wp-demo-grower-profile') || 'null');
+    const profilePct = savedBusinessProfile?.completeness || 0;
+    const percentEl = document.querySelector('[data-profile-percent]');
+    const barEl = document.querySelector('[data-profile-bar]');
+    const copyEl = document.querySelector('[data-profile-copy]');
+    const profileLink = document.querySelector('[data-profile-link]');
+    if (percentEl) percentEl.textContent = profilePct + ' %';
+    if (barEl) barEl.style.width = profilePct + '%';
+    if (savedBusinessProfile && copyEl) {
+      copyEl.textContent = profilePct === 100
+        ? 'Grundprofil vollständig. Änderungen können jederzeit aktualisiert werden.'
+        : 'Profil begonnen. Für bessere Zuordnung bitte die noch fehlenden Kernangaben ergänzen.';
+    }
+    if (savedBusinessProfile && profileLink) profileLink.textContent = 'Betriebsprofil öffnen →';
   </script>
 </BaseLayout>
