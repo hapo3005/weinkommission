@@ -5,8 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build",
-    "preview": "astro preview"
+    "build": "npm run demo:audit && astro build",
+    "preview": "astro preview",
+    "demo:audit": "node scripts/demo-audit.mjs"
   },
   "dependencies": {
     "astro": "7.3.2"
