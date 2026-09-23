@@ -1,8 +1,26 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import '../styles/demo-hub.css';
+import { demoGrowers, demoRequirement, demoProcurementRows } from '../data/procurement-demo.js';
+import { runProcurement } from '../lib/procurementEngine.js';
 
 const base = import.meta.env.BASE_URL;
+const model = runProcurement(demoRequirement, demoProcurementRows);
+
+const scenarioCandidates = [
+  { key:'waiting', label:'Rückmeldung fehlt', row:model.allocationRows.find(row => row.status === 'waiting'), note:'Winzer muss fehlende Partiedaten bestätigen.' },
+  { key:'transport', label:'Transportdaten fehlen', row:model.allocationRows.find(row => row.status === 'transport'), note:'Zuteilung steht, Verladung muss ergänzt werden.' },
+  { key:'document', label:'Dokument vorbereitet', row:model.allocationRows.find(row => row.status === 'document'), note:'Prozess ist bis zum Dokumentstatus fortgeschritten.' },
+  { key:'ready', label:'Läuft ohne Eingriff', row:model.allocationRows.find(row => row.status === 'ready'), note:'Keine Rückmeldung nötig; Routine läuft weiter.' },
+  { key:'reserve', label:'Reserve / nicht zugeteilt', row:model.allocationRows.find(row => row.status === 'reserve'), note:'Passende Partie, aktuell aber nicht benötigt.' },
+  { key:'profile', label:'Profil unvollständig', grower:demoGrowers.find(g => g.profile.completeness < 100), note:'Betriebsprofil braucht Ergänzungen.' },
+  { key:'other', label:'Kein Blaues Band', grower:demoGrowers.find(g => !g.supplierGroups.includes('Blaues Band')), note:'Kooperationspartner außerhalb des aktuellen Verbund-Scope.' }
+];
+
+const scenarios = scenarioCandidates.map(item => {
+  const grower = item.grower || demoGrowers.find(g => g.growerId === item.row?.growerId);
+  return grower ? {...item, grower} : null;
+}).filter(Boolean);
 ---
 
 <BaseLayout
@@ -16,6 +34,40 @@ const base = import.meta.env.BASE_URL;
       <h1>Welche Perspektive möchtest du sehen?</h1>
       <span>Die Rollen sind bewusst getrennt. Keine Oberfläche zeigt Funktionen einer anderen Rolle.</span>
     </header>
+
+    <section class="demo-presenter">
+      <div class="demo-presenter-head">
+        <div>
+          <p>Pitch-Modus · Demobetriebe</p>
+          <h2>Jeden Betrieb und jeden Problemfall live öffnen.</h2>
+        </div>
+        <span>{demoGrowers.length} vollständige synthetische Betriebsakten</span>
+      </div>
+
+      <div class="demo-grower-picker">
+        <label>
+          <span>Demobetrieb auswählen</span>
+          <select data-demo-grower-select>
+            {demoGrowers.map(grower => (
+              <option value={grower.growerId}>{grower.growerName} · {grower.place} · {grower.growerId}</option>
+            ))}
+          </select>
+        </label>
+        <button type="button" data-open-grower>Als Winzer öffnen →</button>
+        <button type="button" class="internal-button" data-open-internal>Interne Betriebsakte →</button>
+      </div>
+
+      <div class="demo-scenarios">
+        {scenarios.map(scenario => (
+          <a href={`${base}winzer/?grower=${scenario.grower.growerId}`}>
+            <span>{scenario.label}</span>
+            <strong>{scenario.grower.growerName}</strong>
+            <small>{scenario.note}</small>
+            <em>{scenario.grower.growerId} →</em>
+          </a>
+        ))}
+      </div>
+    </section>
 
     <section class="demo-role-grid">
       <a class="demo-role internal" href={`${base}cockpit/`}>
@@ -88,4 +140,15 @@ const base = import.meta.env.BASE_URL;
       </div>
     </section>
   </main>
+
+  <script>
+    const select = document.querySelector('[data-demo-grower-select]');
+    const basePath = import.meta.env.BASE_URL;
+    document.querySelector('[data-open-grower]').addEventListener('click', () => {
+      location.href = basePath + 'winzer/?grower=' + encodeURIComponent(select.value);
+    });
+    document.querySelector('[data-open-internal]').addEventListener('click', () => {
+      location.href = basePath + 'cockpit/winzer/' + encodeURIComponent(select.value) + '/';
+    });
+  </script>
 </BaseLayout>
