@@ -185,6 +185,9 @@ const openCount = partners.filter(p => p.status === 'waiting' || p.status === 'e
                 class="partner-row"
                 href={`${base}cockpit/winzer/${partner.growerId}/`}
                 data-partner-row
+                data-grower-id={partner.growerId}
+                data-open-count={model.tasks.filter(task => task.growerId === partner.growerId).length}
+                data-allocated={allocated > 0 ? 'true' : 'false'}
                 data-group={partner.inBlueBand ? 'blueband' : 'other'}
                 data-state={state}
                 data-search={`${partner.growerName} ${partner.place} ${partner.growerId}`.toLowerCase()}
@@ -258,6 +261,8 @@ const openCount = partners.filter(p => p.status === 'waiting' || p.status === 'e
   </div>
 
   <script>
+    import { getAllGrowerResponses } from '../../../lib/demoSession.js';
+
     const rows = [...document.querySelectorAll('[data-partner-row]')];
     const search = document.querySelector('[data-partner-search]');
     const group = document.querySelector('[data-partner-group]');
@@ -307,6 +312,28 @@ const openCount = partners.filter(p => p.status === 'waiting' || p.status === 'e
       accessEmpty.hidden = items.length > 0;
       accessFeed.hidden = items.length === 0;
       accessFeed.innerHTML = items.join('');
+    }
+
+    function applyResponseOverlay() {
+      const responses = getAllGrowerResponses();
+      rows.forEach(row => {
+        const openCount = Number(row.dataset.openCount || 0);
+        if (openCount <= 0) return;
+        const resolvedLots = new Set((responses[row.dataset.growerId] || []).map(item => item.lotId));
+        if (resolvedLots.size < openCount) return;
+
+        row.dataset.state = row.dataset.allocated === 'true' ? 'allocated' : 'idle';
+        const statusText = row.querySelector('.process-heading em');
+        if (statusText) {
+          statusText.textContent = row.dataset.allocated === 'true'
+            ? 'Rückmeldung verarbeitet · Vorgang läuft weiter'
+            : 'Keine offene Rückmeldung';
+        }
+      });
+
+      const attentionCount = rows.filter(row => row.dataset.state === 'attention').length;
+      const attentionStrong = document.querySelector('[data-status-filter-button] strong');
+      if (attentionStrong) attentionStrong.textContent = String(attentionCount);
     }
 
     function applyFilters() {
@@ -363,6 +390,7 @@ const openCount = partners.filter(p => p.status === 'waiting' || p.status === 'e
     document.querySelector('[data-import]').addEventListener('click', () => importDialog.showModal());
     document.querySelectorAll('[data-close-import]').forEach(button => button.addEventListener('click', () => importDialog.close()));
 
+    applyResponseOverlay();
     applyFilters();
     renderAccessActivity();
   </script>
