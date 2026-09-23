@@ -89,11 +89,11 @@ const profileStatusClass =
         </div>
         <div class="command-stat">
           <span>Zugeordnet</span>
-          <strong>{formatLiters(allocatedVolume)}</strong>
+          <strong data-profile-allocated>{formatLiters(allocatedVolume)}</strong>
         </div>
         <div class="command-stat">
           <span>Transport</span>
-          <strong>{transportLabel}</strong>
+          <strong data-profile-transport>{transportLabel}</strong>
         </div>
       </section>
 
@@ -155,7 +155,7 @@ const profileStatusClass =
 
       <section class="profile-section" id="partien">
         <div class="section-heading profile-section-heading">
-          <div><p class="overline">Partien</p><h2>{growerLots.length} aktuell hinterlegte Weinpartien</h2></div>
+          <div><p class="overline">Partien</p><h2 data-lot-count-title>{growerLots.length} aktuell hinterlegte Weinpartien</h2></div>
           <p>Partien sind vom Betrieb getrennt. Jede Partie kann unabhängig geprüft, zugeteilt, transportiert oder als Reserve geführt werden.</p>
         </div>
 
@@ -215,7 +215,7 @@ const profileStatusClass =
         </div>
 
         {transports.length > 0 ? (
-          <div class="transport-stack">
+          <div class="transport-stack" data-transport-stack>
             {transports.map((transport) => (
               <article class="transport-card">
                 <div>
@@ -227,7 +227,7 @@ const profileStatusClass =
                   <span>Status</span>
                   <strong>{transport.state === 'document-ready' ? 'Begleitdokument vorbereitet' : transport.state === 'prepared' ? 'Transport vorbereitet' : 'Verladedaten fehlen'}</strong>
                 </div>
-                <a href={`${base}cockpit/begleitdokument/`}>Vorgang öffnen →</a>
+                <a href={`${base}cockpit/begleitdokument/?transport=${encodeURIComponent(transport.transportId)}`}>Vorgang öffnen →</a>
               </article>
             ))}
           </div>
@@ -335,7 +335,15 @@ const profileStatusClass =
   </div>
 
   <script>
-    import { getGrowerProfile, getGrowerResponses, getCustomLots } from '../../../lib/demoSession.js';
+    import { demoRequirement, demoProcurementRows, demoGrowers } from '../../../data/procurement-demo.js';
+    import { runProcurement } from '../../../lib/procurementEngine.js';
+    import {
+      getGrowerProfile,
+      getGrowerResponses,
+      getCustomLots,
+      buildDemoWorkingRows,
+      resolveActiveRequirement
+    } from '../../../lib/demoSession.js';
 
     const dialog = document.querySelector('[data-contact-dialog]');
     document.querySelector('[data-contact]').addEventListener('click', () => dialog.showModal());
@@ -364,6 +372,41 @@ const profileStatusClass =
       set('[data-internal-contact]', portalProfile.preferredContact === 'phone' ? 'Telefon' : portalProfile.preferredContact === 'mobile' ? 'Mobil / Messenger' : 'E-Mail');
     }
 
+    const activeRequirement = resolveActiveRequirement(demoRequirement);
+    const liveRows = buildDemoWorkingRows(demoProcurementRows, demoGrowers);
+    const liveModel = runProcurement(activeRequirement, liveRows);
+    const liveGrowerRows = liveModel.allocationRows.filter(row => row.growerId === growerId);
+    const liveAllocated = liveGrowerRows.reduce((sum,row) => sum + (row.allocatedVolume || 0), 0);
+    const liveTransports = liveModel.transports.filter(item => item.growerId === growerId);
+    const liveFormat = value => new Intl.NumberFormat('de-DE').format(Math.round(Number(value) || 0)) + ' l';
+
+    const allocatedNode = document.querySelector('[data-profile-allocated]');
+    if (allocatedNode) allocatedNode.textContent = liveFormat(liveAllocated);
+    const transportNode = document.querySelector('[data-profile-transport]');
+    if (transportNode) {
+      const firstTransport = liveTransports[0];
+      transportNode.textContent = !firstTransport ? 'Noch kein Transport'
+        : firstTransport.state === 'document-ready' ? 'Begleitdokument vorbereitet'
+        : firstTransport.state === 'prepared' ? 'Transport vorbereitet'
+        : 'Verladedaten fehlen';
+    }
+    const transportStack = document.querySelector('[data-transport-stack]');
+    if (transportStack && liveTransports.length) {
+      transportStack.innerHTML = liveTransports.map(transport => `
+        <article class="transport-card">
+          <div>
+            <span class="overline">Transport</span>
+            <strong>${transport.transportId}</strong>
+            <small>${transport.lotId} · ${liveFormat(transport.volume)}</small>
+          </div>
+          <div>
+            <span>Status</span>
+            <strong>${transport.state === 'document-ready' ? 'Begleitdokument vorbereitet' : transport.state === 'prepared' ? 'Transport vorbereitet' : 'Verladedaten fehlen'}</strong>
+          </div>
+          <a href="${import.meta.env.BASE_URL}cockpit/begleitdokument/?transport=${encodeURIComponent(transport.transportId)}">Vorgang öffnen →</a>
+        </article>`).join('');
+    }
+
     const customLots = growerId ? getCustomLots(growerId) : [];
     if (customLots.length) {
       const lotStack = document.querySelector('.lot-stack');
@@ -372,6 +415,8 @@ const profileStatusClass =
       const customAvailable = customLots.reduce((sum, lot) => sum + (Number(lot.availableVolume) || 0), 0);
       const fmt = value => new Intl.NumberFormat('de-DE').format(Math.round(value || 0)) + ' l';
       document.querySelector('[data-profile-available]').textContent = fmt(existingAvailable + customAvailable);
+      const lotCountTitle = document.querySelector('[data-lot-count-title]');
+      if (lotCountTitle) lotCountTitle.textContent = (document.querySelectorAll('.lot-stack > .lot-card').length + customLots.length) + ' aktuell hinterlegte Weinpartien';
 
       customLots.forEach(lot => {
         const article = document.createElement('article');
