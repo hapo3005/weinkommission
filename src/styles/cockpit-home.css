@@ -178,3 +178,33 @@
   .home-kpis{grid-template-columns:1fr 1fr}
   .home-kpis a{border-bottom:1px solid rgba(36,45,51,.14)}
 }
+
+
+/* External partner decisions — compact, explicit, mobile-safe */
+.external-item-action{justify-self:end;min-width:220px}
+.external-actions{display:flex;gap:7px;justify-content:flex-end;flex-wrap:wrap}
+.external-actions button,
+.external-action{
+  min-height:36px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  padding:0 11px;
+  border:1px solid #35545e;
+  background:#35545e;
+  color:#faf9f5;
+  font-size:8px;
+  line-height:1.2;
+  text-decoration:none
+}
+.external-actions button.reject{
+  background:transparent;
+  color:#65767b;
+  border-color:var(--line)
+}
+.external-decision{font-size:8px;color:var(--muted)}
+@media(max-width:760px){
+  .external-item-action{justify-self:stretch;min-width:0}
+  .external-actions{display:grid;grid-template-columns:1fr 1fr}
+  .external-actions button,.external-action{width:100%}
+}
