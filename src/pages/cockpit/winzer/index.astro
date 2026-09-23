@@ -2,39 +2,47 @@
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import '../../../styles/cockpit.css';
 import '../../../styles/winzerliste.css';
-import { demoRequirement, demoGrowers } from '../../../data/procurement-demo.js';
+import { demoRequirement, demoGrowers, demoProcurementRows, getLotsForGrower } from '../../../data/procurement-demo.js';
 import { runProcurement, formatLiters } from '../../../lib/procurementEngine.js';
 
 const base = import.meta.env.BASE_URL;
-const model = runProcurement(demoRequirement, demoGrowers);
-const allocationByGrower = new Map(model.allocationRows.map(row => [row.growerId, row]));
+const model = runProcurement(demoRequirement, demoProcurementRows);
 const taskGrowers = new Set(model.tasks.map(task => task.growerId));
+const exceptionGrowers = new Set(model.exceptions.map(item => item.growerId));
 
 const partners = demoGrowers.map(grower => {
-  const allocation = allocationByGrower.get(grower.growerId);
+  const growerRows = model.allocationRows.filter(row => row.growerId === grower.growerId);
+  const allocatedRows = growerRows.filter(row => row.allocatedVolume > 0);
+  const allocation = allocatedRows[0] || growerRows.find(row => row.status === 'waiting') || null;
+  const lots = getLotsForGrower(grower.growerId);
   const inBlueBand = grower.supplierGroups.includes('Blaues Band');
+  const allocatedVolume = allocatedRows.reduce((sum, row) => sum + row.allocatedVolume, 0);
 
   let status = 'partner';
   let statusLabel = 'Kooperationspartner';
   let attention = '';
 
-  if (taskGrowers.has(grower.growerId)) {
+  if (taskGrowers.has(grower.growerId) || exceptionGrowers.has(grower.growerId)) {
     status = 'waiting';
     statusLabel = 'Rückmeldung offen';
-    attention = 'Angabe fehlt';
-  } else if (allocation?.allocatedVolume > 0) {
-    status = allocation.status;
-    statusLabel = allocation.label;
-    attention = allocation.issue || '';
+    attention = model.tasks.find(task => task.growerId === grower.growerId)?.task || 'Ausnahme prüfen';
+  } else if (allocatedVolume > 0) {
+    status = allocation?.status || 'ready';
+    statusLabel = allocation?.label || 'für Bedarf vorbereitet';
+    attention = allocation?.issue || '';
   } else if (inBlueBand) {
     status = 'blueband';
     statusLabel = 'Blaues Band';
   }
 
+  const currentLot = allocation || lots[0] || {};
+
   return {
     ...grower,
     inBlueBand,
-    allocation,
+    allocation: allocation ? {...allocation, allocatedVolume} : null,
+    currentLot,
+    lotCount: lots.length,
     status,
     statusLabel,
     attention
@@ -203,12 +211,12 @@ const openCount = partners.filter(p => p.status === 'waiting' || p.status === 'e
                     <span class="process-grid">
                       <span>
                         <small>Partie</small>
-                        <strong>{partner.lotId}</strong>
-                        <em>{partner.vintage} {partner.grape}</em>
+                        <strong>{partner.currentLot.lotId}</strong>
+                        <em>{partner.currentLot.vintage} {partner.currentLot.grape}</em>
                       </span>
                       <span>
                         <small>Verfügbar</small>
-                        <strong>{formatLiters(partner.availableVolume)}</strong>
+                        <strong>{formatLiters(partner.currentLot.availableVolume)}</strong>
                         <em>laut aktueller Partie</em>
                       </span>
                       <span>
