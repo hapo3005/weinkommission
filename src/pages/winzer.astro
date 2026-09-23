@@ -152,8 +152,11 @@ const base = import.meta.env.BASE_URL;
     const model = runProcurement(demoRequirement, demoProcurementRows);
     const growerRows = model.allocationRows.filter(row => row.growerId === grower.growerId);
     const allocatedRows = growerRows.filter(row => row.allocatedVolume > 0);
-    const currentRow = allocatedRows[0] || growerRows.find(row => row.status === 'waiting') || growerRows[0] || null;
+    const waitingRow = growerRows.find(row => row.status === 'waiting');
+    const transportRow = allocatedRows.find(row => row.status === 'transport');
+    const currentRow = waitingRow || transportRow || allocatedRows[0] || growerRows[0] || null;
     const allocatedVolume = allocatedRows.reduce((sum, row) => sum + row.allocatedVolume, 0);
+    let taskMode = 'none';
     const totalVolume = lots.reduce((sum, lot) => sum + lot.availableVolume, 0);
 
     const setText = (selector, value) => {
@@ -172,21 +175,25 @@ const base = import.meta.env.BASE_URL;
       ? (savedProfile.completeness || 0)
       : (grower.profile?.completeness || 0);
     setText('[data-profile-percent]', profilePct + ' %');
+    setText('[data-profile-stat]', profilePct + ' %');
+    setText('[data-profile-stat-copy]', profilePct >= 100 ? 'vollständig' : 'bitte ergänzen');
     document.querySelector('[data-profile-bar]').style.width = profilePct + '%';
     document.querySelector('[data-profile-copy]').textContent = profilePct >= 100
       ? 'Grundprofil vollständig. Änderungen können jederzeit aktualisiert werden.'
       : 'Für bessere Zuordnung fehlen noch Angaben im Betriebsprofil.';
     document.querySelector('[data-profile-link]').textContent = profilePct >= 100 ? 'Betriebsprofil öffnen →' : 'Betriebsprofil vervollständigen →';
 
+    const todayCard = document.querySelector('[data-current-task]');
+    const todayButton = document.querySelector('[data-open-task]');
+
     if (currentRow) {
       const statusText =
-        currentRow.status === 'waiting' ? 'Rückmeldung erforderlich' :
-        currentRow.status === 'transport' ? 'Transportdaten fehlen' :
+        currentRow.status === 'waiting' ? 'Rückmeldung offen' :
+        currentRow.status === 'transport' ? 'Verladedaten fehlen' :
         currentRow.status === 'document' ? 'Dokument vorbereitet' :
-        currentRow.allocatedVolume > 0 ? 'Für Bedarf vorbereitet' :
-        'Aktuell keine Zuteilung';
+        currentRow.allocatedVolume > 0 ? 'Zugeordnet' :
+        'Verfügbar';
 
-      setText('[data-task-title]', currentRow.allocatedVolume > 0 ? 'Ihre Partie ist einem Bedarf zugeteilt.' : 'Partiedaten prüfen.');
       setText('[data-task-status]', statusText);
       setText('[data-task-lot]', currentRow.lotId);
       setText('[data-task-wine]', currentRow.vintage + ' ' + currentRow.grape);
@@ -196,6 +203,43 @@ const base = import.meta.env.BASE_URL;
       setText('[data-edit-lot]', currentRow.lotId);
       setText('[data-edit-wine]', currentRow.vintage + ' ' + currentRow.grape);
       setText('[data-edit-origin]', currentRow.origin);
+
+      if (waitingRow) {
+        taskMode = 'confirmation';
+        const task = model.tasks.find(item => item.growerId === grower.growerId && item.lotId === waitingRow.lotId);
+        setText('[data-today-mark]', '!');
+        setText('[data-task-title]', task?.task || 'Eine Angabe muss bestätigt werden.');
+        setText('[data-task-summary]', waitingRow.lotId + ' · ' + waitingRow.vintage + ' ' + waitingRow.grape + ' · die Kommission wartet auf Ihre Rückmeldung.');
+        todayCard.classList.add('needs-action');
+      } else if (transportRow) {
+        taskMode = 'loading';
+        setText('[data-today-mark]', '↗');
+        setText('[data-task-title]', 'Verladedaten ergänzen.');
+        setText('[data-task-summary]', transportRow.lotId + ' · ' + formatLiters(transportRow.allocatedVolume) + ' für ' + demoRequirement.buyer + ' zugeteilt.');
+        todayCard.classList.add('needs-action');
+      } else if (allocatedRows.length > 0) {
+        taskMode = 'view';
+        setText('[data-today-mark]', '✓');
+        setText('[data-task-title]', 'Aktuell keine Rückmeldung erforderlich.');
+        setText('[data-task-summary]', formatLiters(allocatedVolume) + ' sind einem laufenden Bedarf zugeteilt. Die Kommission übernimmt die nächsten Schritte.');
+        todayCard.classList.add('clear');
+        todayButton.textContent = 'Vorgang ansehen →';
+      } else {
+        setText('[data-today-mark]', '✓');
+        setText('[data-task-title]', 'Heute ist nichts offen.');
+        setText('[data-task-summary]', 'Ihre Partien sind aktuell hinterlegt. Sobald Ihre Rückmeldung gebraucht wird, erscheint sie hier.');
+        setText('[data-task-status]', 'Keine Aktion');
+        todayCard.classList.add('clear');
+        todayButton.hidden = true;
+      }
+    } else {
+      setText('[data-today-mark]', '✓');
+      setText('[data-task-title]', 'Heute ist nichts offen.');
+      setText('[data-task-summary]', 'Aktuell sind keine Partien hinterlegt, die eine Rückmeldung benötigen.');
+      setText('[data-task-status]', 'Keine Aktion');
+      todayCard.classList.add('clear');
+      todayButton.hidden = true;
+      document.querySelector('#current').hidden = true;
     }
 
     const lotRowsById = new Map(growerRows.map(row => [row.lotId, row]));
@@ -212,16 +256,38 @@ const base = import.meta.env.BASE_URL;
       `;
     }).join('');
 
-    const taskSection = document.querySelector('[data-current-task]');
     const editor = document.querySelector('[data-task-editor]');
-    document.querySelector('[data-open-task]').addEventListener('click', () => {
-      taskSection.hidden = true;
+    const loadingFields = document.querySelector('[data-loading-fields]');
+
+    todayButton.addEventListener('click', () => {
+      if (taskMode === 'view') {
+        document.querySelector('#current').scrollIntoView({behavior:'smooth', block:'start'});
+        return;
+      }
+
+      if (taskMode === 'loading') {
+        setText('[data-editor-kicker]', 'Verladung');
+        setText('[data-editor-title]', 'Verladedaten ergänzen');
+        setText('[data-editor-copy]', 'Bitte tragen Sie nur die Angaben ein, die erst bei der tatsächlichen Verladung feststehen.');
+        setText('[data-confirm-copy]', 'Die Verladedaten sind korrekt und können für Transport und Begleitdokument verwendet werden.');
+        loadingFields.hidden = false;
+        document.querySelector('[data-loaded-volume]').value = String(currentRow?.allocatedVolume || currentRow?.availableVolume || '');
+      } else {
+        setText('[data-editor-kicker]', 'Rückmeldung');
+        setText('[data-editor-title]', 'Partiedaten bestätigen');
+        setText('[data-editor-copy]', 'Bitte prüfen Sie die vorbereiteten Angaben. Eine erneute vollständige Eingabe ist nicht erforderlich.');
+        setText('[data-confirm-copy]', 'Die aktuell hinterlegten Angaben zu dieser Partie sind korrekt.');
+        loadingFields.hidden = true;
+      }
+
+      todayCard.hidden = true;
       editor.hidden = false;
       editor.scrollIntoView({behavior:'smooth', block:'start'});
     });
+
     document.querySelector('[data-close-task]').addEventListener('click', () => {
       editor.hidden = true;
-      taskSection.hidden = false;
+      todayCard.hidden = false;
     });
 
     document.querySelector('[data-save-task]').addEventListener('click', () => {
@@ -230,24 +296,31 @@ const base = import.meta.env.BASE_URL;
       const confirmed = document.querySelector('[data-task-confirm]').checked;
       const error = document.querySelector('[data-task-error]');
 
-      if (!volume || !plate || !confirmed) {
+      if (!confirmed || (taskMode === 'loading' && (!volume || !plate))) {
         error.hidden = false;
         return;
       }
 
       error.hidden = true;
-      localStorage.setItem('wp-demo-loading-confirmation', JSON.stringify({
+      localStorage.setItem('wp-demo-grower-response', JSON.stringify({
         growerId: grower.growerId,
         lotId: currentRow?.lotId,
-        loadedVolume: volume,
-        plate,
-        confirmedAt: new Date().toISOString()
+        type: taskMode,
+        loadedVolume: taskMode === 'loading' ? volume : null,
+        plate: taskMode === 'loading' ? plate : null,
+        confirmedAt: new Date().toISOString(),
+        demo: true
       }));
 
       editor.hidden = true;
-      taskSection.hidden = false;
-      setText('[data-task-status]', 'Verladedaten bestätigt');
-      document.querySelector('[data-open-task]').textContent = 'Angaben erneut ansehen →';
+      todayCard.hidden = false;
+      todayCard.classList.remove('needs-action');
+      todayCard.classList.add('clear');
+      setText('[data-today-mark]', '✓');
+      setText('[data-task-title]', 'Rückmeldung übermittelt.');
+      setText('[data-task-summary]', 'Die Weinkommission hat Ihre Bestätigung im Demo-Workflow erhalten.');
+      setText('[data-task-status]', 'Erledigt');
+      todayButton.hidden = true;
     });
   </script>
 </BaseLayout>
