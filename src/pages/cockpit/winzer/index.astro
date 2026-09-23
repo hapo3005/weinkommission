@@ -261,7 +261,7 @@ const openCount = partners.filter(p => p.status === 'waiting' || p.status === 'e
   </div>
 
   <script>
-    import { getAllGrowerResponses } from '../../../lib/demoSession.js';
+    import { getAllGrowerResponses, saveApprovedGrower, getApprovedGrowers } from '../../../lib/demoSession.js';
 
     const rows = [...document.querySelectorAll('[data-partner-row]')];
     const search = document.querySelector('[data-partner-search]');
@@ -298,20 +298,94 @@ const openCount = partners.filter(p => p.status === 'waiting' || p.status === 'e
       }
 
       requests.forEach(request => {
+        const state = request.status === 'approved' ? 'approved' : request.status === 'rejected' ? 'rejected' : 'review';
+        const stateLabel = request.status === 'approved' ? 'Freigegeben' : request.status === 'rejected' ? 'Abgelehnt' : 'Prüfung';
+        const membership = request.blueBandClaimed ? 'Blaues Band angegeben · unbestätigt' : 'keine Verbundangabe';
+        const actions = request.status === 'approved'
+          ? `<a class="access-action primary" href="${import.meta.env.BASE_URL}winzer/registrieren/?invite=${encodeURIComponent(request.growerId)}">Einladung öffnen →</a>`
+          : request.status === 'rejected'
+            ? `<span class="access-decision">keine weitere Aktion</span>`
+            : `<div class="access-actions">
+                <button type="button" data-approve-request="${escapeHtml(request.id)}">Freigeben & Einladung erstellen</button>
+                <button type="button" class="reject" data-reject-request="${escapeHtml(request.id)}">Ablehnen</button>
+              </div>`;
+
         items.push(`
-          <article class="access-item review">
-            <span class="access-state">Prüfung</span>
+          <article class="access-item ${state}">
+            <span class="access-state">${stateLabel}</span>
             <div>
               <strong>${escapeHtml(request.businessName)}</strong>
               <small>${escapeHtml(request.place)} · ${escapeHtml(request.contact)}</small>
+              <small>${membership}${request.growerId ? ' · ' + escapeHtml(request.growerId) : ''}</small>
             </div>
-            <em>${request.blueBandClaimed ? 'Blaues Band angegeben · unbestätigt' : 'keine Verbundangabe'}</em>
+            <div class="access-item-action">${actions}</div>
           </article>`);
       });
 
       accessEmpty.hidden = items.length > 0;
       accessFeed.hidden = items.length === 0;
       accessFeed.innerHTML = items.join('');
+    }
+
+    function parseNumber(value) {
+      const normalized = String(value || '').replace(/\./g,'').replace(',','.').replace(/[^0-9.]/g,'');
+      return Number(normalized) || 0;
+    }
+
+    function buildApprovedGrower(request) {
+      const suffix = String(request.id || Date.now()).replace(/\D/g,'').slice(-6).padStart(6,'0');
+      const hectares = parseNumber(request.hectares) || 8.5;
+      const annualProduction = parseNumber(request.typicalAnnualVolume) || Math.round(hectares * 8500);
+      return {
+        growerId: request.growerId || 'NEW-' + suffix,
+        growerName: request.businessName,
+        place: request.place,
+        postcode: request.postcode,
+        street: request.street,
+        contactPerson: request.person,
+        email: request.email,
+        phone: request.phone,
+        businessNumber: request.businessNumber || 'NEU-' + suffix,
+        website: request.website || 'https://neu-' + suffix + '.example',
+        dataStatus: 'synthetic-request',
+        cooperationStatus: 'active',
+        supplierGroups: [],
+        membershipDataStatus: request.blueBandClaimed ? 'claimed-unverified' : 'not-claimed',
+        profile: {
+          completeness: 72,
+          hectares,
+          annualProduction,
+          harvestVolume: Math.round(annualProduction * 1.12),
+          typicalMarketVolume: annualProduction,
+          storageCapacity: Math.round(annualProduction * 1.1),
+          largestTank: 15000,
+          maxLoadingVolume: 15000,
+          grapes: request.grapes?.length ? request.grapes : ['Riesling'],
+          offers: request.offers?.length ? request.offers : ['Fasswein'],
+          flexibleRequests: true,
+          loadingMethod: 'tank-truck'
+        }
+      };
+    }
+
+    function updateRequestStatus(id, status) {
+      const requests = JSON.parse(localStorage.getItem('wp-demo-registration-requests') || '[]');
+      const request = requests.find(item => item.id === id);
+      if (!request) return;
+
+      if (status === 'approved') {
+        const grower = buildApprovedGrower(request);
+        saveApprovedGrower(grower);
+        request.growerId = grower.growerId;
+        request.status = 'approved';
+        request.approvedAt = new Date().toISOString();
+      } else {
+        request.status = 'rejected';
+        request.rejectedAt = new Date().toISOString();
+      }
+
+      localStorage.setItem('wp-demo-registration-requests', JSON.stringify(requests));
+      renderAccessActivity();
     }
 
     function applyResponseOverlay() {
@@ -385,6 +459,13 @@ const openCount = partners.filter(p => p.status === 'waiting' || p.status === 'e
     more.addEventListener('click', () => {
       expanded = !expanded;
       applyFilters();
+    });
+
+    accessFeed.addEventListener('click', event => {
+      const approve = event.target.closest('[data-approve-request]');
+      const reject = event.target.closest('[data-reject-request]');
+      if (approve) updateRequestStatus(approve.dataset.approveRequest, 'approved');
+      if (reject) updateRequestStatus(reject.dataset.rejectRequest, 'rejected');
     });
 
     document.querySelector('[data-import]').addEventListener('click', () => importDialog.showModal());
