@@ -2,23 +2,15 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import '../../styles/cockpit.css';
 import '../../styles/grossbedarf.css';
+import { demoRequirement, demoGrowers } from '../../data/procurement-demo.js';
+import { runProcurement, formatLiters } from '../../lib/procurementEngine.js';
 
 const base = import.meta.env.BASE_URL;
-
-const growers = [
-  {name:'Weingut Musterberg', place:'Bernkastel-Kues', lot:'R25-017', wine:'Riesling · 2025', offered:'18.500 l', allocated:'18.500 l', status:'ready', label:'bereit', issue:''},
-  {name:'Weingut Sonnenhang', place:'Leiwen', lot:'R25-024', wine:'Riesling · 2025', offered:'26.000 l', allocated:'24.000 l', status:'waiting', label:'wartet auf Winzer', issue:'Analyse bestätigen'},
-  {name:'Weingut Klosterblick', place:'Piesport', lot:'R25-031', wine:'Riesling · 2025', offered:'14.800 l', allocated:'14.800 l', status:'ready', label:'bereit', issue:''},
-  {name:'Weingut Moselterrassen', place:'Zeltingen-Rachtig', lot:'R25-038', wine:'Riesling · 2025', offered:'32.000 l', allocated:'0 l', status:'exception', label:'Ausnahme', issue:'Restzucker außerhalb Vorgabe'},
-  {name:'Weingut Römerhang', place:'Trittenheim', lot:'R25-041', wine:'Riesling · 2025', offered:'21.600 l', allocated:'20.000 l', status:'transport', label:'Transport geplant', issue:''},
-  {name:'Weingut Felsenhof', place:'Ürzig', lot:'R25-046', wine:'Riesling · 2025', offered:'17.400 l', allocated:'17.400 l', status:'waiting', label:'wartet auf Winzer', issue:'Behandlungscode prüfen'},
-  {name:'Weingut Goldtröpfchen', place:'Piesport', lot:'R25-052', wine:'Riesling · 2025', offered:'28.200 l', allocated:'28.200 l', status:'document', label:'Dokument bereit', issue:''},
-  {name:'Weingut Schieferblick', place:'Graach', lot:'R25-058', wine:'Riesling · 2025', offered:'12.900 l', allocated:'12.900 l', status:'ready', label:'bereit', issue:''},
-  {name:'Weingut Laurentiushof', place:'Mehring', lot:'R25-063', wine:'Riesling · 2025', offered:'19.700 l', allocated:'18.000 l', status:'exception', label:'Ausnahme', issue:'Menge abweichend'},
-  {name:'Weingut Moselbogen', place:'Wintrich', lot:'R25-069', wine:'Riesling · 2025', offered:'23.000 l', allocated:'23.000 l', status:'transport', label:'Transport geplant', issue:''},
-  {name:'Weingut Rosenberg', place:'Brauneberg', lot:'R25-071', wine:'Riesling · 2025', offered:'16.200 l', allocated:'16.200 l', status:'ready', label:'bereit', issue:''},
-  {name:'Weingut Sonnenuhr', place:'Wehlen', lot:'R25-077', wine:'Riesling · 2025', offered:'25.500 l', allocated:'25.500 l', status:'document', label:'Dokument bereit', issue:''}
-];
+const model = runProcurement(demoRequirement, demoGrowers);
+const displayRows = model.allocationRows.slice(0, 40);
+const topExceptions = model.exceptions.slice(0, 3);
+const topTransports = model.transports.slice(0, 3);
+const coveragePercent = (model.coverage * 100).toFixed(1).replace('.', ',');
 ---
 
 <BaseLayout
@@ -60,33 +52,33 @@ const growers = [
         <div class="header-controls">
           <span class="scenario-badge">Demo-Szenario</span>
           <button class="quiet-button" type="button" data-open-spec>Bedarf ansehen</button>
-          <button class="primary-button" type="button" data-run-auto>Auto-Zuteilung simulieren</button>
+          <button class="primary-button" type="button" data-run-auto>3 Winzer-Rückmeldungen simulieren</button>
         </div>
       </header>
 
       <section class="master-order">
         <div class="order-identity">
-          <span class="order-code">M-2027-RI-01</span>
+          <span class="order-code">{demoRequirement.id}</span>
           <div>
             <p class="overline">Gesamtbedarf</p>
-            <h2>Riesling · Mosel · Jahrgang 2025</h2>
+            <h2>{demoRequirement.grape} · {demoRequirement.origin} · Jahrgang {demoRequirement.vintage}</h2>
           </div>
         </div>
 
         <div class="order-spec" data-order-spec>
-          <div><span>Zielmenge</span><strong>1.500.000 l</strong></div>
-          <div><span>Abnehmer</span><strong>Peter Mertes</strong></div>
-          <div><span>Lieferfenster</span><strong>Okt.–Dez. 2026</strong></div>
-          <div><span>Winzerverbund</span><strong>Blaues Band · ≈200 Betriebe</strong></div>
+          <div><span>Zielmenge</span><strong>{formatLiters(demoRequirement.targetVolume)}</strong></div>
+          <div><span>Abnehmer</span><strong>{demoRequirement.buyer}</strong></div>
+          <div><span>Lieferfenster</span><strong>{demoRequirement.deliveryWindow}</strong></div>
+          <div><span>Winzerverbund</span><strong>{demoRequirement.supplierGroup} · {model.stats.growersTotal} Betriebe</strong></div>
         </div>
 
         <div class="coverage">
           <div class="coverage-head">
-            <div><span class="overline">Mengenabdeckung</span><strong data-coverage-label>1.287.400 l zugesagt</strong></div>
-            <span data-coverage-percent>85,8 %</span>
+            <div><span class="overline">Mengenabdeckung</span><strong data-coverage-label>{formatLiters(model.allocatedVolume)} zugeteilt</strong></div>
+            <span data-coverage-percent>{coveragePercent} %</span>
           </div>
-          <div class="coverage-track"><span data-coverage-bar style="width:85.8%"></span></div>
-          <div class="coverage-scale"><span>0 l</span><span>noch 212.600 l offen</span><span>1.500.000 l</span></div>
+          <div class="coverage-track"><span data-coverage-bar style={`width:${model.coverage * 100}%`}></span></div>
+          <div class="coverage-scale"><span>0 l</span><span data-remaining>noch {formatLiters(model.remainingVolume)} offen</span><span>{formatLiters(demoRequirement.targetVolume)}</span></div>
         </div>
       </section>
 
@@ -108,13 +100,13 @@ const growers = [
           <div class="flow-arrow">→</div>
           <div class="flow-node active">
             <span>Matching</span>
-            <strong data-flow-matching>164 Partien passend</strong>
+            <strong data-flow-matching>{model.stats.eligibleLots} Partien fachlich passend</strong>
             <small>nach Weinart, Herkunft, Analytik, Menge</small>
           </div>
           <div class="flow-arrow">→</div>
           <div class="flow-node active">
             <span>Zuteilung</span>
-            <strong data-flow-allocation>137 Betriebe beteiligt</strong>
+            <strong data-flow-allocation>{model.stats.growersAllocated} Betriebe zugeteilt</strong>
             <small>Mengen automatisch reserviert</small>
           </div>
           <div class="flow-arrow">→</div>
@@ -139,22 +131,14 @@ const growers = [
           <p>In diesem Demo-Szenario laufen die meisten Vorgänge ohne Eingriff. Diese Fälle blockieren aktuell den Gesamtprozess.</p>
         </div>
 
-        <div class="exception-list">
-          <button type="button" data-filter="exception">
-            <span class="exception-severity high">prüfen</span>
-            <div><strong>Weingut Moselterrassen · R25-038</strong><small>Restzucker außerhalb der Bedarfsspezifikation</small></div>
-            <span>Entscheidung nötig →</span>
-          </button>
-          <button type="button" data-filter="waiting">
-            <span class="exception-severity medium">wartet</span>
-            <div><strong>2 Winzer haben offene Angaben</strong><small>Analysebestätigung bzw. Behandlungscode fehlen</small></div>
-            <span>automatische Erinnerung aktiv →</span>
-          </button>
-          <button type="button" data-filter="exception">
-            <span class="exception-severity medium">prüfen</span>
-            <div><strong>Weingut Laurentiushof · R25-063</strong><small>Verfügbare Menge weicht von der zugesagten Menge ab</small></div>
-            <span>Zuteilung neu berechnen →</span>
-          </button>
+        <div class="exception-list" data-exception-list>
+          {topExceptions.map((item) => (
+            <button type="button" data-filter={item.type === 'missing-data' ? 'waiting' : 'exception'}>
+              <span class:list={['exception-severity', item.type === 'missing-data' ? 'medium' : 'high']}>{item.type === 'missing-data' ? 'wartet' : 'prüfen'}</span>
+              <div><strong>{item.growerName} · {item.lotId}</strong><small>{item.detail}</small></div>
+              <span>{item.type === 'missing-data' ? 'Winzeraufgabe öffnen →' : 'Ausnahme prüfen →'}</span>
+            </button>
+          ))}
         </div>
       </section>
 
@@ -176,33 +160,35 @@ const growers = [
               <option value="exception">Ausnahme</option>
               <option value="transport">Transport geplant</option>
               <option value="document">Dokument bereit</option>
+              <option value="reserve">Reserve</option>
             </select>
           </div>
         </div>
 
         <div class="allocation-summary">
-          <span><strong data-visible-count>{growers.length}</strong> Demo-Betriebe sichtbar</span>
-          <span><strong>≈200</strong> Betriebe im Verbund</span>
-          <span><strong>137</strong> im Demo-Gesamtbedarf eingeplant</span>
+          <span><strong data-visible-count>{displayRows.length}</strong> Datensätze sichtbar</span>
+          <span><strong>{model.stats.growersTotal}</strong> Betriebe im Demo-Verbund</span>
+          <span><strong data-allocated-count>{model.stats.growersAllocated}</strong> aktuell zugeteilt</span>
+          <span><strong data-task-count>{model.tasks.length}</strong> offene Auto-Aufgaben</span>
         </div>
 
         <div class="allocation-table" role="table" aria-label="Winzerzuteilungen">
           <div class="allocation-row allocation-head-row" role="row">
             <span>Winzer</span><span>Partie</span><span>Angeboten</span><span>Zugeordnet</span><span>Status</span><span>Hinweis</span>
           </div>
-          {growers.map((g) => (
+          {displayRows.map((g) => (
             <button
               type="button"
               class="allocation-row allocation-data-row"
               data-grower-row
               data-status={g.status}
-              data-search-text={`${g.name} ${g.place} ${g.lot} ${g.wine}`.toLowerCase()}
+              data-search-text={`${g.growerName} ${g.place} ${g.lotId} ${g.grape} ${g.vintage}`.toLowerCase()}
               role="row"
             >
-              <span class="grower-name"><strong>{g.name}</strong><small>{g.place}</small></span>
-              <span><strong>{g.lot}</strong><small>{g.wine}</small></span>
-              <span>{g.offered}</span>
-              <span>{g.allocated}</span>
+              <span class="grower-name"><strong>{g.growerName}</strong><small>{g.place}</small></span>
+              <span><strong>{g.lotId}</strong><small>{g.grape} · {g.vintage}</small></span>
+              <span>{formatLiters(g.availableVolume)}</span>
+              <span>{formatLiters(g.allocatedVolume)}</span>
               <span><em class:list={['row-status', g.status]}>{g.label}</em></span>
               <span class="issue-text">{g.issue || '—'}</span>
             </button>
@@ -230,10 +216,15 @@ const growers = [
           <p class="overline">Nächste Verladewelle · Demo</p>
           <h2>Donnerstag · 24. September</h2>
         </div>
-        <div class="wave-list">
-          <div><span>07:30</span><strong>Weingut Römerhang</strong><small>20.000 l · Transport vollständig vorbereitet</small><em>bereit</em></div>
-          <div><span>09:15</span><strong>Weingut Moselbogen</strong><small>23.000 l · Kennzeichen wird am Verladetag ergänzt</small><em>automatisch</em></div>
-          <div><span>11:00</span><strong>Weingut Goldtröpfchen</strong><small>28.200 l · Begleitdokument bereits vorbereitet</small><em>bereit</em></div>
+        <div class="wave-list" data-transport-list>
+          {topTransports.map((t, index) => (
+            <div>
+              <span>{['07:30','09:15','11:00'][index] || '—'}</span>
+              <strong>{t.growerName}</strong>
+              <small>{formatLiters(t.volume)} · {t.lotId} · {t.state === 'waiting-for-loading-data' ? 'Verladedaten fehlen' : t.state === 'document-ready' ? 'Begleitdokument vorbereitet' : 'Transport vorbereitet'}</small>
+              <em>{t.state === 'waiting-for-loading-data' ? 'Winzer' : 'automatisch'}</em>
+            </div>
+          ))}
         </div>
       </section>
 
@@ -242,12 +233,12 @@ const growers = [
         <p class="overline">Bedarf M-2027-RI-01 · Demo</p>
         <h2>Bedarfsspezifikation</h2>
         <dl>
-          <div><dt>Erzeugnis</dt><dd>Riesling · Wein</dd></div>
-          <div><dt>Herkunft</dt><dd>Mosel</dd></div>
-          <div><dt>Jahrgang</dt><dd>2025</dd></div>
-          <div><dt>Zielmenge</dt><dd>1.500.000 l</dd></div>
-          <div><dt>Lieferfenster</dt><dd>Oktober bis Dezember 2026</dd></div>
-          <div><dt>Abnehmer</dt><dd>Peter Mertes</dd></div>
+          <div><dt>Erzeugnis</dt><dd>{demoRequirement.grape} · Wein</dd></div>
+          <div><dt>Herkunft</dt><dd>{demoRequirement.origin}</dd></div>
+          <div><dt>Jahrgang</dt><dd>{demoRequirement.vintage}</dd></div>
+          <div><dt>Zielmenge</dt><dd>{formatLiters(demoRequirement.targetVolume)}</dd></div>
+          <div><dt>Lieferfenster</dt><dd>{demoRequirement.deliveryWindow}</dd></div>
+          <div><dt>Abnehmer</dt><dd>{demoRequirement.buyer}</dd></div>
         </dl>
         <p class="dialog-note">Analytische Grenzwerte sind hier bewusst als Demo nicht erfunden. In der produktiven Version werden sie exakt aus dem realen Mertes-Bedarf übernommen.</p>
       </dialog>
@@ -257,6 +248,10 @@ const growers = [
   </div>
 
   <script>
+    import { demoRequirement, demoGrowers } from '../../data/procurement-demo.js';
+    import { runProcurement } from '../../lib/procurementEngine.js';
+
+    let workingGrowers = demoGrowers.map(item => ({...item}));
     const rows = [...document.querySelectorAll('[data-grower-row]')];
     const statusFilter = document.querySelector('[data-status-filter]');
     const search = document.querySelector('[data-search]');
@@ -264,11 +259,12 @@ const growers = [
     const toast = document.querySelector('[data-toast]');
     const specDialog = document.querySelector('[data-spec-dialog]');
 
+    const formatLiters = value => new Intl.NumberFormat('de-DE').format(Math.round(value)) + ' l';
+
     function applyFilters() {
       const status = statusFilter.value;
       const term = search.value.trim().toLowerCase();
       let visible = 0;
-
       rows.forEach(row => {
         const matchesStatus = status === 'all' || row.dataset.status === status;
         const matchesSearch = !term || row.dataset.searchText.includes(term);
@@ -276,8 +272,19 @@ const growers = [
         row.hidden = !show;
         if (show) visible++;
       });
-
       visibleCount.textContent = visible;
+    }
+
+    function updateHeadline(model) {
+      const pct = (model.coverage * 100).toFixed(1).replace('.', ',');
+      document.querySelector('[data-coverage-label]').textContent = formatLiters(model.allocatedVolume) + ' zugeteilt';
+      document.querySelector('[data-coverage-percent]').textContent = pct + ' %';
+      document.querySelector('[data-coverage-bar]').style.width = (model.coverage * 100) + '%';
+      document.querySelector('[data-remaining]').textContent = 'noch ' + formatLiters(model.remainingVolume) + ' offen';
+      document.querySelector('[data-flow-matching]').textContent = model.stats.eligibleLots + ' Partien fachlich passend';
+      document.querySelector('[data-flow-allocation]').textContent = model.stats.growersAllocated + ' Betriebe zugeteilt';
+      document.querySelector('[data-allocated-count]').textContent = model.stats.growersAllocated;
+      document.querySelector('[data-task-count]').textContent = model.tasks.length;
     }
 
     statusFilter.addEventListener('change', applyFilters);
@@ -296,25 +303,28 @@ const growers = [
     document.querySelector('[data-run-auto]').addEventListener('click', (event) => {
       const button = event.currentTarget;
       button.disabled = true;
-      button.textContent = 'Automatik läuft …';
+      button.textContent = 'Rückmeldungen werden verarbeitet …';
 
+      const waiting = workingGrowers.filter(x => !x.analysisConfirmed || !x.treatmentsConfirmed || !x.currentVolumeConfirmed).slice(0,3);
+      const ids = new Set(waiting.map(x => x.growerId));
+      workingGrowers = workingGrowers.map(x => ids.has(x.growerId)
+        ? {...x, analysisConfirmed:true, treatmentsConfirmed:true, currentVolumeConfirmed:true}
+        : x
+      );
+
+      const model = runProcurement(demoRequirement, workingGrowers);
       window.setTimeout(() => {
-        document.querySelector('[data-coverage-label]').textContent = '1.342.600 l zugesagt';
-        document.querySelector('[data-coverage-percent]').textContent = '89,5 %';
-        document.querySelector('[data-coverage-bar]').style.width = '89.5%';
-        document.querySelector('.coverage-scale span:nth-child(2)').textContent = 'noch 157.400 l offen';
-        document.querySelector('[data-flow-matching]').textContent = '171 Partien passend';
-        document.querySelector('[data-flow-allocation]').textContent = '143 Betriebe beteiligt';
-        button.textContent = 'Auto-Zuteilung aktualisiert';
-        toast.textContent = 'Demo: Zuteilungen wurden anhand neuer verfügbarer Mengen neu berechnet.';
+        updateHeadline(model);
+        button.textContent = '3 Rückmeldungen verarbeitet ✓';
+        toast.textContent = 'Engine neu berechnet: Rückmeldungen geprüft, Matching und Zuteilungen aktualisiert.';
         toast.classList.add('show');
         window.setTimeout(() => toast.classList.remove('show'), 2800);
-      }, 700);
+      }, 500);
     });
 
     rows.forEach(row => row.addEventListener('click', () => {
       const grower = row.querySelector('.grower-name strong').textContent;
-      toast.textContent = grower + ': Detailakte würde hier geöffnet.';
+      toast.textContent = grower + ': Detailakte / Aufgaben würden hier geöffnet.';
       toast.classList.add('show');
       window.setTimeout(() => toast.classList.remove('show'), 2200);
     }));
