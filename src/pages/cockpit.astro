@@ -72,13 +72,13 @@ const dateLabel = new Intl.DateTimeFormat('de-DE', {
         </a>
         <a href={`${base}cockpit/grossbedarf/`}>
           <span>Aktiver Großbedarf</span>
-          <strong>{coveragePercent} %</strong>
-          <small>{formatLiters(model.remainingVolume)} noch offen</small>
+          <strong data-home-coverage-kpi>{coveragePercent} %</strong>
+          <small data-home-remaining-kpi>{formatLiters(model.remainingVolume)} noch offen</small>
         </a>
         <a href="#aufmerksamkeit">
           <span>Offene Rückmeldungen</span>
-          <strong>{model.tasks.length}</strong>
-          <small>{model.stats.waitingGrowers} Betriebe betroffen</small>
+          <strong data-home-open-kpi>{model.tasks.length}</strong>
+          <small data-home-open-copy>{model.stats.waitingGrowers} Betriebe betroffen</small>
         </a>
         <a href={`${base}cockpit/grossbedarf/#transporte`}>
           <span>Erzeugte Transporte</span>
@@ -97,7 +97,7 @@ const dateLabel = new Intl.DateTimeFormat('de-DE', {
         </div>
 
         <div class="attention-home-grid">
-          <div class="attention-home-list">
+          <div class="attention-home-list" data-home-attention-list>
             {topTasks.length === 0 && topExceptions.length === 0 ? (
               <article class="home-task clear">
                 <span>✓</span>
@@ -131,10 +131,10 @@ const dateLabel = new Intl.DateTimeFormat('de-DE', {
 
           <aside class="automation-summary">
             <p class="overline">Was bereits automatisch läuft</p>
-            <div><span>fachlich passende Betriebe</span><strong>{model.stats.matchingGrowers}</strong></div>
-            <div><span>logistisch geeignet</span><strong>{model.stats.logisticallyCapableGrowers}</strong></div>
-            <div><span>automatisch zuteilbar</span><strong>{model.stats.autoAllocatableGrowers}</strong></div>
-            <div><span>Partien im Verbund-Scope</span><strong>{model.stats.totalLots}</strong></div>
+            <div><span>fachlich passende Betriebe</span><strong data-home-matching>{model.stats.matchingGrowers}</strong></div>
+            <div><span>logistisch geeignet</span><strong data-home-logistics>{model.stats.logisticallyCapableGrowers}</strong></div>
+            <div><span>automatisch zuteilbar</span><strong data-home-auto>{model.stats.autoAllocatableGrowers}</strong></div>
+            <div><span>Partien im Verbund-Scope</span><strong data-home-lots>{model.stats.totalLots}</strong></div>
           </aside>
         </div>
       </section>
@@ -155,13 +155,13 @@ const dateLabel = new Intl.DateTimeFormat('de-DE', {
             <small>Lieferfenster {demoRequirement.deliveryWindow}</small>
           </div>
           <div class="need-progress">
-            <div><span>{formatLiters(model.allocatedVolume)} zugeteilt</span><strong>{coveragePercent} %</strong></div>
-            <div class="need-track"><i style={`width:${Math.min(model.coverage * 100, 100)}%`}></i></div>
-            <small>{formatLiters(model.remainingVolume)} fehlen bis zur Zielmenge von {formatLiters(demoRequirement.targetVolume)}</small>
+            <div><span data-home-allocated>{formatLiters(model.allocatedVolume)} zugeteilt</span><strong data-home-coverage>{coveragePercent} %</strong></div>
+            <div class="need-track"><i data-home-coverage-bar style={`width:${Math.min(model.coverage * 100, 100)}%`}></i></div>
+            <small data-home-remaining>{formatLiters(model.remainingVolume)} fehlen bis zur Zielmenge von {formatLiters(demoRequirement.targetVolume)}</small>
           </div>
           <div class="need-stats">
-            <div><span>Betriebe zugeteilt</span><strong>{model.stats.growersAllocated}</strong></div>
-            <div><span>Partien passend</span><strong>{model.stats.eligibleLots}</strong></div>
+            <div><span>Betriebe zugeteilt</span><strong data-home-growers-allocated>{model.stats.growersAllocated}</strong></div>
+            <div><span>Partien passend</span><strong data-home-eligible-lots>{model.stats.eligibleLots}</strong></div>
           </div>
         </div>
       </section>
@@ -175,7 +175,7 @@ const dateLabel = new Intl.DateTimeFormat('de-DE', {
           <a class="home-link" href={`${base}cockpit/grossbedarf/#transporte`}>Alle Transporte →</a>
         </div>
 
-        <div class="transport-home-list">
+        <div class="transport-home-list" data-home-transport-list>
           {topTransports.map(transport => (
             <a href={`${base}cockpit/winzer/${transport.growerId}/`}>
               <span class="transport-home-id">{transport.transportId}</span>
@@ -235,6 +235,10 @@ const dateLabel = new Intl.DateTimeFormat('de-DE', {
   </div>
 
   <script>
+    import { demoRequirement, demoProcurementRows } from '../data/procurement-demo.js';
+    import { runProcurement } from '../lib/procurementEngine.js';
+    import { getAllGrowerResponses } from '../lib/demoSession.js';
+
     const empty = document.querySelector('[data-home-access-empty]');
     const feed = document.querySelector('[data-home-access-feed]');
 
@@ -242,6 +246,80 @@ const dateLabel = new Intl.DateTimeFormat('de-DE', {
       return String(value).replace(/[&<>"']/g, char => ({
         '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'
       })[char]);
+    }
+
+    function renderWorkflowState() {
+      const allResponses = getAllGrowerResponses();
+      const workingRows = demoProcurementRows.map(row => {
+        const responses = allResponses[row.growerId] || [];
+        const response = responses.find(item => item.lotId === row.lotId);
+        if (!response) return row;
+        return {
+          ...row,
+          analysisConfirmed: response.type === 'confirmation' ? true : row.analysisConfirmed,
+          treatmentsConfirmed: response.type === 'confirmation' ? true : row.treatmentsConfirmed,
+          currentVolumeConfirmed: response.type === 'confirmation' ? true : row.currentVolumeConfirmed,
+          transportDataComplete: response.type === 'loading' ? true : row.transportDataComplete
+        };
+      });
+
+      const liveModel = runProcurement(demoRequirement, workingRows);
+      const format = value => new Intl.NumberFormat('de-DE').format(Math.round(value || 0)) + ' l';
+      const pct = Math.round(liveModel.coverage * 100);
+
+      document.querySelector('[data-home-coverage-kpi]').textContent = pct + ' %';
+      document.querySelector('[data-home-remaining-kpi]').textContent = format(liveModel.remainingVolume) + ' noch offen';
+      document.querySelector('[data-home-open-kpi]').textContent = String(liveModel.tasks.length);
+      document.querySelector('[data-home-open-copy]').textContent = liveModel.stats.waitingGrowers + ' Betriebe betroffen';
+      document.querySelector('[data-home-matching]').textContent = String(liveModel.stats.matchingGrowers);
+      document.querySelector('[data-home-logistics]').textContent = String(liveModel.stats.logisticallyCapableGrowers);
+      document.querySelector('[data-home-auto]').textContent = String(liveModel.stats.autoAllocatableGrowers);
+      document.querySelector('[data-home-lots]').textContent = String(liveModel.stats.totalLots);
+      document.querySelector('[data-home-allocated]').textContent = format(liveModel.allocatedVolume) + ' zugeteilt';
+      document.querySelector('[data-home-coverage]').textContent = pct + ' %';
+      document.querySelector('[data-home-coverage-bar]').style.width = Math.min(liveModel.coverage * 100,100) + '%';
+      document.querySelector('[data-home-remaining]').textContent = format(liveModel.remainingVolume) + ' fehlen bis zur Zielmenge von ' + format(demoRequirement.targetVolume);
+      document.querySelector('[data-home-growers-allocated]').textContent = String(liveModel.stats.growersAllocated);
+      document.querySelector('[data-home-eligible-lots]').textContent = String(liveModel.stats.eligibleLots);
+
+      const attention = document.querySelector('[data-home-attention-list]');
+      const taskItems = liveModel.tasks.slice(0,5).map(task => `
+        <a class="home-task waiting" href="${import.meta.env.BASE_URL}cockpit/winzer/${encodeURIComponent(task.growerId)}/">
+          <span>↻</span>
+          <div><strong>${escapeHtml(task.task)}</strong><small>${escapeHtml(task.growerName)} · ${escapeHtml(task.lotId)}</small></div>
+          <em>Winzer →</em>
+        </a>`);
+      const exceptionItems = liveModel.exceptions.slice(0,Math.max(0,5-taskItems.length)).map(item => `
+        <a class="home-task exception" href="${import.meta.env.BASE_URL}cockpit/winzer/${encodeURIComponent(item.growerId)}/">
+          <span>!</span>
+          <div><strong>Ausnahme prüfen</strong><small>${escapeHtml(item.growerName)} · ${escapeHtml(item.detail)}</small></div>
+          <em>Prüfen →</em>
+        </a>`);
+      const attentionItems = [...taskItems,...exceptionItems];
+      attention.innerHTML = attentionItems.length ? attentionItems.join('') : `
+        <article class="home-task clear">
+          <span>✓</span>
+          <div><strong>Keine offenen Aufgaben</strong><small>Alle Vorgänge können automatisch weiterlaufen.</small></div>
+        </article>`;
+
+      const confirmations = JSON.parse(localStorage.getItem('wp-demo-driver-confirmations') || '[]');
+      const confirmationIds = new Set(confirmations.map(item => item.transportId));
+      const transportList = document.querySelector('[data-home-transport-list]');
+      transportList.innerHTML = liveModel.transports.slice(0,5).map(transport => {
+        const confirmed = confirmationIds.has(transport.transportId);
+        const label = confirmed
+          ? 'Abholung bestätigt'
+          : transport.state === 'document-ready' ? 'Dokument vorbereitet'
+          : transport.state === 'prepared' ? 'Transport vorbereitet'
+          : 'Verladedaten fehlen';
+        return `
+          <a href="${import.meta.env.BASE_URL}cockpit/winzer/${encodeURIComponent(transport.growerId)}/">
+            <span class="transport-home-id">${escapeHtml(transport.transportId)}</span>
+            <div><strong>${escapeHtml(transport.growerName)}</strong><small>${escapeHtml(transport.lotId)} · ${format(transport.volume)}</small></div>
+            <em class="transport-home-state ${confirmed ? 'document-ready' : escapeHtml(transport.state)}">${label}</em>
+            <span class="transport-home-open">→</span>
+          </a>`;
+      }).join('');
     }
 
     const account = JSON.parse(localStorage.getItem('wp-demo-grower-account') || 'null');
@@ -312,5 +390,7 @@ const dateLabel = new Intl.DateTimeFormat('de-DE', {
       externalFeed.hidden = false;
       externalFeed.innerHTML = externalItems.join('');
     }
+
+    renderWorkflowState();
   </script>
 </BaseLayout>
