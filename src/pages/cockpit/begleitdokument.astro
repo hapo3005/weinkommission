@@ -30,17 +30,17 @@ const base = import.meta.env.BASE_URL;
 
     <main class="document-main" id="main">
       <div class="document-context">
-        <div><span class="overline">Vorgang</span><strong>T-2027-0042</strong></div>
-        <div><span class="overline">Absender</span><strong>Weingut Ahrensberg & Sohn</strong></div>
-        <div><span class="overline">Empfänger</span><strong>Peter Mertes KG</strong></div>
-        <div><span class="overline">Partie</span><strong>2025 Riesling · 18.500 l</strong></div>
+        <div><span class="overline">Vorgang</span><strong data-doc-context-id>T-2027-0042</strong></div>
+        <div><span class="overline">Absender</span><strong data-doc-context-sender>Weingut Ahrensberg & Sohn</strong></div>
+        <div><span class="overline">Empfänger</span><strong data-doc-context-receiver>Peter Mertes KG</strong></div>
+        <div><span class="overline">Partie</span><strong data-doc-context-lot>2025 Riesling · 18.500 l</strong></div>
       </div>
 
       <section class="workbench" id="transporte" aria-labelledby="transport-title">
         <div class="workbench-head">
           <div>
             <p class="overline">Pilotprozess · vollständiger Datensatz</p>
-            <h2 id="transport-title">Begleitdokument T-2027-0042</h2>
+            <h2 id="transport-title" data-doc-title>Begleitdokument T-2027-0042</h2>
           </div>
           <span class="status status-warning" data-doc-status>Prüfung läuft</span>
         </div>
@@ -317,6 +317,15 @@ const base = import.meta.env.BASE_URL;
   </div>
 
   <script>
+    import { demoRequirement, demoProcurementRows, demoGrowers } from '../../data/procurement-demo.js';
+    import { runProcurement } from '../../lib/procurementEngine.js';
+    import {
+      resolveActiveRequirement,
+      buildDemoWorkingRows,
+      getApprovedGrowers,
+      getDriverConfirmations
+    } from '../../lib/demoSession.js';
+
     const form = document.querySelector('[data-full-document-form]');
     const toast = document.querySelector('[data-toast]');
     const dialog = document.querySelector('[data-result-dialog]');
@@ -339,6 +348,55 @@ const base = import.meta.env.BASE_URL;
 
     const participantFields = ['reference','commissionerBusinessId','shippingDate','senderName','senderBusinessId','senderStreet','senderZip','senderCity','senderCountry','receiverName','receiverBusinessId','receiverStreet','receiverZip','receiverCity','receiverCountry'];
     const transportFields = ['loadingPlace','transportType','plate','carrierName','carrierAddress','departureTime','actualTotal'];
+
+    function hydrateFromWorkflow() {
+      const requirement = resolveActiveRequirement(demoRequirement);
+      const workingRows = buildDemoWorkingRows(demoProcurementRows, demoGrowers);
+      const model = runProcurement(requirement, workingRows);
+      const requestedId = new URLSearchParams(location.search).get('transport');
+      const transport = model.transports.find(item => item.transportId === requestedId) || model.transports[0];
+      if (!transport) return;
+
+      const approved = getApprovedGrowers();
+      const grower = demoGrowers.find(item => item.growerId === transport.growerId) || approved[transport.growerId];
+      const lot = workingRows.find(item => item.growerId === transport.growerId && item.lotId === transport.lotId);
+      const confirmation = getDriverConfirmations().find(item => item.transportId === transport.transportId);
+      const format = value => new Intl.NumberFormat('de-DE').format(Math.round(Number(value) || 0)) + ' l';
+      const set = (name, value) => { const el = get(name); if (el && value != null) el.value = String(value); };
+
+      document.querySelector('[data-doc-context-id]').textContent = transport.transportId;
+      document.querySelector('[data-doc-context-sender]').textContent = grower?.growerName || transport.growerName;
+      document.querySelector('[data-doc-context-receiver]').textContent = requirement.buyer;
+      document.querySelector('[data-doc-context-lot]').textContent = (lot?.vintage || requirement.vintage) + ' ' + (lot?.grape || requirement.grape) + ' · ' + format(transport.volume);
+      document.querySelector('[data-doc-title]').textContent = 'Begleitdokument ' + transport.transportId;
+
+      set('reference', transport.transportId);
+      set('shippingDate', new Date().toISOString().slice(0,10));
+      set('senderName', grower?.growerName || transport.growerName);
+      set('senderBusinessId', grower?.businessNumber || 'DEMO-SENDER');
+      set('senderStreet', grower?.street || 'Demo-Verladeadresse 1');
+      set('senderZip', grower?.postcode || '54470');
+      set('senderCity', grower?.place || 'Mosel');
+      set('receiverName', requirement.buyer);
+      set('receiverBusinessId', 'DEMO-BUYER-001');
+      set('receiverStreet', 'Demo-Lieferadresse 1');
+      set('receiverZip', '54516');
+      set('receiverCity', 'Wittlich');
+
+      set('p1Lot', transport.lotId);
+      set('p1Quantity', transport.volume);
+      set('p1Geography', lot?.origin || requirement.origin);
+      set('p1Vintage', lot?.vintage || requirement.vintage);
+      set('p1Varieties', lot?.grape || requirement.grape);
+      set('p1Description', (lot?.vintage || requirement.vintage) + ' ' + (lot?.grape || requirement.grape) + ' ' + (lot?.origin || requirement.origin) + ' Wein');
+
+      set('loadingPlace', (grower?.growerName || transport.growerName) + ', ' + (grower?.place || 'Mosel'));
+      set('carrierName', confirmation ? 'Demo-Spedition · bestätigte Tour' : 'Demo-Spedition');
+      set('carrierAddress', 'Demo-Transportbetrieb · 54516 Wittlich');
+      set('plate', confirmation?.plate || '');
+      set('departureTime', confirmation?.pickupTime || '');
+      set('actualTotal', confirmation?.loadedVolume || '');
+    }
 
     function productPrefix(panel) {
       return 'p' + panel.dataset.productPanel;
@@ -592,6 +650,7 @@ const base = import.meta.env.BASE_URL;
     document.querySelector('[data-open-transport]').addEventListener('click', () => document.querySelector('#participants').scrollIntoView({behavior:'smooth'}));
     document.querySelector('[data-focus-transport]').addEventListener('click', () => document.querySelector('#transport').scrollIntoView({behavior:'smooth'}));
 
+    hydrateFromWorkflow();
     updateState();
   </script>
 </BaseLayout>
