@@ -587,3 +587,23 @@ html,body{max-width:100%;overflow-x:hidden}
   .document-context{grid-template-columns:1fr}
   .document-context>div{padding:12px}
 }
+
+
+/* Grower portal launch */
+.grower-launch{
+  margin-top:14px;
+  display:grid;
+  grid-template-columns:minmax(0,1fr) auto;
+  gap:28px;
+  align-items:center;
+  padding:24px 26px;
+  background:#172b24;
+  color:#fff;
+  border:1px solid rgba(255,255,255,.08)
+}
+.grower-launch .overline{color:#cfb997}
+.grower-launch h2{font-size:clamp(28px,3vw,40px);max-width:15ch}
+.grower-launch p:not(.overline){margin:10px 0 0;color:rgba(255,255,255,.58);font-size:12px;line-height:1.6;max-width:64ch}
+.grower-launch .launch-link{background:#fff;color:var(--green);border-color:#fff}
+@media(max-width:980px){.grower-launch{grid-template-columns:1fr}.grower-launch .launch-link{justify-self:start}}
+@media(max-width:560px){.grower-launch{padding:20px 16px}.grower-launch .launch-link{width:100%;white-space:normal;text-align:center}}
