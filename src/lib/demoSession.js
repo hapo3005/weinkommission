@@ -2,6 +2,7 @@ export const ACTIVE_GROWER_KEY = 'wp-demo-active-grower-id';
 export const LEGACY_PROFILE_KEY = 'wp-demo-grower-profile';
 export const PROFILES_KEY = 'wp-demo-grower-profiles';
 export const RESPONSES_KEY = 'wp-demo-grower-responses';
+export const APPROVED_GROWERS_KEY = 'wp-demo-approved-growers';
 
 function readJson(key, fallback) {
   try {
@@ -21,8 +22,11 @@ export function resolveActiveGrower(growers, search = window.location.search, fa
   const requestedId = params.get('grower') || params.get('invite');
   const account = readJson('wp-demo-grower-account', null);
   const storedId = localStorage.getItem(ACTIVE_GROWER_KEY);
+  const approved = getApprovedGrowers();
   const ids = [requestedId, storedId, account?.growerId, fallbackId].filter(Boolean);
-  const grower = ids.map(id => growers.find(item => item.growerId === id)).find(Boolean) || growers[0];
+  const grower = ids
+    .map(id => growers.find(item => item.growerId === id) || approved[id])
+    .find(Boolean) || growers[0];
   if (grower) setActiveGrowerId(grower.growerId);
   return grower;
 }
@@ -63,4 +67,16 @@ export function addGrowerResponse(response) {
   all[response.growerId] = [response, ...current].slice(0, 20);
   localStorage.setItem(RESPONSES_KEY, JSON.stringify(all));
   localStorage.setItem('wp-demo-grower-response', JSON.stringify(response));
+}
+
+
+export function getApprovedGrowers() {
+  return readJson(APPROVED_GROWERS_KEY, {});
+}
+
+export function saveApprovedGrower(grower) {
+  if (!grower?.growerId) return;
+  const approved = getApprovedGrowers();
+  approved[grower.growerId] = grower;
+  localStorage.setItem(APPROVED_GROWERS_KEY, JSON.stringify(approved));
 }
