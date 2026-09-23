@@ -2,7 +2,7 @@
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import '../../../styles/cockpit.css';
 import '../../../styles/winzerprofil.css';
-import { demoRequirement, demoGrowers } from '../../../data/procurement-demo.js';
+import { demoRequirement, demoGrowers, demoProcurementRows, getLotsForGrower } from '../../../data/procurement-demo.js';
 import { runProcurement, formatLiters } from '../../../lib/procurementEngine.js';
 
 export function getStaticPaths() {
@@ -14,12 +14,16 @@ export function getStaticPaths() {
 
 const { grower } = Astro.props;
 const base = import.meta.env.BASE_URL;
-const model = runProcurement(demoRequirement, demoGrowers);
-const allocation = model.allocationRows.find((row) => row.growerId === grower.growerId);
+const model = runProcurement(demoRequirement, demoProcurementRows);
+const growerLots = getLotsForGrower(grower.growerId);
+const growerRows = model.allocationRows.filter((row) => row.growerId === grower.growerId);
+const allocatedRows = growerRows.filter((row) => row.allocatedVolume > 0);
+const allocation = allocatedRows[0] || growerRows.find((row) => row.status === 'waiting') || null;
 const tasks = model.tasks.filter((task) => task.growerId === grower.growerId);
-const exceptions = model.exceptions.filter((item) => item.growerName === grower.growerName && item.lotId === grower.lotId);
+const exceptions = model.exceptions.filter((item) => item.growerId === grower.growerId);
 const transports = model.transports.filter((item) => item.growerId === grower.growerId);
-const allocatedVolume = allocation?.allocatedVolume ?? 0;
+const allocatedVolume = allocatedRows.reduce((sum, row) => sum + row.allocatedVolume, 0);
+const availableVolume = growerLots.reduce((sum, lot) => sum + lot.availableVolume, 0);
 const inBlueBand = Array.isArray(grower.supplierGroups) && grower.supplierGroups.includes('Blaues Band');
 const cooperationLabel = inBlueBand ? 'Blaues Band' : 'Sonstiger Kooperationspartner';
 
@@ -78,7 +82,7 @@ const profileStatusClass =
         </div>
         <div class="command-stat">
           <span>Verfügbar</span>
-          <strong>{formatLiters(grower.availableVolume)}</strong>
+          <strong>{formatLiters(availableVolume)}</strong>
         </div>
         <div class="command-stat">
           <span>Zugeordnet</span>
@@ -138,50 +142,57 @@ const profileStatusClass =
 
       <section class="profile-section" id="partien">
         <div class="section-heading profile-section-heading">
-          <div><p class="overline">Partien</p><h2>Aktuell hinterlegte Weinpartie</h2></div>
-          <p>Eine Partie wird einmal sauber gepflegt und danach in Bedarfen, Zuteilungen, Transporten und Dokumenten wiederverwendet.</p>
+          <div><p class="overline">Partien</p><h2>{growerLots.length} aktuell hinterlegte Weinpartien</h2></div>
+          <p>Partien sind vom Betrieb getrennt. Jede Partie kann unabhängig geprüft, zugeteilt, transportiert oder als Reserve geführt werden.</p>
         </div>
 
-        <article class="lot-card">
-          <div class="lot-card-head">
-            <div>
-              <span class="lot-code">{grower.lotId}</span>
-              <h3>{grower.vintage} {grower.grape} · {grower.origin}</h3>
-            </div>
-            <span class:list={['row-status', allocation?.status || 'reserve']}>{allocation?.label || 'Reserve'}</span>
-          </div>
+        <div class="lot-stack">
+          {growerLots.map((lot) => {
+            const row = growerRows.find(item => item.lotId === lot.lotId);
+            return (
+              <article class="lot-card">
+                <div class="lot-card-head">
+                  <div>
+                    <span class="lot-code">{lot.lotId}</span>
+                    <h3>{lot.vintage} {lot.grape} · {lot.origin}</h3>
+                  </div>
+                  <span class:list={['row-status', row?.status || 'reserve']}>{row?.label || 'ohne aktuellen Bedarf'}</span>
+                </div>
 
-          <div class="lot-metrics">
-            <div><span>Verfügbar</span><strong>{formatLiters(grower.availableVolume)}</strong></div>
-            <div><span>Zugeordnet</span><strong>{formatLiters(allocatedVolume)}</strong></div>
-            <div><span>Erzeugnis</span><strong>Wein</strong></div>
-            <div><span>Jahrgang</span><strong>{grower.vintage}</strong></div>
-          </div>
+                <div class="lot-metrics">
+                  <div><span>Verfügbar</span><strong>{formatLiters(lot.availableVolume)}</strong></div>
+                  <div><span>Zugeordnet</span><strong>{formatLiters(row?.allocatedVolume || 0)}</strong></div>
+                  <div><span>Erzeugnis</span><strong>Wein</strong></div>
+                  <div><span>Jahrgang</span><strong>{lot.vintage}</strong></div>
+                </div>
 
-          <div class="lot-checks">
-            <div class:list={{ok: grower.analysisConfirmed, open: !grower.analysisConfirmed}}>
-              <span>{grower.analysisConfirmed ? '✓' : '○'}</span><strong>Analytik</strong><small>{grower.analysisConfirmed ? 'bestätigt' : 'Bestätigung fehlt'}</small>
-            </div>
-            <div class:list={{ok: grower.treatmentsConfirmed, open: !grower.treatmentsConfirmed}}>
-              <span>{grower.treatmentsConfirmed ? '✓' : '○'}</span><strong>Behandlungen</strong><small>{grower.treatmentsConfirmed ? 'bestätigt' : 'Angabe fehlt'}</small>
-            </div>
-            <div class:list={{ok: grower.currentVolumeConfirmed, open: !grower.currentVolumeConfirmed}}>
-              <span>{grower.currentVolumeConfirmed ? '✓' : '○'}</span><strong>Menge</strong><small>{grower.currentVolumeConfirmed ? 'aktuell bestätigt' : 'erneut bestätigen'}</small>
-            </div>
-          </div>
+                <div class="lot-checks">
+                  <div class:list={{ok: lot.analysisConfirmed, open: !lot.analysisConfirmed}}>
+                    <span>{lot.analysisConfirmed ? '✓' : '○'}</span><strong>Analytik</strong><small>{lot.analysisConfirmed ? 'bestätigt' : 'Bestätigung fehlt'}</small>
+                  </div>
+                  <div class:list={{ok: lot.treatmentsConfirmed, open: !lot.treatmentsConfirmed}}>
+                    <span>{lot.treatmentsConfirmed ? '✓' : '○'}</span><strong>Behandlungen</strong><small>{lot.treatmentsConfirmed ? 'bestätigt' : 'Angabe fehlt'}</small>
+                  </div>
+                  <div class:list={{ok: lot.currentVolumeConfirmed, open: !lot.currentVolumeConfirmed}}>
+                    <span>{lot.currentVolumeConfirmed ? '✓' : '○'}</span><strong>Menge</strong><small>{lot.currentVolumeConfirmed ? 'aktuell bestätigt' : 'erneut bestätigen'}</small>
+                  </div>
+                </div>
 
-          <details class="lot-details">
-            <summary>Fachdaten anzeigen</summary>
-            <div class="detail-grid">
-              <div><span>Rebsorte</span><strong>{grower.grape}</strong></div>
-              <div><span>Herkunft</span><strong>{grower.origin}</strong></div>
-              <div><span>Produktart</span><strong>Wein</strong></div>
-              <div><span>Weinbauzone</span><strong>A</strong></div>
-              <div><span>Analysewerte</span><strong>{grower.analysisConfirmed ? 'im System bestätigt' : 'noch zu bestätigen'}</strong></div>
-              <div><span>Behandlungscodes</span><strong>{grower.treatmentsConfirmed ? 'im System bestätigt' : 'noch zu bestätigen'}</strong></div>
-            </div>
-          </details>
-        </article>
+                <details class="lot-details">
+                  <summary>Fachdaten anzeigen</summary>
+                  <div class="detail-grid">
+                    <div><span>Rebsorte</span><strong>{lot.grape}</strong></div>
+                    <div><span>Herkunft</span><strong>{lot.origin}</strong></div>
+                    <div><span>Produktart</span><strong>Wein</strong></div>
+                    <div><span>Weinbauzone</span><strong>A</strong></div>
+                    <div><span>Analysewerte</span><strong>{lot.analysisConfirmed ? 'im System bestätigt' : 'noch zu bestätigen'}</strong></div>
+                    <div><span>Behandlungscodes</span><strong>{lot.treatmentsConfirmed ? 'im System bestätigt' : 'noch zu bestätigen'}</strong></div>
+                  </div>
+                </details>
+              </article>
+            );
+          })}
+        </div>
       </section>
 
       <section class="profile-section" id="transporte">
@@ -284,7 +295,7 @@ const profileStatusClass =
 
         <div class="timeline">
           <article><span>Heute</span><div><strong>Profil im Großbedarf bewertet</strong><small>Matching gegen {demoRequirement.id}</small></div></article>
-          <article><span>Heute</span><div><strong>{grower.lotId} geprüft</strong><small>{allocation?.issue || 'Keine offene fachliche Abweichung'}</small></div></article>
+          <article><span>Heute</span><div><strong>{growerLots.length} Partien im Bestand</strong><small>{allocation?.issue || 'Aktuelle Partien gegen Bedarfe bewertet'}</small></div></article>
           {allocatedVolume > 0 && <article><span>Heute</span><div><strong>{formatLiters(allocatedVolume)} reserviert</strong><small>für {demoRequirement.buyer}</small></div></article>}
           <article class="future"><span>Import</span><div><strong>Altdaten ergänzen</strong><small>frühere Geschäfte und Transporte werden beim Datenimport ergänzt</small></div></article>
         </div>
