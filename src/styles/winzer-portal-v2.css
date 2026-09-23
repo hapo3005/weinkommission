@@ -226,3 +226,18 @@ html,body{margin:0;max-width:100%;overflow-x:hidden;background:var(--cream)}*,*:
   .dashboard-stats strong{font-size:20px}
   .grower-today-copy h2{font-size:24px}
 }
+
+.portal2-header-status{
+  padding:6px 8px;
+  background:#e3eee5;
+  color:#2f674c;
+  font-size:8px;
+  text-transform:uppercase;
+  letter-spacing:.06em
+}
+@media(max-width:720px){
+  .portal2-header-status{
+    align-self:flex-start;
+    padding:5px 7px
+  }
+}
