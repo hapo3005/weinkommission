@@ -69,7 +69,8 @@ const profileStatusClass =
         </div>
         <div class="profile-actions">
           <span class:list={['profile-state', profileStatusClass]}>{profileStatus}</span>
-          <a class="primary-button profile-invite-link" href={`${base}winzer/registrieren/?invite=${grower.growerId}`}>Zugang einladen</a>
+          <a class="primary-button" href={`${base}winzer/?grower=${grower.growerId}`}>Winzeransicht testen</a>
+          <a class="quiet-button profile-invite-link" href={`${base}winzer/registrieren/?invite=${grower.growerId}`}>Zugang einladen</a>
           <button class="quiet-button" type="button" data-contact>Rückfrage anlegen</button>
         </div>
       </div>
@@ -115,6 +116,11 @@ const profileStatusClass =
         </div>
 
         <div class="attention-list">
+          <article class="attention-item clear" data-demo-response-summary hidden>
+            <span class="attention-icon">✓</span>
+            <div><strong data-response-title>Winzer-Rückmeldung eingegangen</strong><small data-response-copy></small></div>
+            <em>Portal</em>
+          </article>
           {tasks.length === 0 && exceptions.length === 0 ? (
             <article class="attention-item clear">
               <span class="attention-icon">✓</span>
@@ -236,13 +242,14 @@ const profileStatusClass =
 
         <div class="master-data">
           <div><span>Betrieb</span><strong>{grower.growerName}</strong></div>
-          <div><span>Ort</span><strong>{grower.place}</strong></div>
+          <div><span>Anschrift</span><strong>{grower.street}, {grower.postcode} {grower.place}</strong></div>
           <div><span>Kooperation</span><strong>{cooperationLabel} · Testzuordnung</strong></div>
           <div><span>Betriebsnummer</span><strong>{grower.businessNumber}</strong></div>
           <div><span>Ansprechpartner</span><strong>{grower.contactPerson}</strong></div>
           <div><span>Telefon</span><strong>{grower.phone}</strong></div>
           <div><span>E-Mail</span><strong>{grower.email}</strong></div>
-          <div class="missing"><span>Verladeadresse</span><strong>im Testbestand nicht separat gepflegt</strong></div>
+          <div><span>Webseite</span><strong>{grower.website}</strong></div>
+          <div><span>Verladeadresse</span><strong>{grower.street}, {grower.postcode} {grower.place}</strong></div>
         </div>
       </section>
 
@@ -323,13 +330,16 @@ const profileStatusClass =
   </div>
 
   <script>
+    import { getGrowerProfile, getGrowerResponses } from '../../../lib/demoSession.js';
+
     const dialog = document.querySelector('[data-contact-dialog]');
     document.querySelector('[data-contact]').addEventListener('click', () => dialog.showModal());
     document.querySelectorAll('[data-close-contact]').forEach(button => button.addEventListener('click', () => dialog.close()));
 
-    const portalProfile = JSON.parse(localStorage.getItem('wp-demo-grower-profile') || 'null');
     const profileSection = document.querySelector('[data-portal-profile]');
-    if (portalProfile && profileSection && portalProfile.growerId === profileSection.dataset.growerId) {
+    const growerId = profileSection?.dataset.growerId;
+    const portalProfile = growerId ? getGrowerProfile(growerId) : null;
+    if (portalProfile && profileSection) {
       profileSection.hidden = false;
       const set = (selector, value) => {
         const el = document.querySelector(selector);
@@ -347,6 +357,17 @@ const profileStatusClass =
       set('[data-internal-certifications]', (portalProfile.certifications || []).join(', '));
       set('[data-internal-loading]', portalProfile.loadingVolume);
       set('[data-internal-contact]', portalProfile.preferredContact === 'phone' ? 'Telefon' : portalProfile.preferredContact === 'mobile' ? 'Mobil / Messenger' : 'E-Mail');
+    }
+
+    const responses = growerId ? getGrowerResponses(growerId) : [];
+    if (responses.length) {
+      const latest = responses[0];
+      const summary = document.querySelector('[data-demo-response-summary]');
+      summary.hidden = false;
+      document.querySelector('[data-response-title]').textContent =
+        latest.type === 'loading' ? 'Verladedaten vom Winzer bestätigt' : 'Partiedaten vom Winzer bestätigt';
+      document.querySelector('[data-response-copy]').textContent =
+        latest.lotId + ' · ' + new Date(latest.confirmedAt).toLocaleString('de-DE');
     }
   </script>
 </BaseLayout>
