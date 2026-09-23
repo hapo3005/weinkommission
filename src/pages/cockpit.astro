@@ -205,6 +205,22 @@ const dateLabel = new Intl.DateTimeFormat('de-DE', {
         <div class="home-access-feed" data-home-access-feed hidden></div>
       </section>
 
+      <section class="home-section external-home">
+        <div class="home-section-head compact">
+          <div>
+            <p class="overline">Externe Partneraktivität</p>
+            <h2>Neue Bedarfe & bestätigte Abholungen</h2>
+          </div>
+          <a class="home-link" href={`${base}demo/`}>Externe Rollen ansehen →</a>
+        </div>
+
+        <div class="home-access-empty" data-external-empty>
+          <strong>Noch keine externe Demo-Aktivität.</strong>
+          <small>Bedarf im Abnehmerportal oder Abholung im Fahrerportal bestätigen; die Aktivität erscheint hier sofort.</small>
+        </div>
+        <div class="home-access-feed" data-external-feed hidden></div>
+      </section>
+
       <section class="home-section quick-home">
         <div class="home-section-head compact">
           <div><p class="overline">Schnellzugriff</p><h2>Direkt in den Arbeitsbereich.</h2></div>
@@ -257,6 +273,44 @@ const dateLabel = new Intl.DateTimeFormat('de-DE', {
       empty.hidden = true;
       feed.hidden = false;
       feed.innerHTML = items.join('');
+    }
+
+    const externalEmpty = document.querySelector('[data-external-empty]');
+    const externalFeed = document.querySelector('[data-external-feed]');
+    const buyerRequests = JSON.parse(localStorage.getItem('wp-demo-buyer-requests') || '[]');
+    const driverConfirmations = JSON.parse(localStorage.getItem('wp-demo-driver-confirmations') || '[]');
+    const externalItems = [];
+
+    buyerRequests.slice(0, 5).forEach(request => {
+      externalItems.push(`
+        <article class="home-access-item buyer">
+          <span>Bedarf</span>
+          <div>
+            <strong>${escapeHtml(request.company)} · ${escapeHtml(request.vintage)} ${escapeHtml(request.grape)}</strong>
+            <small>${escapeHtml(request.targetVolume)} · ${escapeHtml(request.origin)} · ${escapeHtml(request.deliveryWindow)}</small>
+          </div>
+          <em>Prüfung erforderlich</em>
+        </article>
+      `);
+    });
+
+    driverConfirmations.slice(0, 5).forEach(item => {
+      externalItems.push(`
+        <article class="home-access-item driver">
+          <span>Abholung</span>
+          <div>
+            <strong>${escapeHtml(item.growerName)} · ${escapeHtml(item.lotId)}</strong>
+            <small>${escapeHtml(item.transportId)} · ${new Intl.NumberFormat('de-DE').format(item.loadedVolume || 0)} l · ${escapeHtml(item.plate)}</small>
+          </div>
+          <em>vom Fahrer bestätigt</em>
+        </article>
+      `);
+    });
+
+    if (externalItems.length) {
+      externalEmpty.hidden = true;
+      externalFeed.hidden = false;
+      externalFeed.innerHTML = externalItems.join('');
     }
   </script>
 </BaseLayout>
