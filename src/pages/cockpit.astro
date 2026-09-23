@@ -1,0 +1,371 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import '../styles/cockpit.css';
+
+const base = import.meta.env.BASE_URL;
+---
+
+<BaseLayout
+  title="Porn Cockpit · Begleitdokumente"
+  description="Arbeitsoberfläche der Weinkommission Porn für Geschäfte, Transporte und Weinbegleitdokumente."
+  canonicalPath="/weinkommission/cockpit/"
+>
+  <div class="cockpit-app">
+    <aside class="sidebar" aria-label="Cockpit Navigation">
+      <a class="cockpit-brand" href={base}>
+        <span class="brand-mark">WP</span>
+        <span><strong>WEINKOMMISSION PORN</strong><small>Mosel · Cockpit</small></span>
+      </a>
+
+      <nav class="side-nav">
+        <a class="active" href="#uebersicht" aria-current="page">
+          <span class="nav-icon" aria-hidden="true">⌂</span><span>Übersicht</span>
+        </a>
+        <a href="#transporte"><span class="nav-icon" aria-hidden="true">↗</span><span>Transporte</span></a>
+        <a href="#begleitdokument"><span class="nav-icon" aria-hidden="true">□</span><span>Begleitdokumente</span></a>
+        <a href="#geschaefte"><span class="nav-icon" aria-hidden="true">◇</span><span>Geschäfte</span></a>
+        <a href="#betriebe"><span class="nav-icon" aria-hidden="true">○</span><span>Betriebe</span></a>
+      </nav>
+
+      <div class="sidebar-foot">
+        <div class="api-state">
+          <span class="state-dot pending"></span>
+          <div><strong>eWeinBV</strong><small>API-Anbindung vorbereitet</small></div>
+        </div>
+        <a class="back-link" href={base}>← Öffentliche Website</a>
+      </div>
+    </aside>
+
+    <main class="cockpit-main" id="main">
+      <header class="cockpit-topbar">
+        <div>
+          <p class="overline">Mittwoch · 23. September 2026</p>
+          <h1>Guten Morgen, Nadine.</h1>
+        </div>
+        <div class="topbar-actions">
+          <button class="quiet-button" type="button" data-demo-reset>Demo zurücksetzen</button>
+          <button class="primary-button" type="button" data-open-transport>+ Transport anlegen</button>
+        </div>
+      </header>
+
+      <section class="overview" id="uebersicht" aria-labelledby="overview-title">
+        <div class="section-heading">
+          <div>
+            <p class="overline">Heute im Blick</p>
+            <h2 id="overview-title">Was jetzt Aufmerksamkeit braucht.</h2>
+          </div>
+          <p>Das Cockpit priorisiert Vorgänge nach Zeit und fehlenden Angaben. Bereits bekannte Stammdaten werden wiederverwendet.</p>
+        </div>
+
+        <div class="attention-grid">
+          <article class="attention-card urgent" data-focus-transport>
+            <div class="card-topline"><span>Heute · 09:30 Uhr</span><span class="status status-warning">2 Angaben fehlen</span></div>
+            <h3>Weingut Musterberg → Mosel Kellerei GmbH</h3>
+            <p>2025 Riesling · Mosel · vereinbart 18.500 l</p>
+            <div class="progress" aria-label="Begleitdokument zu 84 Prozent vorbereitet"><span style="width:84%"></span></div>
+            <div class="card-footer"><strong>Begleitdokument vorbereiten</strong><span>→</span></div>
+          </article>
+
+          <article class="attention-card">
+            <div class="card-topline"><span>Heute · 14:00 Uhr</span><span class="status status-ready">Vollständig</span></div>
+            <h3>Weingut Sonnenhang → Weinhandel Rhein GmbH</h3>
+            <p>2025 Weißburgunder · 9.200 l</p>
+            <div class="progress ready" aria-label="Begleitdokument vollständig vorbereitet"><span style="width:100%"></span></div>
+            <div class="card-footer"><strong>Zur Prüfung bereit</strong><span>→</span></div>
+          </article>
+
+          <article class="attention-card neutral">
+            <div class="card-topline"><span>Morgen · 08:00 Uhr</span><span class="status">Vorbereitet</span></div>
+            <h3>Weingut Klosterblick → Kellerei am Markt</h3>
+            <p>2025 Riesling · 12.700 l</p>
+            <div class="progress" aria-label="Begleitdokument zu 68 Prozent vorbereitet"><span style="width:68%"></span></div>
+            <div class="card-footer"><strong>Transportdetails fehlen noch</strong><span>→</span></div>
+          </article>
+        </div>
+      </section>
+
+      <section class="workbench" id="transporte" aria-labelledby="transport-title">
+        <div class="workbench-head">
+          <div>
+            <p class="overline">Pilotprozess · Begleitdokument</p>
+            <h2 id="transport-title">Transport T-2027-0042</h2>
+          </div>
+          <span class="status status-warning" data-doc-status>2 Angaben fehlen</span>
+        </div>
+
+        <div class="workbench-grid">
+          <div class="transport-form">
+            <section class="info-block">
+              <div class="block-head">
+                <div><span class="block-index">A</span><h3>Geschäft</h3></div>
+                <span class="complete-mark">vollständig</span>
+              </div>
+              <dl class="facts">
+                <div><dt>Verkäufer</dt><dd>Weingut Musterberg</dd></div>
+                <div><dt>Käufer</dt><dd>Mosel Kellerei GmbH</dd></div>
+                <div><dt>Partie</dt><dd>R25-017 · Riesling 2025 · Mosel</dd></div>
+                <div><dt>Vereinbart</dt><dd>18.500 Liter</dd></div>
+              </dl>
+            </section>
+
+            <section class="info-block">
+              <div class="block-head">
+                <div><span class="block-index">B</span><h3>Stammdaten & Weinangaben</h3></div>
+                <span class="complete-mark">automatisch übernommen</span>
+              </div>
+              <div class="compact-checks">
+                <span>✓ Absender & Betriebsnummer</span>
+                <span>✓ Empfänger & Lieferadresse</span>
+                <span>✓ Erzeugnis & Herkunft</span>
+                <span>✓ Jahrgang & Rebsorte</span>
+                <span>✓ Analysewerte</span>
+                <span>✓ Behandlungen</span>
+              </div>
+            </section>
+
+            <section class="info-block active-block" id="begleitdokument">
+              <div class="block-head">
+                <div><span class="block-index">C</span><h3>Vor der Abfahrt ergänzen</h3></div>
+                <span class="missing-mark" data-missing-counter>2 offen</span>
+              </div>
+
+              <form class="transport-fields" data-transport-form novalidate>
+                <label>
+                  <span>Tatsächlich verladen</span>
+                  <div class="field-with-unit">
+                    <input id="actualLiters" name="actualLiters" inputmode="decimal" placeholder="z. B. 18.437" autocomplete="off" />
+                    <small>Liter</small>
+                  </div>
+                  <em data-error="actualLiters"></em>
+                </label>
+
+                <label>
+                  <span>Kennzeichen</span>
+                  <input id="plate" name="plate" placeholder="z. B. WIL AB 123" autocomplete="off" />
+                  <em data-error="plate"></em>
+                </label>
+
+                <label>
+                  <span>Beförderer</span>
+                  <select id="carrier" name="carrier">
+                    <option value="Mosel Transporte GmbH">Mosel Transporte GmbH</option>
+                    <option value="Eigentransport Verkäufer">Eigentransport Verkäufer</option>
+                    <option value="Abholung Käufer">Abholung Käufer</option>
+                  </select>
+                </label>
+
+                <label>
+                  <span>Versanddatum</span>
+                  <input id="shippingDate" name="shippingDate" type="date" value="2026-09-23" />
+                </label>
+
+                <div class="form-actions">
+                  <button class="secondary-button" type="button" data-save-draft>Entwurf speichern</button>
+                  <button class="primary-button" type="submit" data-submit-doc disabled>Begleitdokument prüfen</button>
+                </div>
+              </form>
+            </section>
+          </div>
+
+          <aside class="document-panel" aria-labelledby="doc-panel-title">
+            <div class="doc-panel-head">
+              <p class="overline">Live-Prüfung</p>
+              <h3 id="doc-panel-title">Begleitdokument</h3>
+            </div>
+
+            <div class="readiness">
+              <div class="readiness-ring" data-readiness-ring style="--value:84"><span data-readiness-value>84%</span></div>
+              <div><strong data-readiness-text>Noch nicht vollständig</strong><p data-readiness-subtext>Literzahl und Kennzeichen ergänzen.</p></div>
+            </div>
+
+            <div class="validation-list">
+              <div class="valid">✓ Absender vollständig</div>
+              <div class="valid">✓ Empfänger vollständig</div>
+              <div class="valid">✓ Weinangaben vollständig</div>
+              <div class="valid">✓ Analyse vollständig</div>
+              <div class="pending" data-check-liters>○ Tatsächliche Menge fehlt</div>
+              <div class="pending" data-check-plate>○ Kennzeichen fehlt</div>
+            </div>
+
+            <div class="api-preview">
+              <span>eWeinBV-Schnittstelle</span>
+              <strong data-api-label>Noch nicht sendebereit</strong>
+              <p>Im Produktivbetrieb wird aus diesen Daten der vollständige API-Datensatz erzeugt. Es werden keine Zugangsdaten im Browser gespeichert.</p>
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <section class="operations" id="geschaefte">
+        <div class="section-heading compact">
+          <div><p class="overline">Arbeitsbestand</p><h2>Geschäfte & Transporte</h2></div>
+          <p>Ein Geschäft bleibt die zentrale Akte. Transport und Begleitdokument hängen daran und müssen nicht separat gesucht werden.</p>
+        </div>
+
+        <div class="ledger" role="table" aria-label="Aktuelle Geschäfte">
+          <div class="ledger-row ledger-head" role="row">
+            <span role="columnheader">Vorgang</span><span role="columnheader">Partie</span><span role="columnheader">Menge</span><span role="columnheader">Termin</span><span role="columnheader">Status</span>
+          </div>
+          <div class="ledger-row" role="row">
+            <strong>Weingut Musterberg → Mosel Kellerei</strong><span>R25-017 · Riesling</span><span>18.500 l</span><span>Heute · 09:30</span><span class="status status-warning">unvollständig</span>
+          </div>
+          <div class="ledger-row" role="row">
+            <strong>Weingut Sonnenhang → Weinhandel Rhein</strong><span>WB25-006 · Weißburgunder</span><span>9.200 l</span><span>Heute · 14:00</span><span class="status status-ready">bereit</span>
+          </div>
+          <div class="ledger-row" role="row">
+            <strong>Weingut Klosterblick → Kellerei am Markt</strong><span>R25-022 · Riesling</span><span>12.700 l</span><span>Morgen · 08:00</span><span class="status">vorbereitet</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="automation-note" id="betriebe">
+        <div>
+          <p class="overline">Nächster Ausbauschritt</p>
+          <h2>Einmal erfassen. Danach wiederverwenden.</h2>
+        </div>
+        <p>Winzer, Käufer, Betriebsnummern, Lieferadressen und typische Beförderer werden als Stammdaten geführt. Bei neuen Geschäften fragt das System nur noch Informationen ab, die sich tatsächlich ändern.</p>
+      </section>
+
+      <dialog class="result-dialog" data-result-dialog>
+        <button class="dialog-close" type="button" data-close-dialog aria-label="Dialog schließen">×</button>
+        <p class="overline">Plausibilitätsprüfung bestanden</p>
+        <h2>Der Vorgang ist sendebereit.</h2>
+        <p>Alle für diesen Demo-Workflow benötigten Angaben sind vollständig. Die produktive eWeinBV-Übermittlung wird erst nach serverseitiger API-Anbindung und sicherer Authentifizierung aktiviert.</p>
+        <dl>
+          <div><dt>Verladene Menge</dt><dd data-result-liters>–</dd></div>
+          <div><dt>Kennzeichen</dt><dd data-result-plate>–</dd></div>
+          <div><dt>Beförderer</dt><dd data-result-carrier>–</dd></div>
+        </dl>
+        <button class="primary-button" type="button" data-close-dialog>Vorgang schließen</button>
+      </dialog>
+
+      <div class="toast" role="status" aria-live="polite" data-toast></div>
+    </main>
+  </div>
+
+  <script>
+    const form = document.querySelector('[data-transport-form]');
+    const liters = document.querySelector('#actualLiters');
+    const plate = document.querySelector('#plate');
+    const carrier = document.querySelector('#carrier');
+    const submit = document.querySelector('[data-submit-doc]');
+    const missingCounter = document.querySelector('[data-missing-counter]');
+    const docStatus = document.querySelector('[data-doc-status]');
+    const readinessValue = document.querySelector('[data-readiness-value]');
+    const readinessRing = document.querySelector('[data-readiness-ring]');
+    const readinessText = document.querySelector('[data-readiness-text]');
+    const readinessSubtext = document.querySelector('[data-readiness-subtext]');
+    const checkLiters = document.querySelector('[data-check-liters]');
+    const checkPlate = document.querySelector('[data-check-plate]');
+    const apiLabel = document.querySelector('[data-api-label]');
+    const toast = document.querySelector('[data-toast]');
+    const dialog = document.querySelector('[data-result-dialog]');
+
+    const normalizePlate = (value) => value.trim().toUpperCase().replace(/\s+/g, ' ');
+    const normalizeLiters = (value) => value.trim().replace(/\./g, '').replace(',', '.');
+    const litersValid = () => {
+      const value = Number(normalizeLiters(liters.value));
+      return Number.isFinite(value) && value > 0 && value <= 25000;
+    };
+    const plateValid = () => normalizePlate(plate.value).length >= 5;
+
+    function setCheck(el, ok, successText, pendingText) {
+      el.classList.toggle('valid', ok);
+      el.classList.toggle('pending', !ok);
+      el.textContent = ok ? '✓ ' + successText : '○ ' + pendingText;
+    }
+
+    function updateState() {
+      const hasLiters = litersValid();
+      const hasPlate = plateValid();
+      const missing = Number(!hasLiters) + Number(!hasPlate);
+      const readiness = missing === 0 ? 100 : missing === 1 ? 92 : 84;
+
+      missingCounter.textContent = missing === 0 ? 'vollständig' : missing + ' offen';
+      missingCounter.className = missing === 0 ? 'complete-mark' : 'missing-mark';
+
+      docStatus.textContent = missing === 0 ? 'Vollständig' : missing + ' Angaben fehlen';
+      docStatus.className = missing === 0 ? 'status status-ready' : 'status status-warning';
+
+      readinessValue.textContent = readiness + '%';
+      readinessRing.style.setProperty('--value', readiness);
+      readinessText.textContent = missing === 0 ? 'Sendebereit' : 'Noch nicht vollständig';
+      readinessSubtext.textContent = missing === 0 ? 'Alle erforderlichen Demo-Angaben liegen vor.' : missing === 1 ? 'Noch eine Angabe ergänzen.' : 'Literzahl und Kennzeichen ergänzen.';
+      apiLabel.textContent = missing === 0 ? 'Datensatz kann erzeugt werden' : 'Noch nicht sendebereit';
+      submit.disabled = missing !== 0;
+
+      setCheck(checkLiters, hasLiters, 'Tatsächliche Menge erfasst', 'Tatsächliche Menge fehlt');
+      setCheck(checkPlate, hasPlate, 'Kennzeichen erfasst', 'Kennzeichen fehlt');
+    }
+
+    function saveDraft(message = 'Entwurf gespeichert') {
+      const payload = {
+        actualLiters: liters.value,
+        plate: plate.value,
+        carrier: carrier.value,
+        shippingDate: document.querySelector('#shippingDate').value
+      };
+      localStorage.setItem('wp-transport-demo', JSON.stringify(payload));
+      toast.textContent = message;
+      toast.classList.add('show');
+      window.setTimeout(() => toast.classList.remove('show'), 2200);
+    }
+
+    function restoreDraft() {
+      const raw = localStorage.getItem('wp-transport-demo');
+      if (!raw) return;
+      try {
+        const data = JSON.parse(raw);
+        liters.value = data.actualLiters || '';
+        plate.value = data.plate || '';
+        carrier.value = data.carrier || 'Mosel Transporte GmbH';
+        if (data.shippingDate) document.querySelector('#shippingDate').value = data.shippingDate;
+      } catch {}
+    }
+
+    liters.addEventListener('input', updateState);
+    plate.addEventListener('input', () => {
+      const pos = plate.selectionStart;
+      plate.value = normalizePlate(plate.value);
+      if (pos !== null) plate.setSelectionRange(plate.value.length, plate.value.length);
+      updateState();
+    });
+
+    document.querySelector('[data-save-draft]').addEventListener('click', () => saveDraft());
+
+    form.addEventListener('submit', (event) => {
+      event.preventDefault();
+      updateState();
+      if (!litersValid() || !plateValid()) return;
+      saveDraft('Vorgang geprüft');
+      document.querySelector('[data-result-liters]').textContent = Number(normalizeLiters(liters.value)).toLocaleString('de-DE') + ' Liter';
+      document.querySelector('[data-result-plate]').textContent = normalizePlate(plate.value);
+      document.querySelector('[data-result-carrier]').textContent = carrier.value;
+      dialog.showModal();
+    });
+
+    document.querySelectorAll('[data-close-dialog]').forEach((button) => button.addEventListener('click', () => dialog.close()));
+
+    document.querySelector('[data-demo-reset]').addEventListener('click', () => {
+      localStorage.removeItem('wp-transport-demo');
+      form.reset();
+      document.querySelector('#shippingDate').value = '2026-09-23';
+      updateState();
+      toast.textContent = 'Demo zurückgesetzt';
+      toast.classList.add('show');
+      window.setTimeout(() => toast.classList.remove('show'), 2200);
+    });
+
+    document.querySelector('[data-open-transport]').addEventListener('click', () => {
+      document.querySelector('#transporte').scrollIntoView({ behavior: 'smooth' });
+      liters.focus({ preventScroll: true });
+    });
+
+    document.querySelector('[data-focus-transport]').addEventListener('click', () => {
+      document.querySelector('#transporte').scrollIntoView({ behavior: 'smooth' });
+    });
+
+    restoreDraft();
+    updateState();
+  </script>
+</BaseLayout>
