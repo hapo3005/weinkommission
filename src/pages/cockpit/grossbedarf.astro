@@ -2,11 +2,11 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import '../../styles/cockpit.css';
 import '../../styles/grossbedarf.css';
-import { demoRequirement, demoGrowers } from '../../data/procurement-demo.js';
+import { demoRequirement, demoProcurementRows } from '../../data/procurement-demo.js';
 import { runProcurement, formatLiters } from '../../lib/procurementEngine.js';
 
 const base = import.meta.env.BASE_URL;
-const model = runProcurement(demoRequirement, demoGrowers);
+const model = runProcurement(demoRequirement, demoProcurementRows);
 const displayRows = model.allocationRows.slice(0, 40);
 const topExceptions = model.exceptions.slice(0, 3);
 const topTransports = model.transports.slice(0, 3);
@@ -84,7 +84,7 @@ const coveragePercent = (model.coverage * 100).toFixed(1).replace('.', ',');
           <div><span>Zielmenge</span><strong>{formatLiters(demoRequirement.targetVolume)}</strong></div>
           <div><span>Abnehmer</span><strong>{demoRequirement.buyer}</strong></div>
           <div><span>Lieferfenster</span><strong>{demoRequirement.deliveryWindow}</strong></div>
-          <div><span>Winzerverbund</span><strong>{demoRequirement.supplierGroup} · Mitglieder noch nicht importiert</strong></div>
+          <div><span>Winzerverbund</span><strong>{demoRequirement.supplierGroup} · {model.stats.growersTotal} Testbetriebe im Scope</strong></div>
         </div>
 
         <div class="coverage">
@@ -191,7 +191,7 @@ const coveragePercent = (model.coverage * 100).toFixed(1).replace('.', ',');
 
         <div class="allocation-summary">
           <span><strong data-visible-count>{displayRows.length}</strong> Datensätze sichtbar</span>
-          <span><strong>{model.stats.growersTotal}</strong> synthetische Testbetriebe</span>
+          <span><strong>{model.stats.growersTotal}</strong> Betriebe im Verbund-Scope</span>
           <span><strong data-allocated-count>{model.stats.growersAllocated}</strong> Testbetriebe aktuell zugeteilt</span>
           <span><strong data-task-count>{model.tasks.length}</strong> offene Auto-Aufgaben</span>
         </div>
@@ -274,10 +274,10 @@ const coveragePercent = (model.coverage * 100).toFixed(1).replace('.', ',');
   </div>
 
   <script>
-    import { demoRequirement, demoGrowers } from '../../data/procurement-demo.js';
+    import { demoRequirement, demoProcurementRows } from '../../data/procurement-demo.js';
     import { runProcurement } from '../../lib/procurementEngine.js';
 
-    let workingGrowers = demoGrowers.map(item => ({...item}));
+    let workingGrowers = demoProcurementRows.map(item => ({...item}));
     const rows = [...document.querySelectorAll('[data-grower-row]')];
     const statusFilter = document.querySelector('[data-status-filter]');
     const search = document.querySelector('[data-search]');
